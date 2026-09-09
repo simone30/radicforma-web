@@ -1,0 +1,146 @@
+{
+  "meta": {
+    "title": "Radic Forma — Modelli 3D e incisioni laser",
+    "description": "Radic Forma progetta e realizza oggetti in stampa 3D e incisioni laser su legno, acrilico, pelle e metallo. Dove la materia prende vita."
+  },
+
+  "a11y": {
+    "skip": "Vai al contenuto",
+    "menu": "Apri il menu di navigazione",
+    "lingua": "Selezione della lingua",
+    "scena": "Illustrazione del processo produttivo"
+  },
+
+  "brand": {
+    "claim": "Dove la materia prende vita",
+    "claim.maiuscolo": "DOVE LA MATERIA PRENDE VITA",
+    "lockup.alt": "Radic Forma — Dove la materia prende vita"
+  },
+
+  "nav": {
+    "servizi": "Servizi",
+    "tecnologie": "Tecnologie",
+    "materiali": "Materiali",
+    "processo": "Processo",
+    "contatti": "Contatti"
+  },
+
+  "hero": {
+    "claim": "Dove la materia prende vita",
+    "descrittore": "Modelli 3D · Incisioni laser",
+    "scroll": "Scorri"
+  },
+
+  "scena": {
+    "eyebrow": "Dal segno all'oggetto",
+    "titolo": "Due macchine, un solo gesto",
+    "testo": "Il marchio viene prima inciso a laser sulla superficie di un tronco, riga dopo riga, poi ricostruito strato su strato dall'ugello di una stampante 3D. È il modo più diretto per raccontare cosa facciamo: sottrarre materia e aggiungerne, con la stessa precisione.",
+    "alternativa": "Sequenza in tre momenti: il monogramma Radic Forma inciso a laser su una sezione di tronco, il cambio di prospettiva dal piano zenitale alla vista in tre quarti, e lo stesso monogramma stampato in 3D strato dopo strato su un piatto di stampa.",
+    "didascalia1": "Incisione laser — scansione riga per riga sul legno",
+    "didascalia2": "Cambio di prospettiva — dal piano al volume",
+    "didascalia3": "Stampa 3D — ventotto strati da 0,20 mm",
+    "cta": "Parliamo del tuo progetto",
+
+    "laser": {
+      "macchina": "xTool · RASTER",
+      "potenza": "POTENZA",
+      "velocita": "VELOCITÀ",
+      "passata": "PASSATA"
+    },
+    "stampa": {
+      "macchina": "Bambu Lab · FDM",
+      "strato": "STRATO",
+      "altezza": "ALTEZZA",
+      "materiale": "MATERIALE"
+    }
+  },
+
+  "servizi": {
+    "eyebrow": "Servizi",
+    "titolo": "Che cosa realizziamo",
+    "testo": "Tre modi di lavorare la materia, spesso combinati nello stesso oggetto.",
+    "uno": {
+      "titolo": "Oggettistica 3D",
+      "testo": "Complementi per la casa e la cucina, portaoggetti, accessori funzionali. Dalla serie breve al pezzo singolo, stampati in FDM e rifiniti a mano.",
+      "dettaglio": "Serie brevi · Pezzo unico · Prototipi"
+    },
+    "due": {
+      "titolo": "Incisione e taglio laser",
+      "testo": "Marcature, personalizzazioni e tagli di precisione su legno, acrilico, pelle e metallo anodizzato. Testi, loghi, motivi grafici e numerazioni seriali.",
+      "dettaglio": "Incisione · Taglio · Marcatura"
+    },
+    "tre": {
+      "titolo": "Progettazione su misura",
+      "testo": "Partiamo da uno schizzo, una misura o un problema pratico e arriviamo al file di produzione. Modellazione, verifica dimensionale e stampa di prova.",
+      "dettaglio": "Modellazione 3D · File di produzione"
+    }
+  },
+
+  "tecnologie": {
+    "eyebrow": "Tecnologie",
+    "titolo": "Il parco macchine",
+    "testo": "Lavoriamo con due tecnologie complementari: la stampa a deposizione di filamento, che costruisce l'oggetto strato dopo strato, e il laser, che incide e taglia sottraendo materia. La scelta dipende dal materiale, dalla tolleranza richiesta e dal numero di pezzi.",
+    "stampa": {
+      "titolo": "Stampa 3D FDM",
+      "testo": "Stampanti Bambu Lab a piattaforma riscaldata, con cambio filamento automatico per le stampe multicolore.",
+      "voce1": "Volume di stampa",
+      "valore1": "[da confermare] mm",
+      "voce2": "Altezza strato",
+      "valore2": "0,08 – 0,28 mm",
+      "voce3": "Tolleranza dimensionale",
+      "valore3": "[da confermare]"
+    },
+    "laser": {
+      "titolo": "Laser xTool",
+      "testo": "Incisione raster e taglio vettoriale, con regolazione di potenza e velocità in base al materiale.",
+      "voce1": "Area di lavoro",
+      "valore1": "[da confermare] mm",
+      "voce2": "Spessore massimo di taglio",
+      "valore2": "[da confermare] mm",
+      "voce3": "Risoluzione di incisione",
+      "valore3": "[da confermare] DPI"
+    }
+  },
+
+  "materiali": {
+    "eyebrow": "Materiali",
+    "titolo": "Su cosa lavoriamo",
+    "testo": "Ogni materiale ha una resa diversa: il legno scurisce, l'acrilico smerigliata, l'alluminio anodizzato schiarisce. Su richiesta prepariamo un provino prima della produzione.",
+    "laser": {
+      "titolo": "Incisione e taglio laser",
+      "elenco": ["Legno massello", "Compensato e MDF", "Acrilico", "Pelle", "Ardesia", "Alluminio anodizzato", "Vetro"]
+    },
+    "stampa": {
+      "titolo": "Stampa 3D",
+      "elenco": ["PLA", "PETG", "ABS", "ASA", "TPU flessibile"]
+    },
+    "nota": "Altri materiali su richiesta, previa prova di lavorabilità."
+  },
+
+  "processo": {
+    "eyebrow": "Processo",
+    "titolo": "Come si lavora insieme",
+    "uno":     { "titolo": "Idea",       "testo": "Ci racconti cosa ti serve, anche con uno schizzo o una foto. Valutiamo fattibilità, materiali e tempi." },
+    "due":     { "titolo": "Progetto",   "testo": "Prepariamo il modello 3D o il file vettoriale e ti mostriamo un'anteprima prima di produrre." },
+    "tre":     { "titolo": "Produzione", "testo": "Stampiamo o incidiamo, con un provino di verifica quando il materiale lo richiede." },
+    "quattro": { "titolo": "Consegna",   "testo": "Rifinitura a mano, controllo finale e spedizione, oppure ritiro diretto." }
+  },
+
+  "contatti": {
+    "eyebrow": "Contatti",
+    "titolo": "Raccontaci il tuo progetto",
+    "testo": "Scrivici con una descrizione, una misura o una foto di riferimento: rispondiamo con una valutazione di fattibilità e un preventivo.",
+    "email": "Scrivici una mail",
+    "telefono": "Telefono",
+    "dove": "Dove siamo",
+    "cta": "Invia una richiesta",
+    "nota": "Rispondiamo entro [da confermare] giorni lavorativi."
+  },
+
+  "footer": {
+    "claim": "Dove la materia prende vita",
+    "naviga": "Naviga",
+    "contatti": "Contatti",
+    "diritti": "Tutti i diritti riservati"
+  }
+}
