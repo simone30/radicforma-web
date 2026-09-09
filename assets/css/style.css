@@ -1,0 +1,474 @@
+/* ==========================================================================
+   RADIC FORMA — foglio di stile unico
+   Ordine: font · token · reset · tipografia · navbar · hero · footer ·
+           sezioni di contenuto · scena scroll · fallback e reduced motion
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Font self-hosted — nessuna richiesta verso fonts.googleapis.com
+   -------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('../fonts/cormorant-garamond-latin-400.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('../fonts/cormorant-garamond-latin-500.woff2') format('woff2');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('../fonts/cormorant-garamond-latin-600.woff2') format('woff2');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Manrope';
+  src: url('../fonts/manrope-latin-400.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Manrope';
+  src: url('../fonts/manrope-latin-500.woff2') format('woff2');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Manrope';
+  src: url('../fonts/manrope-latin-600.woff2') format('woff2');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+/* --------------------------------------------------------------------------
+   2. Design token
+   -------------------------------------------------------------------------- */
+:root {
+  /* Palette di marca */
+  --verde-alloro:   #6C7A47;  /* colore primario */
+  --verde-corteccia:#22281F;  /* fondi scuri, testi forti */
+  --foglia:         #9BAA6B;  /* marchio su fondo scuro */
+  --ottone:         #B08A4F;  /* accento: incisione, finiture */
+  --carta:          #F4F2EA;  /* fondo chiaro */
+  --pietra:         #8C8F86;  /* testi secondari, dati tecnici */
+  --avorio:         #EDE9DB;  /* testo su fondo scuro */
+  --nero-corteccia: #1B1E1A;  /* fondo profondo della scena */
+
+  /* Ruoli semantici — usare questi nei componenti, non i colori grezzi */
+  --bg:             var(--carta);
+  --bg-scuro:       var(--verde-corteccia);
+  --testo:          var(--verde-corteccia);
+  --testo-soft:     #4A5342;
+  --testo-inv:      var(--avorio);
+  --testo-tecnico:  var(--pietra);
+  --linea:          rgba(140, 143, 134, 0.2);   /* Pietra 20% */
+  --linea-inv:      rgba(237, 233, 219, 0.16);
+  --focus:          var(--ottone);
+
+  /* Tipografia */
+  --serif:  'Cormorant Garamond', Cormorant, 'EB Garamond', Garamond, 'Times New Roman', serif;
+  --sans:   'Manrope', 'Helvetica Neue', Arial, sans-serif;
+  --ls-titolo: 0.14em;   /* spaziatura ampia per i titoli in maiuscolo */
+  --ls-eyebrow: 0.22em;
+
+  /* Scala tipografica fluida */
+  --t-display: clamp(2.6rem, 1.6rem + 4.4vw, 5.6rem);
+  --t-h2:      clamp(1.9rem, 1.3rem + 2.4vw, 3.2rem);
+  --t-h3:      clamp(1.25rem, 1.05rem + 0.8vw, 1.6rem);
+  --t-corpo:   clamp(1rem, 0.96rem + 0.2vw, 1.075rem);  /* mai sotto 13px */
+  --t-piccolo: 0.875rem;
+  --t-tecnico: 0.8125rem;                                /* 13px, il minimo */
+
+  /* Spaziature */
+  --sp-1: 0.5rem;  --sp-2: 0.75rem; --sp-3: 1rem;   --sp-4: 1.5rem;
+  --sp-5: 2rem;    --sp-6: 3rem;    --sp-7: 4.5rem; --sp-8: 7rem;
+  --sezione-y: clamp(4.5rem, 3rem + 7vw, 9rem);
+  --gutter:    clamp(1.25rem, 0.5rem + 3vw, 3.5rem);
+  --max-w:     1240px;
+  --max-testo: 62ch;
+
+  --raggio: 3px;              /* angoli quasi vivi: è un marchio inciso */
+  --transizione: 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* --------------------------------------------------------------------------
+   3. Reset essenziale
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* NB: niente scroll-behavior: smooth — va in conflitto con ScrollTrigger.
+     Lo scorrimento morbido dei link di ancoraggio è gestito in main.js. */
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--testo);
+  font-family: var(--sans);
+  font-size: var(--t-corpo);
+  font-weight: 400;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+img, svg, canvas { display: block; max-width: 100%; }
+img { height: auto; }
+
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.22em; }
+
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+/* Focus visibile su tutto ciò che è interattivo */
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection { background: var(--verde-alloro); color: var(--carta); }
+
+/* Solo per screen reader */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+/* Salto al contenuto */
+.skip-link {
+  position: absolute; top: -100%; left: var(--gutter); z-index: 200;
+  background: var(--verde-corteccia); color: var(--avorio);
+  padding: var(--sp-2) var(--sp-4); border-radius: var(--raggio);
+  font-size: var(--t-piccolo);
+}
+.skip-link:focus { top: var(--sp-3); }
+
+/* I defs SVG condivisi non devono occupare spazio */
+.rf-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* --------------------------------------------------------------------------
+   4. Tipografia
+   -------------------------------------------------------------------------- */
+h1, h2, h3, h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  line-height: 1.12;
+  margin: 0;
+  text-wrap: balance;
+}
+
+h2 { font-size: var(--t-h2); }
+h3 { font-size: var(--t-h3); line-height: 1.25; }
+
+p { margin: 0 0 var(--sp-3); max-width: var(--max-testo); }
+p:last-child { margin-bottom: 0; }
+
+/* Occhiello: piccola etichetta in maiuscolo sopra i titoli */
+.eyebrow {
+  font-family: var(--sans);
+  font-size: var(--t-tecnico);
+  font-weight: 600;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--verde-alloro);
+  margin: 0 0 var(--sp-3);
+}
+.sezione--scura .eyebrow { color: var(--foglia); }
+
+.testo-guida {
+  font-size: clamp(1.05rem, 1rem + 0.35vw, 1.2rem);
+  color: var(--testo-soft);
+  max-width: 54ch;
+}
+.sezione--scura .testo-guida { color: rgba(237, 233, 219, 0.78); }
+
+/* Dati tecnici: monospaziato ottico, mai sotto 13px */
+.dato-tecnico {
+  font-size: var(--t-tecnico);
+  letter-spacing: 0.06em;
+  color: var(--testo-tecnico);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   5. Impaginazione
+   -------------------------------------------------------------------------- */
+.contenitore {
+  width: 100%;
+  max-width: var(--max-w);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.sezione { padding-block: var(--sezione-y); position: relative; }
+
+.sezione--scura {
+  background: var(--bg-scuro);
+  color: var(--testo-inv);
+}
+.sezione--scura h2, .sezione--scura h3 { color: var(--avorio); }
+
+.sezione__intestazione { margin-bottom: var(--sp-6); max-width: 56ch; }
+
+/* --------------------------------------------------------------------------
+   6. Marchio — composizioni riusate da navbar, hero e footer
+   -------------------------------------------------------------------------- */
+/* Il monogramma è un unico <path> richiamato via <use>: mai duplicato nel DOM */
+.mono { fill: var(--verde-alloro); }
+.mono--chiaro { fill: var(--foglia); }
+
+/* Lockup: monogramma + testo, stesse coordinate del file originale
+   (viewBox 0 0 900 700, monogramma a translate(211.5 40)) */
+.lockup { width: 100%; height: auto; }
+.lockup__nome {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 80px;
+  letter-spacing: 19px;
+}
+.lockup__claim {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: 7.5px;
+}
+
+/* Scritta della navbar: viewBox 0 0 900 240, solo testo */
+.scritta { height: 22px; width: auto; }
+.scritta__nome {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 80px;
+  letter-spacing: 19px;
+}
+.scritta__claim {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: 7.5px;
+}
+
+/* --------------------------------------------------------------------------
+   7. Navbar
+   -------------------------------------------------------------------------- */
+.navbar {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--gutter);
+  background: transparent;
+  transition: background-color var(--transizione), box-shadow var(--transizione),
+              border-color var(--transizione);
+  border-block-end: 1px solid transparent;
+}
+
+/* Sull'hero la barra è trasparente e il marchio è nella versione chiara */
+.navbar__marchio { display: inline-flex; align-items: center; flex: 0 0 auto; }
+.navbar__marchio .scritta__nome  { fill: var(--avorio); }
+.navbar__marchio .scritta__claim { fill: var(--foglia); }
+
+/* Dopo lo scroll: fondo Carta */
+.navbar.is-attaccata {
+  background: rgba(244, 242, 234, 0.94);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-block-end-color: var(--linea);
+}
+.navbar.is-attaccata .scritta__nome  { fill: #3E4A2E; }
+.navbar.is-attaccata .scritta__claim { fill: var(--verde-alloro); }
+.navbar.is-attaccata .navbar__link,
+.navbar.is-attaccata .lingua__voce { color: var(--testo); }
+.navbar.is-attaccata .navbar__apri { color: var(--testo); }
+
+.navbar__nav {
+  margin-inline-start: auto;
+  display: flex;
+  align-items: center;
+  gap: clamp(var(--sp-3), 2vw, var(--sp-5));
+}
+
+.navbar__link {
+  font-size: var(--t-piccolo);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--avorio);
+  padding-block: var(--sp-1);
+  position: relative;
+  transition: color var(--transizione);
+}
+.navbar__link::after {
+  content: '';
+  position: absolute; inset-inline: 0; inset-block-end: 0;
+  height: 1px; background: currentColor;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--transizione);
+}
+.navbar__link:hover::after,
+.navbar__link[aria-current='true']::after { transform: scaleX(1); }
+
+/* Selettore di lingua: IT | EN testuale, senza bandiere */
+.lingua {
+  display: inline-flex; align-items: center; gap: var(--sp-1);
+  font-size: var(--t-tecnico); letter-spacing: 0.1em;
+}
+.lingua__voce {
+  color: var(--avorio);
+  opacity: 0.6;
+  padding: var(--sp-1) 2px;
+  transition: opacity var(--transizione), color var(--transizione);
+}
+.lingua__voce:hover { opacity: 1; }
+.lingua__voce[aria-pressed='true'] { opacity: 1; font-weight: 600; }
+.lingua__sep { color: currentColor; opacity: 0.35; }
+
+/* Menu su schermi stretti */
+.navbar__apri { display: none; color: var(--avorio); padding: var(--sp-1); }
+
+@media (max-width: 860px) {
+  .navbar__apri { display: inline-flex; margin-inline-start: auto; }
+  .navbar__nav {
+    position: fixed; inset: 0 0 auto;
+    flex-direction: column; align-items: flex-start;
+    gap: var(--sp-4);
+    padding: calc(var(--sp-8) + var(--sp-3)) var(--gutter) var(--sp-7);
+    background: var(--verde-corteccia);
+    transform: translateY(-100%);
+    transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    margin: 0;
+  }
+  .navbar__nav[data-aperto='true'] { transform: translateY(0); }
+  .navbar__nav .navbar__link { font-size: 1.05rem; color: var(--avorio); }
+  .navbar.is-attaccata .navbar__nav .navbar__link { color: var(--avorio); }
+  .navbar__nav .lingua__voce { color: var(--avorio); }
+}
+
+/* --------------------------------------------------------------------------
+   8. Hero
+   -------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: var(--verde-corteccia);
+  color: var(--testo-inv);
+  padding: var(--sp-8) var(--gutter) var(--sp-7);
+  overflow: hidden;
+}
+
+/* Alone caldo appena percettibile dietro al marchio */
+.hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(58% 46% at 50% 42%,
+              rgba(176, 138, 79, 0.13), transparent 70%);
+  pointer-events: none;
+}
+
+.hero__contenuto { position: relative; z-index: 1; max-width: 760px; }
+
+.hero .lockup { max-width: min(560px, 82vw); margin-inline: auto; }
+
+.hero__claim {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 1.1rem + 1.7vw, 2.4rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--avorio);
+  margin: var(--sp-4) 0 var(--sp-3);
+}
+
+.hero__descrittore {
+  font-size: var(--t-tecnico);
+  font-weight: 600;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--foglia);
+  margin: 0;
+}
+
+/* Indicatore di scorrimento discreto */
+.hero__scroll {
+  position: absolute;
+  inset-block-end: var(--sp-5);
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  display: grid; justify-items: center; gap: var(--sp-2);
+  font-size: 0.75rem;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: rgba(237, 233, 219, 0.55);
+}
+.hero__scroll-linea {
+  width: 1px; height: 46px;
+  background: linear-gradient(var(--foglia), transparent);
+  transform-origin: top;
+  animation: scorri 2.4s ease-in-out infinite;
+}
+@keyframes scorri {
+  0%, 100% { transform: scaleY(0.35); opacity: 0.45; }
+  50%      { transform: scaleY(1);    opacity: 1; }
+}
+
+/* --------------------------------------------------------------------------
+   9. Footer
+   -------------------------------------------------------------------------- */
+.footer {
+  background: var(--nero-corteccia);
+  color: var(--testo-inv);
+  padding-block: var(--sp-7) var(--sp-5);
+  border-block-start: 1px solid var(--linea-inv);
+}
+.footer__griglia {
+  display: grid;
+  gap: var(--sp-6);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+@media (min-width: 760px) {
+  .footer__griglia { grid-template-columns: minmax(0, 260px) 1fr; gap: var(--sp-7); }
+}
+.footer .lockup { max-width: 220px; }
+.footer__claim {
+  font-family: var(--serif); font-style: italic;
+  color: rgba(237, 233, 219, 0.72);
+  margin-block-start: var(--sp-3);
+}
+.footer__link {
+  display: block;
+  font-size: var(--t-piccolo);
+  color: rgba(237, 233, 219, 0.82);
+  text-decoration: none;
+  padding-block: 3px;
+}
+.footer__link:hover { color: var(--avorio); text-decoration: underline; }
+.footer__titolo {
+  font-family: var(--sans);
+  font-size: var(--t-tecnico);
+  font-weight: 600;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--foglia);
+  margin: 0 0 var(--sp-2);
+}
+.footer__colonne {
+  display: grid; gap: var(--sp-5);
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+.footer__legale {
+  margin-block-start: var(--sp-6);
+  padding-block-start: var(--sp-4);
+  border-block-start: 1px solid var(--linea-inv);
+  display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4);
+  font-size: var(--t-tecnico);
+  color: rgba(237, 233, 219, 0.5);
+}
