@@ -20,7 +20,7 @@
 
     /* atto 1 */
     burn:      [0.06, 0.90],   /* quando incide, dentro l'atto laser */
-    laserFade: [0.00, 0.08],   /* comparsa di gantry, fumo e pannello */
+    laserFade: [0.00, 0.08],   /* comparsa del pannello tecnico */
 
     /* atto 3 */
     stampaFade: [0.00, 0.10],  /* comparsa di piatto, ugello e pannello */
@@ -32,8 +32,7 @@
     tilt:    54,               /* gradi di rotazione della camera nell'atto 2 */
 
     strati:      { desktop: 28, mobile: 14 },
-    passoStrato: { desktop: 2,  mobile: 1.6 },  /* px di separazione lungo Z */
-    fumoMax:     140
+    passoStrato: { desktop: 2,  mobile: 1.6 }   /* px di separazione lungo Z */
   };
 
   /* --------------------------------------------------------------- utilità */
@@ -57,8 +56,6 @@
   var incisione = scena.querySelector('.incisione');
   var burnRect = scena.querySelector('.incisione__burn');
   var hotRect  = scena.querySelector('.incisione__hot');
-  var laser    = scena.querySelector('[data-laser]');
-  var canvas   = scena.querySelector('[data-fumo]');
   var hudLaser = scena.querySelector('[data-hud-laser]');
   var hudPot   = scena.querySelector('[data-hud="potenza"]');
 
@@ -87,8 +84,8 @@
   var degradato = false;
 
   /* ----------------------------------------------------- misure della scena
-     La riga incisa va inseguita da gantry e fumo, che vivono in altri sistemi
-     di coordinate. Le metriche si calcolano una volta e a ogni ridimensionamento. */
+     Servono a tenere allineati fra loro gli elementi della scena quando la
+     finestra cambia misura. */
   var M = { top: 0, altezza: 0, lato: 1 };
 
   function misura() {
@@ -109,6 +106,11 @@
     var avanzamento = tra(q, T.burn);        /* quanto è già inciso */
     var presenza = tra(q, T.laserFade);
 
+    /* Il disco e' visibile fin dal primo fotogramma del palco: sale dal basso
+       insieme ad esso mentre l'hero si allontana, e le due sezioni si leggono
+       come un movimento solo. Farlo comparire in dissolvenza lasciava un
+       tratto di schermo vuoto fra il marchio e il disco. */
+
     /* la bruciatura cresce per scaleY: nessun reflow del layout SVG */
     burnRect.style.transform = 'scaleY(' + avanzamento + ')';
 
@@ -121,12 +123,6 @@
     hotRect.style.opacity = acceso;
     hotRect.setAttribute('fill', avanzamento < 0.5 ? '#FFD8A0' : '#B08A4F');
 
-    /* gantry e testa, in pixel dentro il disco */
-    laser.style.opacity = String(presenza * acceso);
-    laser.style.setProperty('--gantry-y', (M.top + avanzamento * M.altezza) + 'px');
-
-    /* fumo e pannello tecnico */
-    palco.style.setProperty('--fumo-op', String(presenza * acceso));
     hudLaser.style.setProperty('--hud-op', String(presenza * (1 - tra(q, [0.94, 1]))));
 
     if (hudPot) {
@@ -134,10 +130,6 @@
       var pot = 74 + Math.round(Math.sin(avanzamento * 11) * 4 + 4);
       hudPot.textContent = pot + '%';
     }
-
-    /* stato del fumo condiviso con l'emettitore */
-    fumo.attivo = acceso === 1;
-    fumo.yFronte = (M.top + avanzamento * M.altezza) / M.lato;  /* 0..1 nel disco */
   }
 
   /* ============================================================ ATTO 2
@@ -257,20 +249,13 @@
     }
   }
 
-  /* ================================================================== fumo
-     Particelle che nascono sulla riga calda, salgono, si allargano e sfumano.
-     Il ciclo si ferma quando la sezione esce dal viewport.
-     ================================================================== */
-  var fumo = {
-    attivo: false,
-    yFronte: 0,
-    particelle: [],
-    ctx: canvas ? canvas.getContext('2d') : null,
-    rafId: 0,
-    acceso: false,
-    ultimo: 0,
-    lenti: 0
-  };
+  /* ------------------------------------------------------- fluidita'
+     Un controllo leggero sul ritmo dei fotogrammi: se restano lunghi per circa
+     due secondi di fila la scena non e' sostenibile qui, e si passa ai riquadri
+     statici invece di offrire un'animazione a scatti. */
+  var lenti = 0;
+  var ultimoFrame = 0;
+  var vigileId = 0;
 
   function degrada() {
     if (degradato) return;
@@ -279,72 +264,27 @@
     attivaStatica();
   }
 
-  function nuovaParticella() {
-    return {
-      x: 0.5 + (Math.random() - 0.5) * 0.34,   /* coordinate 0..1 */
-      y: fumo.yFronte,
-      vx: (Math.random() - 0.5) * 0.0016,
-      vy: -(0.0018 + Math.random() * 0.0022),
-      r: 0.012 + Math.random() * 0.02,
-      vita: 1
-    };
+  function vigila(ora) {
+    if (!vigileId) return;
+    vigileId = requestAnimationFrame(vigila);
+    if (ultimoFrame && ora - ultimoFrame > 40) {
+      if (++lenti > 45) degrada();
+    } else if (lenti) {
+      lenti = 0;
+    }
+    ultimoFrame = ora;
   }
 
-  function disegnaFumo(ora) {
-    if (!fumo.acceso) return;
-    fumo.rafId = requestAnimationFrame(disegnaFumo);
-
-    var dt = Math.min(ora - fumo.ultimo, 48);
-    /* Se i fotogrammi restano lunghi per circa due secondi di fila, la scena
-       non e' sostenibile su questo dispositivo: si passa ai riquadri statici. */
-    if (ora - fumo.ultimo > 40) {
-      if (++fumo.lenti > 45) degrada();
-    } else if (fumo.lenti) {
-      fumo.lenti = 0;
-    }
-    fumo.ultimo = ora;
-
-    var ctx = fumo.ctx, L = canvas.width;
-    ctx.clearRect(0, 0, L, L);
-
-    if (fumo.attivo && fumo.particelle.length < T.fumoMax) {
-      for (var n = 0; n < 3 && fumo.particelle.length < T.fumoMax; n++) {
-        fumo.particelle.push(nuovaParticella());
-      }
-    }
-
-    for (var i = fumo.particelle.length - 1; i >= 0; i--) {
-      var pt = fumo.particelle[i];
-      pt.x += pt.vx * dt;
-      pt.y += pt.vy * dt;
-      pt.r += 0.00012 * dt;
-      pt.vita -= 0.0011 * dt;
-
-      if (pt.vita <= 0) { fumo.particelle.splice(i, 1); continue; }
-
-      var g = ctx.createRadialGradient(pt.x * L, pt.y * L, 0, pt.x * L, pt.y * L, pt.r * L);
-      var a = pt.vita * 0.16;
-      g.addColorStop(0, 'rgba(226, 220, 205, ' + a + ')');
-      g.addColorStop(1, 'rgba(226, 220, 205, 0)');
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(pt.x * L, pt.y * L, pt.r * L, 0, Math.PI * 2);
-      ctx.fill();
-    }
+  function avviaVigile() {
+    if (vigileId) return;
+    ultimoFrame = 0;
+    lenti = 0;
+    vigileId = requestAnimationFrame(vigila);
   }
 
-  function avviaFumo() {
-    if (fumo.acceso || !fumo.ctx) return;
-    fumo.acceso = true;
-    fumo.ultimo = performance.now();
-    fumo.rafId = requestAnimationFrame(disegnaFumo);
-  }
-
-  function fermaFumo() {
-    fumo.acceso = false;
-    cancelAnimationFrame(fumo.rafId);
-    fumo.particelle.length = 0;
-    if (fumo.ctx) fumo.ctx.clearRect(0, 0, canvas.width, canvas.height);
+  function fermaVigile() {
+    cancelAnimationFrame(vigileId);
+    vigileId = 0;
   }
 
   /* ====================================================== stato complessivo */
@@ -367,7 +307,8 @@
     scena.hidden = true;
     scena.style.display = 'none';
     if (statica) statica.hidden = false;
-    fermaFumo();
+    fermaVigile();
+    spegniHero();     /* senza scena non c'e' raccordo da fare */
   }
 
   var st = null;
@@ -378,6 +319,7 @@
     if (statica) statica.hidden = true;
 
     costruisciStrati();
+    attivaHero();
     misura();
 
     st = window.ScrollTrigger.create({
@@ -389,13 +331,52 @@
       onToggle: function (self) {
         /* niente cicli di disegno né will-change fuori dallo schermo */
         palco.classList.toggle('e-attiva', self.isActive);
-        if (self.isActive) { misura(); avviaFumo(); }
-        else { fermaFumo(); }
+        if (self.isActive) { misura(); avviaVigile(); }
+        else { fermaVigile(); }
       },
       onRefresh: function () { misura(); }
     });
 
     scrivi(0);
+  }
+
+  /* --------------------------------------------------------- raccordo hero
+     L'hero e' incollata in alto e la scena le scorre sopra. Mentre si esce
+     dall'hero il lockup si allontana e sfuma, cosi' il passaggio alla scena
+     non si legge come un salto fra due sezioni. */
+  var hero = document.querySelector('.hero');
+  var heroContenuto = hero && hero.querySelector('.hero__contenuto');
+  var stHero = null;
+
+  function scriviHero(p) {
+    if (!hero) return;
+    /* La dissolvenza parte tardi e accelera alla fine: con un calo lineare
+       restava un tratto di schermo vuoto fra il marchio e il disco. */
+    var uscita = Math.pow(p, 2.2);
+    hero.style.setProperty('--hero-op', (1 - uscita).toFixed(3));
+    hero.style.setProperty('--hero-y', (-uscita * 70).toFixed(1) + 'px');
+    hero.style.setProperty('--hero-s', (1 - uscita * 0.1).toFixed(3));
+  }
+
+  function attivaHero() {
+    if (!hero || stHero) return;
+    stHero = window.ScrollTrigger.create({
+      trigger: hero,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: T.scrub,
+      onUpdate: function (self) { scriviHero(self.progress); }
+    });
+    scriviHero(0);
+  }
+
+  function spegniHero() {
+    if (stHero) { stHero.kill(); stHero = null; }
+    if (hero) {
+      hero.style.removeProperty('--hero-op');
+      hero.style.removeProperty('--hero-y');
+      hero.style.removeProperty('--hero-s');
+    }
   }
 
   /* ------------------------------------------------------------------ avvio */
@@ -424,6 +405,7 @@
 
   window.addEventListener('resize', function () {
     costruisciStrati();
+    attivaHero();
     misura();
   }, { passive: true });
   document.addEventListener('radicforma:lingua', function () { misura(); });

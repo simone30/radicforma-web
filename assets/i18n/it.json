@@ -3,20 +3,17 @@
     "title": "Radic Forma — Modelli 3D e incisioni laser",
     "description": "Radic Forma progetta e realizza oggetti in stampa 3D e incisioni laser su legno, acrilico, pelle e metallo. Dove la materia prende vita."
   },
-
   "a11y": {
     "skip": "Vai al contenuto",
     "menu": "Apri il menu di navigazione",
     "lingua": "Selezione della lingua",
     "scena": "Illustrazione del processo produttivo"
   },
-
   "brand": {
     "claim": "Dove la materia prende vita",
     "claim.maiuscolo": "DOVE LA MATERIA PRENDE VITA",
     "lockup.alt": "Radic Forma — Dove la materia prende vita"
   },
-
   "nav": {
     "servizi": "Servizi",
     "tecnologie": "Tecnologie",
@@ -24,13 +21,11 @@
     "processo": "Processo",
     "contatti": "Contatti"
   },
-
   "hero": {
     "claim": "Dove la materia prende vita",
     "descrittore": "Modelli 3D · Incisioni laser",
     "scroll": "Scorri"
   },
-
   "scena": {
     "eyebrow": "Dal segno all'oggetto",
     "titolo": "Due macchine, un solo gesto",
@@ -40,21 +35,19 @@
     "didascalia2": "Cambio di prospettiva — dal piano al volume",
     "didascalia3": "Stampa 3D — ventotto strati da 0,20 mm",
     "cta": "Parliamo del tuo progetto",
-
     "laser": {
-      "macchina": "xTool · RASTER",
+      "macchina": "Incisione laser · raster",
       "potenza": "POTENZA",
-      "velocita": "VELOCITÀ",
+      "velocita": "AVANZAMENTO",
       "passata": "PASSATA"
     },
     "stampa": {
-      "macchina": "Bambu Lab · FDM",
+      "macchina": "Stampa 3D · FDM",
       "strato": "STRATO",
       "altezza": "ALTEZZA",
       "materiale": "MATERIALE"
     }
   },
-
   "servizi": {
     "eyebrow": "Servizi",
     "titolo": "Che cosa realizziamo",
@@ -75,14 +68,13 @@
       "dettaglio": "Modellazione 3D · File di produzione"
     }
   },
-
   "tecnologie": {
     "eyebrow": "Tecnologie",
     "titolo": "Il parco macchine",
-    "testo": "Lavoriamo con due tecnologie complementari: la stampa a deposizione di filamento, che costruisce l'oggetto strato dopo strato, e il laser, che incide e taglia sottraendo materia. La scelta dipende dal materiale, dalla tolleranza richiesta e dal numero di pezzi.",
+    "testo": "Lavoriamo con due tecnologie complementari: la deposizione di filamento, che costruisce l’oggetto strato dopo strato, e il laser, che incide e taglia sottraendo materia. La scelta dipende dal materiale, dalla tolleranza richiesta e dal numero di pezzi.",
     "stampa": {
-      "titolo": "Stampa 3D FDM",
-      "testo": "Stampanti Bambu Lab a piattaforma riscaldata, con cambio filamento automatico per le stampe multicolore.",
+      "titolo": "Stampa 3D a filamento",
+      "testo": "Stampanti a deposizione di filamento con piano riscaldato e cambio colore automatico. Adatte a pezzi funzionali, serie brevi e prototipi rapidi.",
       "voce1": "Volume di stampa",
       "valore1": "[da confermare] mm",
       "voce2": "Altezza strato",
@@ -91,8 +83,8 @@
       "valore3": "[da confermare]"
     },
     "laser": {
-      "titolo": "Laser xTool",
-      "testo": "Incisione raster e taglio vettoriale, con regolazione di potenza e velocità in base al materiale.",
+      "titolo": "Incisione e taglio laser",
+      "testo": "Sorgente laser a controllo numerico per incisione raster e taglio vettoriale, con potenza e avanzamento regolati su ogni materiale.",
       "voce1": "Area di lavoro",
       "valore1": "[da confermare] mm",
       "voce2": "Spessore massimo di taglio",
@@ -101,31 +93,54 @@
       "valore3": "[da confermare] DPI"
     }
   },
-
   "materiali": {
     "eyebrow": "Materiali",
     "titolo": "Su cosa lavoriamo",
     "testo": "Ogni materiale ha una resa diversa: il legno scurisce, l'acrilico smerigliata, l'alluminio anodizzato schiarisce. Su richiesta prepariamo un provino prima della produzione.",
     "laser": {
       "titolo": "Incisione e taglio laser",
-      "elenco": ["Legno massello", "Compensato e MDF", "Acrilico", "Pelle", "Ardesia", "Alluminio anodizzato", "Vetro"]
+      "elenco": [
+        "Legno massello",
+        "Compensato e MDF",
+        "Acrilico",
+        "Pelle",
+        "Ardesia",
+        "Alluminio anodizzato",
+        "Vetro"
+      ]
     },
     "stampa": {
       "titolo": "Stampa 3D",
-      "elenco": ["PLA", "PETG", "ABS", "ASA", "TPU flessibile"]
+      "elenco": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "ASA",
+        "TPU flessibile"
+      ]
     },
     "nota": "Altri materiali su richiesta, previa prova di lavorabilità."
   },
-
   "processo": {
     "eyebrow": "Processo",
     "titolo": "Come si lavora insieme",
-    "uno":     { "titolo": "Idea",       "testo": "Ci racconti cosa ti serve, anche con uno schizzo o una foto. Valutiamo fattibilità, materiali e tempi." },
-    "due":     { "titolo": "Progetto",   "testo": "Prepariamo il modello 3D o il file vettoriale e ti mostriamo un'anteprima prima di produrre." },
-    "tre":     { "titolo": "Produzione", "testo": "Stampiamo o incidiamo, con un provino di verifica quando il materiale lo richiede." },
-    "quattro": { "titolo": "Consegna",   "testo": "Rifinitura a mano, controllo finale e spedizione, oppure ritiro diretto." }
+    "uno": {
+      "titolo": "Idea",
+      "testo": "Ci racconti cosa ti serve, anche con uno schizzo o una foto. Valutiamo fattibilità, materiali e tempi."
+    },
+    "due": {
+      "titolo": "Progetto",
+      "testo": "Prepariamo il modello 3D o il file vettoriale e ti mostriamo un'anteprima prima di produrre."
+    },
+    "tre": {
+      "titolo": "Produzione",
+      "testo": "Stampiamo o incidiamo, con un provino di verifica quando il materiale lo richiede."
+    },
+    "quattro": {
+      "titolo": "Consegna",
+      "testo": "Rifinitura a mano, controllo finale e spedizione, oppure ritiro diretto."
+    }
   },
-
   "contatti": {
     "eyebrow": "Contatti",
     "titolo": "Raccontaci il tuo progetto",
@@ -136,7 +151,6 @@
     "cta": "Invia una richiesta",
     "nota": "Rispondiamo entro [da confermare] giorni lavorativi."
   },
-
   "footer": {
     "claim": "Dove la materia prende vita",
     "naviga": "Naviga",

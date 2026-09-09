@@ -102,13 +102,17 @@
     <div class="hero__contenuto">
       <!-- lockup ricomposto con le coordinate esatte del file originale:
            monogramma a translate(211.5 40) dentro viewBox 0 0 900 700 -->
-      <svg class="lockup" viewBox="0 0 900 600" role="img"
+      <!-- Lockup come nel file di brand: monogramma a translate(211.5 40),
+           nome a y=560 e claim a y=618, nel suo font e nella sua spaziatura.
+           Le proporzioni sono quelle originali, cambia solo la scala. -->
+      <svg class="lockup" viewBox="0 0 900 660" role="img"
            data-i18n-attr="aria-label:brand.lockup.alt" aria-label="Radic Forma — Dove la materia prende vita">
         <use href="#rf-mono" class="mono mono--chiaro" x="211.5" y="40" width="477" height="383"></use>
         <text class="lockup__nome" x="450" y="560" text-anchor="middle" fill="#EDE9DB">RADIC FORMA</text>
+        <text class="lockup__claim" x="450" y="618" text-anchor="middle" fill="#9BAA6B"
+              data-i18n="brand.claim.maiuscolo">DOVE LA MATERIA PRENDE VITA</text>
       </svg>
 
-      <p class="hero__claim" data-i18n="hero.claim">Dove la materia prende vita</p>
       <p class="hero__descrittore" data-i18n="hero.descrittore">Modelli 3D · Incisioni laser</p>
     </div>
 
@@ -143,7 +147,7 @@
                  alt="" width="900" height="900" decoding="async">
 
             <!-- L'incisione: il monogramma fa da clip, dentro scorre la bruciatura -->
-            <svg class="incisione" viewBox="0 0 477 383" preserveAspectRatio="xMidYMid meet">
+            <svg class="incisione" viewBox="0 0 477 383" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
               <defs>
                 <linearGradient id="burn" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0"    stop-color="#2A1A0E"></stop>
@@ -167,16 +171,6 @@
               </g>
             </svg>
 
-            <!-- gantry e testa: silhouette astratte, non una macchina reale -->
-            <div class="laser" data-laser>
-              <div class="laser__gantry"></div>
-              <div class="laser__testa">
-                <div class="laser__raggio"></div>
-              </div>
-            </div>
-
-            <!-- il fumo dell'incisione -->
-            <canvas class="fumo" data-fumo width="600" height="600" aria-hidden="true"></canvas>
           </div>
 
           <!-- ATTO 3 — il piatto di stampa e l'oggetto che cresce -->
@@ -204,16 +198,16 @@
 
       <!-- ---------- pannelli tecnici ---------- -->
       <div class="hud hud--laser" data-hud-laser aria-hidden="true">
-        <p class="hud__macchina" data-i18n="scena.laser.macchina">xTool · RASTER</p>
+        <p class="hud__macchina" data-i18n="scena.laser.macchina">Incisione laser · raster</p>
         <dl class="hud__dati">
           <div><dt data-i18n="scena.laser.potenza">POTENZA</dt><dd data-hud="potenza">78%</dd></div>
-          <div><dt data-i18n="scena.laser.velocita">VELOCITÀ</dt><dd>3000 mm/min</dd></div>
+          <div><dt data-i18n="scena.laser.velocita">AVANZAMENTO</dt><dd>3000 mm/min</dd></div>
           <div><dt data-i18n="scena.laser.passata">PASSATA</dt><dd>1 / 1</dd></div>
         </dl>
       </div>
 
       <div class="hud hud--stampa" data-hud-stampa aria-hidden="true">
-        <p class="hud__macchina" data-i18n="scena.stampa.macchina">Bambu Lab · FDM</p>
+        <p class="hud__macchina" data-i18n="scena.stampa.macchina">Stampa 3D · FDM</p>
         <dl class="hud__dati">
           <div><dt data-i18n="scena.stampa.strato">STRATO</dt><dd data-hud="strato">000 / 028</dd></div>
           <div><dt data-i18n="scena.stampa.altezza">ALTEZZA</dt><dd>0,20 mm</dd></div>
@@ -318,13 +312,13 @@
       <div class="sezione__intestazione" data-rivela>
         <p class="eyebrow" data-i18n="tecnologie.eyebrow">Tecnologie</p>
         <h2 data-i18n="tecnologie.titolo">Il parco macchine</h2>
-        <p class="testo-guida" data-i18n="tecnologie.testo">Lavoriamo con due tecnologie complementari: la stampa a deposizione di filamento, che costruisce l'oggetto strato dopo strato, e il laser, che incide e taglia sottraendo materia. La scelta dipende dal materiale, dalla tolleranza richiesta e dal numero di pezzi.</p>
+        <p class="testo-guida" data-i18n="tecnologie.testo">Lavoriamo con due tecnologie complementari: la deposizione di filamento, che costruisce l'oggetto strato dopo strato, e il laser, che incide e taglia sottraendo materia. La scelta dipende dal materiale, dalla tolleranza richiesta e dal numero di pezzi.</p>
       </div>
 
       <div class="macchine">
         <article class="macchina" data-rivela>
-          <h3 data-i18n="tecnologie.stampa.titolo">Stampa 3D FDM</h3>
-          <p data-i18n="tecnologie.stampa.testo">Stampanti Bambu Lab a piattaforma riscaldata, con cambio filamento automatico per le stampe multicolore.</p>
+          <h3 data-i18n="tecnologie.stampa.titolo">Stampa 3D a filamento</h3>
+          <p data-i18n="tecnologie.stampa.testo">Stampanti a deposizione di filamento con piano riscaldato e cambio colore automatico. Adatte a pezzi funzionali, serie brevi e prototipi rapidi.</p>
           <dl class="specifiche">
             <div class="specifica">
               <dt data-i18n="tecnologie.stampa.voce1">Volume di stampa</dt>
@@ -342,8 +336,8 @@
         </article>
 
         <article class="macchina" data-rivela="0.1">
-          <h3 data-i18n="tecnologie.laser.titolo">Laser xTool</h3>
-          <p data-i18n="tecnologie.laser.testo">Incisione raster e taglio vettoriale, con regolazione di potenza e velocità in base al materiale.</p>
+          <h3 data-i18n="tecnologie.laser.titolo">Incisione e taglio laser</h3>
+          <p data-i18n="tecnologie.laser.testo">Sorgente laser a controllo numerico per incisione raster e taglio vettoriale, con potenza e avanzamento regolati su ogni materiale.</p>
           <dl class="specifiche">
             <div class="specifica">
               <dt data-i18n="tecnologie.laser.voce1">Area di lavoro</dt>
@@ -462,12 +456,13 @@
 <footer class="footer">
   <div class="contenitore footer__griglia">
     <div>
-      <svg class="lockup" viewBox="0 0 900 600" role="img"
+      <svg class="lockup" viewBox="0 0 900 660" role="img"
            data-i18n-attr="aria-label:brand.lockup.alt" aria-label="Radic Forma — Dove la materia prende vita">
         <use href="#rf-mono" class="mono mono--chiaro" x="211.5" y="40" width="477" height="383"></use>
         <text class="lockup__nome" x="450" y="560" text-anchor="middle" fill="#EDE9DB">RADIC FORMA</text>
+        <text class="lockup__claim" x="450" y="618" text-anchor="middle" fill="#9BAA6B"
+              data-i18n="brand.claim.maiuscolo">DOVE LA MATERIA PRENDE VITA</text>
       </svg>
-      <p class="footer__claim" data-i18n="footer.claim">Dove la materia prende vita</p>
     </div>
 
     <div class="footer__colonne">

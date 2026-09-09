@@ -362,7 +362,9 @@ p:last-child { margin-bottom: 0; }
    8. Hero
    -------------------------------------------------------------------------- */
 .hero {
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 0;
   min-height: 100svh;
   display: grid;
   place-items: center;
@@ -382,20 +384,38 @@ p:last-child { margin-bottom: 0; }
   pointer-events: none;
 }
 
-.hero__contenuto { position: relative; z-index: 1; max-width: 760px; }
+/* Il contenuto dell'hero si allontana e sfuma mentre si scorre: e' la prima
+   meta' del raccordo con la scena. I valori li scrive scene.js. */
+.hero__contenuto {
+  position: relative;
+  z-index: 1;
+  /* senza width il grid centrato lo stringe alla larghezza del contenuto,
+     e il lockup scendeva a 300px */
+  width: 100%;
+  max-width: 780px;
+  opacity: var(--hero-op, 1);
+  transform: translate3d(0, var(--hero-y, 0px), 0) scale(var(--hero-s, 1));
+}
 
-.hero .lockup { max-width: min(560px, 82vw); margin-inline: auto; }
+.hero__scroll { opacity: var(--hero-op, 1); }
 
-.hero__claim {
-  font-family: var(--serif);
-  font-size: clamp(1.5rem, 1.1rem + 1.7vw, 2.4rem);
-  font-weight: 400;
-  font-style: italic;
-  color: var(--avorio);
-  margin: var(--sp-4) 0 var(--sp-3);
+.hero .lockup { max-width: min(740px, 90vw); margin-inline: auto; }
+
+/* Sotto una certa larghezza il claim del lockup scenderebbe sotto i 10px.
+   Il rapporto fra corpo e spaziatura resta quello del file di brand: cresce
+   solo la scala della riga, che e' l'unico modo per tenerla leggibile. */
+@media (max-width: 780px) {
+  .lockup__claim { font-size: 26px; letter-spacing: 10.8px; }
+}
+@media (max-width: 560px) {
+  .lockup__claim { font-size: 31px; letter-spacing: 12.9px; }
 }
 
 .hero__descrittore {
+  /* i paragrafi hanno un max-width: senza margini automatici resterebbe
+     ancorato a sinistra invece che centrato sotto il marchio */
+  margin-inline: auto;
+  margin-block-start: var(--sp-5);
   font-size: var(--t-tecnico);
   font-weight: 600;
   letter-spacing: var(--ls-eyebrow);
@@ -445,12 +465,7 @@ p:last-child { margin-bottom: 0; }
 @media (min-width: 760px) {
   .footer__griglia { grid-template-columns: minmax(0, 260px) 1fr; gap: var(--sp-7); }
 }
-.footer .lockup { max-width: 220px; }
-.footer__claim {
-  font-family: var(--serif); font-style: italic;
-  color: rgba(237, 233, 219, 0.72);
-  margin-block-start: var(--sp-3);
-}
+.footer .lockup { max-width: 260px; }
 .footer__link {
   display: block;
   font-size: var(--t-piccolo);
@@ -642,8 +657,9 @@ p:last-child { margin-bottom: 0; }
    ========================================================================== */
 .scena {
   position: relative;
+  z-index: 1;                        /* sale sopra l'hero, che resta incollata */
   height: 500vh;                     /* la corsa dello scroll */
-  background: var(--nero-corteccia);
+  background: transparent;
 }
 
 .scena__palco {
@@ -654,9 +670,12 @@ p:last-child { margin-bottom: 0; }
   display: grid;
   place-items: center;
   /* il fondo passa da neutro a Nero Corteccia nell'atto 2 */
-  background: radial-gradient(120% 90% at 50% 45%,
-              rgba(58, 62, 52, calc(1 - var(--buio, 0))) 0%,
-              transparent 70%), var(--nero-corteccia);
+  /* Parte dal Verde Corteccia dell'hero e scivola verso il nero durante il
+     cambio di prospettiva: il passaggio fra le due sezioni non si vede. */
+  background-color: color-mix(in srgb,
+    var(--nero-corteccia) calc(var(--buio, 0) * 100%), var(--verde-corteccia));
+  background-image: radial-gradient(58% 46% at 50% 42%,
+    rgba(176, 138, 79, 0.13), transparent 70%);
   perspective: 1400px;
   perspective-origin: 50% 44%;
 }
@@ -700,10 +719,11 @@ p:last-child { margin-bottom: 0; }
 
 .incisione {
   position: absolute;
-  inset-inline: 12%;
+  /* centrato sul disco: il marchio non deve mai toccare la corteccia */
+  inset-inline-start: 50%;
   inset-block-start: 50%;
-  width: 76%;
-  translate: 0 -50%;
+  width: 58%;
+  translate: -50% -50%;
   /* multiply: gli anelli del legno restano leggibili sotto la bruciatura */
   mix-blend-mode: multiply;
   opacity: var(--incisione-op, 1);
@@ -719,50 +739,7 @@ p:last-child { margin-bottom: 0; }
   opacity: var(--hot-op, 0);
 }
 
-/* Gantry e testa: silhouette astratte */
-.laser {
-  position: absolute; inset: 0;
-  opacity: var(--laser-op, 0);
-}
-.laser__gantry {
-  position: absolute;
-  inset-inline: -6%;
-  inset-block-start: var(--gantry-y, 0px);
-  height: 6px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #9AA0A6 0%, #5A6066 45%, #2E3237 100%);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
-}
-.laser__testa {
-  position: absolute;
-  inset-block-start: calc(var(--gantry-y, 0px) - 9px);
-  inset-inline-start: 50%;
-  width: 26px; height: 24px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #C3C7CB, #6E7479);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
-  /* oscillazione veloce, indipendente dalla progress dello scroll */
-  animation: passata 2.2s linear infinite alternate;
-}
-@keyframes passata {
-  from { transform: translateX(-190%); }
-  to   { transform: translateX(190%); }
-}
-.laser__raggio {
-  position: absolute;
-  inset-block-start: 100%;
-  inset-inline-start: 50%;
-  width: 2px; height: 26px;
-  translate: -50% 0;
-  background: linear-gradient(180deg, rgba(255, 214, 138, 0.95), rgba(255, 140, 40, 0));
-}
 
-.fumo {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  opacity: var(--fumo-op, 0);
-  mix-blend-mode: screen;
-}
 
 /* --------------------------------------------------------------------------
    16.2 Atto 3 — piatto di stampa e oggetto stampato

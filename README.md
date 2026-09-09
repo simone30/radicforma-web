@@ -12,7 +12,7 @@ gratuitamente con GitHub Pages.
 2. [Collegare il dominio radicforma.com](#2-collegare-il-dominio-radicformacom)
 3. [Come cambiare i testi](#3-come-cambiare-i-testi)
 4. [I dati da completare](#4-i-dati-da-completare)
-5. [Come sostituire la foto del legno](#5-come-sostituire-la-foto-del-legno)
+5. [La foto del legno](#5-la-foto-del-legno)
 6. [Com'è fatto il sito](#6-comè-fatto-il-sito)
 7. [Strumenti per gli sviluppatori](#7-strumenti-per-gli-sviluppatori)
 8. [Limiti noti](#8-limiti-noti)
@@ -125,23 +125,25 @@ vanno sostituiti con i dati reali delle macchine.
 
 ---
 
-## 5. Come sostituire la foto del legno
+## 5. La foto del legno
 
-> **Da fare prima di andare online.** La foto attualmente nel sito è
-> un'anteprima da banca immagini, a bassa risoluzione (600 × 900 pixel) e senza
-> licenza d'uso. Va sostituita con una versione acquistata regolarmente, oppure
-> con una fotografia scattata da voi.
+La sezione di tronco usata nella scena e' una fotografia con licenza **CC0**
+(pubblico dominio): si puo' usare commercialmente, senza pagare nulla e senza
+obbligo di citare l'autore. La provenienza e' annotata in
+`assets/img/CREDITI.md` per tracciabilita'.
 
-La foto ideale è una **sezione di tronco vista dall'alto**, ben illuminata, con
-gli anelli visibili, almeno 1600 × 1600 pixel.
+Non c'e' quindi niente da sostituire. Se in futuro vorrai usare una tua
+fotografia:
 
-1. Salva la nuova foto come `assets/img/legno-sezione.webp`.
-2. Se sai usare il terminale, rigenera le due versioni ritagliate con
-   `node tools/gen-images.mjs` (vedi sezione 7); le coordinate del ritaglio sono
-   indicate nei commenti in cima allo script e vanno adattate alla nuova foto.
-3. In alternativa, prepara a mano due ritagli quadrati centrati sul taglio del
-   tronco e salvali come `assets/img/legno-disco.webp` (900 × 900) e
-   `assets/img/legno-disco-600.webp` (600 × 600).
+1. Salvala come `assets/img/_sorgente-legno.jpg`. Va bene una sezione di tronco
+   vista dall'alto, ben illuminata, con gli anelli visibili, almeno 2000 pixel
+   di lato.
+2. In `tools/gen-legno.mjs` aggiorna `CENTRO` (le coordinate del midollo nella
+   tua foto) e `LATO` (il diametro del ritaglio).
+3. Esegui `npm install sharp && node tools/gen-legno.mjs`.
+
+Lo script ritaglia il disco in tondo, corregge il colore e produce le tre
+versioni usate dal sito.
 
 ---
 
@@ -184,9 +186,9 @@ per pubblicare il sito.
 # anteprima locale
 python3 -m http.server 8765      # poi apri http://localhost:8765
 
-# ritaglia le due versioni del disco di legno dalla foto sorgente
+# ritaglia e corregge le versioni del disco di legno dalla foto sorgente
 npm install sharp
-node tools/gen-images.mjs
+node tools/gen-legno.mjs
 
 # rigenera anteprima social e favicon dal monogramma
 npm install sharp playwright && npx playwright install chromium
@@ -214,7 +216,6 @@ modificarlo si sostituisce `assets/brand/monogramma-light.svg` e si rilancia
   soprattutto la versione italiana. Per posizionare davvero anche l'inglese
   servirebbe una seconda pagina servita separatamente, per esempio
   `/en/index.html`. Non è un problema per l'uso attuale.
-- **Foto del legno** da sostituire, vedi la sezione 5.
 - **Dati tecnici e recapiti** ancora da completare, vedi la sezione 4.
 - Il modulo di contatto non esiste: essendo il sito statico, i contatti passano
   da un link `mailto:`. Volendo un vero modulo si può collegare un servizio

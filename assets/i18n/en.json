@@ -3,20 +3,17 @@
     "title": "Radic Forma — 3D models and laser engraving",
     "description": "Radic Forma designs and makes 3D printed objects and laser engravings on wood, acrylic, leather and metal. Where matter comes to life."
   },
-
   "a11y": {
     "skip": "Skip to content",
     "menu": "Open navigation menu",
     "lingua": "Language selection",
     "scena": "Illustration of the production process"
   },
-
   "brand": {
     "claim": "Where matter comes to life",
     "claim.maiuscolo": "WHERE MATTER COMES TO LIFE",
     "lockup.alt": "Radic Forma — Where matter comes to life"
   },
-
   "nav": {
     "servizi": "Services",
     "tecnologie": "Technology",
@@ -24,13 +21,11 @@
     "processo": "Process",
     "contatti": "Contact"
   },
-
   "hero": {
     "claim": "Where matter comes to life",
     "descrittore": "3D Models · Laser Engraving",
     "scroll": "Scroll"
   },
-
   "scena": {
     "eyebrow": "From mark to object",
     "titolo": "Two machines, one gesture",
@@ -40,21 +35,19 @@
     "didascalia2": "Shift in perspective — from plane to volume",
     "didascalia3": "3D printing — twenty-eight 0.20 mm layers",
     "cta": "Let's talk about your project",
-
     "laser": {
-      "macchina": "xTool · RASTER",
+      "macchina": "Laser engraving · raster",
       "potenza": "POWER",
-      "velocita": "SPEED",
+      "velocita": "FEED RATE",
       "passata": "PASS"
     },
     "stampa": {
-      "macchina": "Bambu Lab · FDM",
+      "macchina": "3D printing · FDM",
       "strato": "LAYER",
       "altezza": "HEIGHT",
       "materiale": "MATERIAL"
     }
   },
-
   "servizi": {
     "eyebrow": "Services",
     "titolo": "What we make",
@@ -75,14 +68,13 @@
       "dettaglio": "3D modelling · Production files"
     }
   },
-
   "tecnologie": {
     "eyebrow": "Technology",
     "titolo": "The workshop",
-    "testo": "We work with two complementary technologies: fused deposition printing, which builds the object layer by layer, and the laser, which engraves and cuts by removing material. The choice depends on the material, the tolerance required and the number of pieces.",
+    "testo": "We work with two complementary technologies: fused deposition, which builds the object layer by layer, and the laser, which engraves and cuts by removing material. The choice depends on the material, the tolerance required and the number of pieces.",
     "stampa": {
-      "titolo": "FDM 3D printing",
-      "testo": "Bambu Lab printers with heated bed and automatic filament changing for multicolour prints.",
+      "titolo": "Filament 3D printing",
+      "testo": "Fused deposition printers with heated bed and automatic colour changing. Suited to functional parts, short runs and rapid prototypes.",
       "voce1": "Build volume",
       "valore1": "[to be confirmed] mm",
       "voce2": "Layer height",
@@ -91,8 +83,8 @@
       "valore3": "[to be confirmed]"
     },
     "laser": {
-      "titolo": "xTool laser",
-      "testo": "Raster engraving and vector cutting, with power and speed tuned to each material.",
+      "titolo": "Laser engraving and cutting",
+      "testo": "A CNC laser source for raster engraving and vector cutting, with power and feed rate tuned to each material.",
       "voce1": "Work area",
       "valore1": "[to be confirmed] mm",
       "voce2": "Maximum cutting thickness",
@@ -101,31 +93,54 @@
       "valore3": "[to be confirmed] DPI"
     }
   },
-
   "materiali": {
     "eyebrow": "Materials",
     "titolo": "What we work on",
     "testo": "Every material behaves differently: wood darkens, acrylic frosts, anodised aluminium lightens. On request we prepare a sample before production.",
     "laser": {
       "titolo": "Laser engraving and cutting",
-      "elenco": ["Solid wood", "Plywood and MDF", "Acrylic", "Leather", "Slate", "Anodised aluminium", "Glass"]
+      "elenco": [
+        "Solid wood",
+        "Plywood and MDF",
+        "Acrylic",
+        "Leather",
+        "Slate",
+        "Anodised aluminium",
+        "Glass"
+      ]
     },
     "stampa": {
       "titolo": "3D printing",
-      "elenco": ["PLA", "PETG", "ABS", "ASA", "Flexible TPU"]
+      "elenco": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "ASA",
+        "Flexible TPU"
+      ]
     },
     "nota": "Other materials on request, subject to a workability test."
   },
-
   "processo": {
     "eyebrow": "Process",
     "titolo": "How we work together",
-    "uno":     { "titolo": "Idea",       "testo": "You tell us what you need, even with a sketch or a photo. We assess feasibility, materials and timing." },
-    "due":     { "titolo": "Design",     "testo": "We prepare the 3D model or vector file and show you a preview before production." },
-    "tre":     { "titolo": "Production", "testo": "We print or engrave, with a test piece whenever the material calls for one." },
-    "quattro": { "titolo": "Delivery",   "testo": "Hand finishing, final inspection and shipping, or collection in person." }
+    "uno": {
+      "titolo": "Idea",
+      "testo": "You tell us what you need, even with a sketch or a photo. We assess feasibility, materials and timing."
+    },
+    "due": {
+      "titolo": "Design",
+      "testo": "We prepare the 3D model or vector file and show you a preview before production."
+    },
+    "tre": {
+      "titolo": "Production",
+      "testo": "We print or engrave, with a test piece whenever the material calls for one."
+    },
+    "quattro": {
+      "titolo": "Delivery",
+      "testo": "Hand finishing, final inspection and shipping, or collection in person."
+    }
   },
-
   "contatti": {
     "eyebrow": "Contact",
     "titolo": "Tell us about your project",
@@ -136,7 +151,6 @@
     "cta": "Send a request",
     "nota": "We reply within [to be confirmed] working days."
   },
-
   "footer": {
     "claim": "Where matter comes to life",
     "naviga": "Navigate",
