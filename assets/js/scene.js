@@ -73,6 +73,19 @@
   var motoRidotto = window.matchMedia('(prefers-reduced-motion: reduce)');
   var schermoStretto = window.matchMedia('(max-width: 560px) and (orientation: portrait)');
 
+  /* Su schermo stretto la scena resta, a meno che il dispositivo non prometta
+     poco: pochi core o poca memoria. Un telefono recente la regge bene, e
+     spegnerla a tutti significherebbe non mostrarla quasi a nessuno.
+     Se poi i fotogrammi non tengono davvero, il controllo qui sotto degrada
+     la scena mentre gira. */
+  function dispositivoModesto() {
+    var core = navigator.hardwareConcurrency || 8;
+    var mem  = navigator.deviceMemory || 8;
+    return core <= 4 || mem <= 4;
+  }
+
+  var degradato = false;
+
   /* ----------------------------------------------------- misure della scena
      La riga incisa va inseguita da gantry e fumo, che vivono in altri sistemi
      di coordinate. Le metriche si calcolano una volta e a ogni ridimensionamento. */
@@ -255,8 +268,16 @@
     ctx: canvas ? canvas.getContext('2d') : null,
     rafId: 0,
     acceso: false,
-    ultimo: 0
+    ultimo: 0,
+    lenti: 0
   };
+
+  function degrada() {
+    if (degradato) return;
+    degradato = true;
+    if (st) { st.kill(); st = null; }
+    attivaStatica();
+  }
 
   function nuovaParticella() {
     return {
@@ -274,6 +295,13 @@
     fumo.rafId = requestAnimationFrame(disegnaFumo);
 
     var dt = Math.min(ora - fumo.ultimo, 48);
+    /* Se i fotogrammi restano lunghi per circa due secondi di fila, la scena
+       non e' sostenibile su questo dispositivo: si passa ai riquadri statici. */
+    if (ora - fumo.ultimo > 40) {
+      if (++fumo.lenti > 45) degrada();
+    } else if (fumo.lenti) {
+      fumo.lenti = 0;
+    }
     fumo.ultimo = ora;
 
     var ctx = fumo.ctx, L = canvas.width;
@@ -331,7 +359,8 @@
      la scena animata sparisce e restano i tre riquadri statici.
      ============================================================== */
   function usaStatica() {
-    return motoRidotto.matches || schermoStretto.matches;
+    return motoRidotto.matches || degradato ||
+           (schermoStretto.matches && dispositivoModesto());
   }
 
   function attivaStatica() {
