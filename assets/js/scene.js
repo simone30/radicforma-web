@@ -22,6 +22,11 @@
     burn:      [0.06, 0.90],   /* quando incide, dentro l'atto laser */
     laserFade: [0.00, 0.08],   /* comparsa di gantry, fumo e pannello */
 
+    /* atto 3 */
+    stampaFade: [0.00, 0.10],  /* comparsa di piatto, ugello e pannello */
+    deposito:   [0.04, 0.78],  /* quando si depositano gli strati */
+    finale:     [0.80, 1.00],  /* rotazione finale e chiamata all'azione */
+
     corsa:   5,                /* altezze di viewport della corsa (500vh) */
     scrub:   0.6,
     tilt:    54,               /* gradi di rotazione della camera nell'atto 2 */
@@ -56,6 +61,14 @@
   var canvas   = scena.querySelector('[data-fumo]');
   var hudLaser = scena.querySelector('[data-hud-laser]');
   var hudPot   = scena.querySelector('[data-hud="potenza"]');
+
+  var piatto    = scena.querySelector('[data-piatto]');
+  var pila      = scena.querySelector('[data-pila]');
+  var ombra     = scena.querySelector('[data-ombra]');
+  var ugello    = scena.querySelector('[data-ugello]');
+  var hudStampa = scena.querySelector('[data-hud-stampa]');
+  var hudStrato = scena.querySelector('[data-hud="strato"]');
+  var cta       = scena.querySelector('[data-cta-scena]');
 
   var motoRidotto = window.matchMedia('(prefers-reduced-motion: reduce)');
   var schermoStretto = window.matchMedia('(max-width: 560px) and (orientation: portrait)');
@@ -112,6 +125,112 @@
     /* stato del fumo condiviso con l'emettitore */
     fumo.attivo = acceso === 1;
     fumo.yFronte = (M.top + avanzamento * M.altezza) / M.lato;  /* 0..1 nel disco */
+  }
+
+  /* ============================================================ ATTO 2
+     Cambio di prospettiva. Un solo movimento di camera: il piano su cui
+     poggia il legno si inclina, il disco arretra e il piatto di stampa
+     entra scivolando dal fondo dello stesso piano.
+     Oltre l'atto il valore resta a 1, così lo stato dell'atto 3 è coerente.
+     ============================================================ */
+  function attoCamera(p) {
+    var c = tra(p, T.camera);
+
+    palco.style.setProperty('--tilt', (c * T.tilt).toFixed(2) + 'deg');
+    palco.style.setProperty('--buio', c.toFixed(3));
+
+    /* il disco resta visibile come oggetto già finito, più piccolo e in fondo */
+    legno.style.setProperty('--legno-s', (1 - c * 0.72).toFixed(3));
+    legno.style.setProperty('--legno-y', (-c * 46).toFixed(2) + '%');
+
+    /* il piatto entra dal fondo del piano */
+    piatto.style.setProperty('--piatto-op', c.toFixed(3));
+    piatto.style.setProperty('--piatto-y', ((1 - c) * 55).toFixed(2) + '%');
+
+    hudStampa.style.setProperty('--hud-op', c.toFixed(3));
+  }
+
+  /* ============================================================ ATTO 3
+     Stampa 3D: estrusione vera in CSS 3D. N copie del monogramma impilate
+     lungo Z, che diventano visibili una dopo l'altra.
+     ============================================================ */
+  var strati = [];          /* i div .strato, dal più basso al più alto */
+  var nStrati = 0;
+  var passoStrato = T.passoStrato.desktop;
+
+  function costruisciStrati() {
+    if (!pila) return;
+    var mobile = window.matchMedia('(max-width: 760px)').matches;
+    var n = mobile ? T.strati.mobile : T.strati.desktop;
+    var passo = mobile ? T.passoStrato.mobile : T.passoStrato.desktop;
+
+    if (n === nStrati) return;    /* già costruiti per questa fascia */
+    nStrati = n;
+    passoStrato = passo;
+    strati.length = 0;
+    pila.textContent = '';
+    pila.style.setProperty('--passo', passo + 'px');
+
+    for (var i = 0; i < n; i++) {
+      var div = document.createElement('div');
+      div.className = 'strato';
+      div.style.setProperty('--i', String(i));
+
+      /* Gli strati alternano due verdi: è quello che rende visibili le righe.
+         L'ultimo è più chiaro e saturo, come il filamento appena deposto. */
+      var colore = i % 2 === 0 ? '#6C7A47' : '#5B6739';
+      if (i === n - 1) colore = '#8B9A5C';
+
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 477 383');
+      svg.setAttribute('aria-hidden', 'true');
+      var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+      use.setAttribute('href', '#rf-path');
+      use.setAttribute('fill', colore);
+      svg.appendChild(use);
+      div.appendChild(svg);
+
+      pila.appendChild(div);
+      strati.push(div);
+    }
+  }
+
+  function attoStampa(p) {
+    var q = tra(p, T.stampa);
+    var presenza = tra(q, T.stampaFade);
+
+    ugello.style.setProperty('--ugello-op',
+      String(presenza * (1 - tra(q, [0.90, 0.99]))));
+
+    /* quanti strati sono stesi: stato assoluto, mai incrementale */
+    var deposito = tra(q, T.deposito);
+    var stesi = Math.round(deposito * nStrati);
+
+    for (var i = 0; i < nStrati; i++) {
+      /* la classe cambia solo quando serve: niente scritture inutili nel DOM */
+      var deve = i < stesi;
+      if (strati[i].classList.contains('e-steso') !== deve) {
+        strati[i].classList.toggle('e-steso', deve);
+      }
+    }
+
+    /* l'ombra si accentua man mano che l'oggetto cresce */
+    ombra.style.setProperty('--ombra-op', String(presenza * (0.25 + deposito * 0.75)));
+    ombra.style.setProperty('--ombra-s', String(0.6 + deposito * 0.45));
+
+    /* l'ugello sta alla quota dello strato corrente e si muove per conto suo */
+    ugello.style.setProperty('--ugello-z', (stesi * passoStrato) + 'px');
+
+    if (hudStrato) {
+      hudStrato.textContent = String(stesi).padStart(3, '0') + ' / ' +
+                              String(nStrati).padStart(3, '0');
+    }
+
+    /* alla fine l'oggetto ruota di pochi gradi e compare la chiamata all'azione */
+    var finale = tra(q, T.finale);
+    pila.style.setProperty('--pila-ry', (Math.sin(finale * Math.PI * 2) * 9).toFixed(2) + 'deg');
+    cta.style.setProperty('--cta-op', String(finale));
+    cta.style.setProperty('--cta-eventi', finale > 0.6 ? 'auto' : 'none');
   }
 
   /* ================================================================== fumo
@@ -192,6 +311,8 @@
   /* ====================================================== stato complessivo */
   function scrivi(p) {
     attoLaser(p);
+    attoCamera(p);
+    attoStampa(p);
   }
 
   /* =============================================================== fallback
@@ -216,6 +337,7 @@
     scena.style.display = '';
     if (statica) statica.hidden = true;
 
+    costruisciStrati();
     misura();
 
     st = window.ScrollTrigger.create({
@@ -259,7 +381,10 @@
     schermoStretto.addEventListener('change', riconsidera);
   }
 
-  window.addEventListener('resize', function () { misura(); }, { passive: true });
+  window.addEventListener('resize', function () {
+    costruisciStrati();
+    misura();
+  }, { passive: true });
   document.addEventListener('radicforma:lingua', function () { misura(); });
 
   if (document.readyState === 'loading') {

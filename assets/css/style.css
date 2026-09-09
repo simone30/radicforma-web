@@ -762,8 +762,9 @@ p:last-child { margin-bottom: 0; }
   inset-block-end: -6%;
   height: 108%;
   transform-style: preserve-3d;
-  /* entra dal basso nello stesso spazio 3D del legno */
-  transform: rotateX(90deg) translate3d(0, var(--piatto-y, 60%), 0);
+  /* Giace sullo stesso piano del disco di legno: e' la camera a inclinarlo.
+     Entra scivolando dal fondo del piano. */
+  transform: translate3d(0, var(--piatto-y, 60%), -1px);
   opacity: var(--piatto-op, 0);
 }
 
@@ -780,11 +781,11 @@ p:last-child { margin-bottom: 0; }
 .piatto__ombra {
   position: absolute;
   inset-inline-start: 50%;
-  inset-block-start: 50%;
-  width: 46%; height: 40%;
+  inset-block-start: 54%;
+  width: 42%; height: 34%;
   translate: -50% -46%;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.62), transparent 78%);
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.55), transparent 76%);
   opacity: var(--ombra-op, 0);
   transform: scale(var(--ombra-s, 0.6));
 }
@@ -793,12 +794,13 @@ p:last-child { margin-bottom: 0; }
 .pila {
   position: absolute;
   inset-inline-start: 50%;
-  inset-block-start: 50%;
-  width: 62%;
+  inset-block-start: 52%;
+  width: 46%;
   aspect-ratio: 477 / 383;
   translate: -50% -50%;
   transform-style: preserve-3d;
-  transform: rotateX(-90deg) rotateY(var(--pila-ry, 0deg));
+  /* Gli strati salgono lungo Z, cioe' perpendicolari al piano di stampa. */
+  transform: rotateZ(var(--pila-ry, 0deg));
   will-change: transform;
 }
 .strato {
@@ -814,13 +816,22 @@ p:last-child { margin-bottom: 0; }
 .ugello {
   position: absolute;
   inset-inline-start: 50%;
-  inset-block-start: 50%;
-  translate: -50% -100%;
-  transform: rotateX(-90deg) translate3d(var(--ugello-x, 0px), var(--ugello-y, 0px),
-             calc(var(--ugello-z, 0px) + 40px));
+  inset-block-start: 52%;
+  translate: -50% -128%;
+  transform: translate3d(0, 0, calc(var(--ugello-z, 0px) + 52px));
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6));
   transform-style: preserve-3d;
   opacity: var(--ugello-op, 0);
 }
+/* Il corpo vaga in X/Y con un ciclo suo, cosi' si muove anche a scroll fermo */
+.ugello__corpo {
+  position: relative;
+  animation: vaga-x 3.1s ease-in-out infinite alternate,
+             vaga-y 2.3s ease-in-out infinite alternate;
+}
+@keyframes vaga-x { from { translate: -46px 0; } to { translate: 46px 0; } }
+@keyframes vaga-y { from { transform: translateY(-24px); } to { transform: translateY(24px); } }
+
 .ugello__punta {
   position: absolute;
   inset-block-start: 58px;
