@@ -98,6 +98,8 @@
        contenuto vero è il testo in .scena__testo, sempre presente nel DOM.
        ========================================================================== -->
   <section class="scena" id="scena" data-scena>
+    <!-- La scena e' decorativa: questa e' la sua descrizione testuale. -->
+    <p class="sr-only" data-i18n="scena.alternativa">Sequenza in tre momenti: il monogramma Radic Forma inciso a laser su una sezione di tronco, il cambio di prospettiva dal piano zenitale alla vista in tre quarti, e lo stesso monogramma stampato in 3D strato dopo strato su un piatto di stampa.</p>
     <div class="scena__palco">
 
       <!-- ---------- il palcoscenico 3D: una sola prospettiva per tutti gli atti ---------- -->
@@ -224,17 +226,21 @@
         <li class="riquadro">
           <div class="riquadro__figura riquadro__figura--transizione">
             <svg viewBox="0 0 477 383" aria-hidden="true" class="riquadro__mono-inclinato">
-              <use href="#rf-mono" width="477" height="383" fill="#6C7A47"></use>
+              <use href="#rf-path" fill="#6C7A47"></use>
             </svg>
           </div>
           <p class="dato-tecnico" data-i18n="scena.didascalia2">Cambio di prospettiva — dal piano al volume</p>
         </li>
         <li class="riquadro">
           <div class="riquadro__figura riquadro__figura--stampa">
-            <svg viewBox="0 0 477 383" aria-hidden="true" class="riquadro__strati">
-              <use href="#rf-mono" width="477" height="383" fill="#4E5A34" x="0" y="10"></use>
-              <use href="#rf-mono" width="477" height="383" fill="#5D6A3E" x="0" y="5"></use>
-              <use href="#rf-mono" width="477" height="383" fill="#6C7A47"></use>
+            <svg viewBox="0 -40 477 423" aria-hidden="true" class="riquadro__strati">
+              <use href="#rf-path" fill="#3F4A2A" y="0"></use>
+              <use href="#rf-path" fill="#465227" y="-6"></use>
+              <use href="#rf-path" fill="#4E5A34" y="-12"></use>
+              <use href="#rf-path" fill="#556238" y="-18"></use>
+              <use href="#rf-path" fill="#5D6A3E" y="-24"></use>
+              <use href="#rf-path" fill="#647242" y="-30"></use>
+              <use href="#rf-path" fill="#8B9A5C" y="-36"></use>
             </svg>
           </div>
           <p class="dato-tecnico" data-i18n="scena.didascalia3">Stampa 3D — ventotto strati da 0,20 mm</p>

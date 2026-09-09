@@ -230,7 +230,18 @@
     var finale = tra(q, T.finale);
     pila.style.setProperty('--pila-ry', (Math.sin(finale * Math.PI * 2) * 9).toFixed(2) + 'deg');
     cta.style.setProperty('--cta-op', String(finale));
-    cta.style.setProperty('--cta-eventi', finale > 0.6 ? 'auto' : 'none');
+
+    /* Finche' non e' visibile la CTA non deve nemmeno essere raggiungibile
+       da tastiera: un link invisibile ma focalizzabile disorienta. */
+    var attiva = finale > 0.6;
+    cta.style.setProperty('--cta-eventi', attiva ? 'auto' : 'none');
+    if (attiva) {
+      cta.removeAttribute('tabindex');
+      cta.removeAttribute('aria-hidden');
+    } else if (!cta.hasAttribute('tabindex')) {
+      cta.setAttribute('tabindex', '-1');
+      cta.setAttribute('aria-hidden', 'true');
+    }
   }
 
   /* ================================================================== fumo
@@ -348,6 +359,7 @@
       onUpdate: function (self) { scrivi(self.progress); },
       onToggle: function (self) {
         /* niente cicli di disegno né will-change fuori dallo schermo */
+        palco.classList.toggle('e-attiva', self.isActive);
         if (self.isActive) { misura(); avviaFumo(); }
         else { fermaFumo(); }
       },

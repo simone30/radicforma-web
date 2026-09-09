@@ -58,7 +58,11 @@
   --testo:          var(--verde-corteccia);
   --testo-soft:     #4A5342;
   --testo-inv:      var(--avorio);
-  --testo-tecnico:  var(--pietra);
+  /* Pietra e Verde Alloro non arrivano a 4,5:1 su Carta (2,93:1 e 4,15:1):
+     su fondo chiaro si usano queste due varianti scurite, che passano AA.
+     I colori di marca restano quelli originali per grafica e fondi scuri. */
+  --testo-tecnico:  #686B62;   /* 4,84:1 su Carta */
+  --alloro-testo:   #63713F;   /* 4,73:1 su Carta */
   --linea:          rgba(140, 143, 134, 0.2);   /* Pietra 20% */
   --linea-inv:      rgba(237, 233, 219, 0.16);
   --focus:          var(--ottone);
@@ -172,7 +176,7 @@ p:last-child { margin-bottom: 0; }
   font-weight: 600;
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
-  color: var(--verde-alloro);
+  color: var(--alloro-testo);
   margin: 0 0 var(--sp-3);
 }
 .sezione--scura .eyebrow { color: var(--foglia); }
@@ -184,13 +188,16 @@ p:last-child { margin-bottom: 0; }
 }
 .sezione--scura .testo-guida { color: rgba(237, 233, 219, 0.78); }
 
-/* Dati tecnici: monospaziato ottico, mai sotto 13px */
+/* Dati tecnici: mai sotto 13px */
 .dato-tecnico {
   font-size: var(--t-tecnico);
   letter-spacing: 0.06em;
   color: var(--testo-tecnico);
   font-variant-numeric: tabular-nums;
 }
+/* Su fondo scuro serve il verso opposto: la variante scurita sparirebbe. */
+.sezione--scura .dato-tecnico,
+.scena-statica .dato-tecnico { color: var(--pietra); }
 
 /* --------------------------------------------------------------------------
    5. Impaginazione
@@ -282,7 +289,7 @@ p:last-child { margin-bottom: 0; }
   border-block-end-color: var(--linea);
 }
 .navbar.is-attaccata .scritta__nome  { fill: #3E4A2E; }
-.navbar.is-attaccata .scritta__claim { fill: var(--verde-alloro); }
+.navbar.is-attaccata .scritta__claim { fill: var(--alloro-testo); }
 .navbar.is-attaccata .navbar__link,
 .navbar.is-attaccata .lingua__voce { color: var(--testo); }
 .navbar.is-attaccata .navbar__apri { color: var(--testo); }
@@ -621,7 +628,7 @@ p:last-child { margin-bottom: 0; }
 .recapito dt {
   font-size: var(--t-tecnico); font-weight: 600;
   letter-spacing: var(--ls-eyebrow); text-transform: uppercase;
-  color: var(--verde-alloro); margin-block-end: 2px;
+  color: var(--alloro-testo); margin-block-end: 2px;
 }
 .recapito dd { margin: 0; font-size: 1.05rem; }
 .recapito a { color: var(--testo); text-decoration-color: var(--linea); }
@@ -669,6 +676,11 @@ p:last-child { margin-bottom: 0; }
   transform: rotateX(var(--tilt, 0deg));
 }
 
+/* will-change costa memoria GPU: si dichiara solo mentre la scena e' attiva,
+   e la classe viene tolta appena esce dal viewport. */
+.scena__palco.e-attiva .legno,
+.scena__palco.e-attiva .pila { will-change: transform; }
+
 /* --------------------------------------------------------------------------
    16.1 Atto 1 — il disco di legno e l'incisione
    -------------------------------------------------------------------------- */
@@ -676,7 +688,6 @@ p:last-child { margin-bottom: 0; }
   position: absolute; inset: 0;
   transform-style: preserve-3d;
   transform: translate3d(0, var(--legno-y, 0%), 0) scale(var(--legno-s, 1));
-  will-change: transform;
 }
 
 .legno__foto {
@@ -801,7 +812,6 @@ p:last-child { margin-bottom: 0; }
   transform-style: preserve-3d;
   /* Gli strati salgono lungo Z, cioe' perpendicolari al piano di stampa. */
   transform: rotateZ(var(--pila-ry, 0deg));
-  will-change: transform;
 }
 .strato {
   position: absolute; inset: 0;
@@ -947,6 +957,7 @@ p:last-child { margin-bottom: 0; }
 .riquadro__figura {
   position: relative;
   aspect-ratio: 1;
+  perspective: 900px;      /* senza, le inclinazioni dei riquadri non si vedono */
   display: grid; place-items: center;
   border: 1px solid var(--linea-inv);
   border-radius: var(--raggio);
@@ -962,5 +973,5 @@ p:last-child { margin-bottom: 0; }
 .riquadro__figura--stampa {
   background: radial-gradient(120% 90% at 50% 40%, #232821, #14170F);
 }
-.riquadro__mono-inclinato { width: 62%; transform: rotateX(52deg); }
-.riquadro__strati { width: 62%; transform: rotateX(52deg); }
+.riquadro__mono-inclinato { width: 64%; transform: rotateX(46deg) rotateZ(-4deg); }
+.riquadro__strati { width: 64%; transform: rotateX(52deg); }
