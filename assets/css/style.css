@@ -472,3 +472,156 @@ p:last-child { margin-bottom: 0; }
   font-size: var(--t-tecnico);
   color: rgba(237, 233, 219, 0.5);
 }
+
+/* --------------------------------------------------------------------------
+   10. Rivelazione delle sezioni
+   Stato iniziale in CSS, arrivo animato da GSAP. Se il JS non parte o l'utente
+   ha chiesto meno movimento, il contenuto resta comunque leggibile.
+   -------------------------------------------------------------------------- */
+[data-rivela] { opacity: 0; transform: translateY(16px); }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-rivela] { opacity: 1; transform: none; }
+}
+
+/* --------------------------------------------------------------------------
+   11. Servizi
+   -------------------------------------------------------------------------- */
+.schede {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--sp-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+
+.scheda {
+  position: relative;
+  padding: var(--sp-5) var(--sp-4) var(--sp-4);
+  border: 1px solid var(--linea);
+  border-radius: var(--raggio);
+  background: rgba(255, 255, 255, 0.42);
+  transition: transform var(--transizione), border-color var(--transizione),
+              box-shadow var(--transizione);
+}
+.scheda:hover {
+  transform: translateY(-3px);           /* sollevamento minimo */
+  border-color: rgba(108, 122, 71, 0.42);
+  box-shadow: 0 10px 28px -18px rgba(34, 40, 31, 0.5);
+}
+.scheda h3 { margin-block: var(--sp-2) var(--sp-2); }
+.scheda p { font-size: 0.975rem; color: var(--testo-soft); }
+.scheda .dato-tecnico { margin-block-start: var(--sp-3); }
+
+.scheda__numero {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  color: var(--ottone);
+  letter-spacing: 0.05em;
+}
+
+/* --------------------------------------------------------------------------
+   12. Tecnologie
+   -------------------------------------------------------------------------- */
+.macchine {
+  display: grid; gap: var(--sp-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+}
+.macchina p { color: rgba(237, 233, 219, 0.75); font-size: 0.975rem; }
+.macchina h3 { margin-block-end: var(--sp-2); }
+
+.specifiche { margin: var(--sp-4) 0 0; }
+.specifica {
+  display: flex; justify-content: space-between; gap: var(--sp-3);
+  padding-block: var(--sp-2);
+  border-block-start: 1px solid var(--linea-inv);
+  font-size: var(--t-tecnico);
+}
+.specifica dt { color: rgba(237, 233, 219, 0.62); letter-spacing: 0.04em; }
+.specifica dd {
+  margin: 0; color: var(--foglia); font-weight: 600;
+  font-variant-numeric: tabular-nums; text-align: right;
+}
+
+/* --------------------------------------------------------------------------
+   13. Materiali
+   -------------------------------------------------------------------------- */
+.materiali {
+  display: grid; gap: var(--sp-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+}
+.materiali__colonna h3 { margin-block-end: var(--sp-3); }
+
+.elenco-materiali { list-style: none; margin: 0; padding: 0; }
+.elenco-materiali li {
+  padding-block: var(--sp-2);
+  border-block-start: 1px solid var(--linea);
+  font-size: 0.975rem;
+  display: flex; align-items: baseline; gap: var(--sp-2);
+}
+.elenco-materiali li::before {
+  content: ''; flex: 0 0 auto;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--ottone);          /* Ottone come segno grafico, non testo */
+  translate: 0 -2px;
+}
+.materiali__nota { margin-block-start: var(--sp-5); }
+
+/* --------------------------------------------------------------------------
+   14. Processo
+   -------------------------------------------------------------------------- */
+.passi {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--sp-5);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  counter-reset: passo;
+}
+.passo { position: relative; padding-block-start: var(--sp-4); border-block-start: 1px solid var(--linea-inv); }
+.passo h3 { margin-block: var(--sp-2) var(--sp-2); }
+.passo p { color: rgba(237, 233, 219, 0.75); font-size: 0.95rem; }
+.passo__numero {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  color: var(--ottone);
+  letter-spacing: 0.06em;
+}
+
+/* --------------------------------------------------------------------------
+   15. Contatti
+   -------------------------------------------------------------------------- */
+.contatti { background: linear-gradient(180deg, var(--carta) 0%, #EAE7DA 100%); }
+.contatti__griglia {
+  display: grid; gap: var(--sp-6);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+@media (min-width: 860px) {
+  .contatti__griglia { grid-template-columns: 1.35fr 1fr; gap: var(--sp-8); }
+}
+
+.bottone {
+  display: inline-block;
+  margin-block-start: var(--sp-4);
+  padding: var(--sp-2) var(--sp-5);
+  background: var(--verde-corteccia);
+  color: var(--avorio);
+  text-decoration: none;
+  border-radius: var(--raggio);
+  font-size: var(--t-piccolo);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  transition: background-color var(--transizione), transform var(--transizione);
+}
+.bottone:hover { background: #2E3628; transform: translateY(-2px); }
+
+.contatti__nota { margin-block-start: var(--sp-3); }
+
+.recapiti { margin: 0; }
+.recapito { padding-block: var(--sp-3); border-block-start: 1px solid var(--linea); }
+.recapito dt {
+  font-size: var(--t-tecnico); font-weight: 600;
+  letter-spacing: var(--ls-eyebrow); text-transform: uppercase;
+  color: var(--verde-alloro); margin-block-end: 2px;
+}
+.recapito dd { margin: 0; font-size: 1.05rem; }
+.recapito a { color: var(--testo); text-decoration-color: var(--linea); }
+.recapito a:hover { text-decoration-color: currentColor; }

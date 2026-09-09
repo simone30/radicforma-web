@@ -9,6 +9,7 @@
 <link rel="preload" href="./assets/fonts/cormorant-garamond-latin-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="./assets/fonts/manrope-latin-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="./assets/css/style.css">
+<noscript><style>[data-rivela]{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 
 <body>
@@ -33,11 +34,12 @@
 <!-- ========================= Navbar ========================= -->
 <header class="navbar" id="navbar">
   <a class="navbar__marchio" href="#top" aria-label="Radic Forma">
-    <!-- scritta-it/en inlineata (non <img>): eredita i font self-hosted -->
-    <svg class="scritta" viewBox="0 0 900 240" role="img" aria-hidden="true" focusable="false">
-      <text class="scritta__nome"  x="450" y="118" text-anchor="middle">RADIC FORMA</text>
-      <text class="scritta__claim" x="450" y="176" text-anchor="middle"
-            data-i18n="brand.claim.maiuscolo">DOVE LA MATERIA PRENDE VITA</text>
+    <!-- Scritta inlineata (non <img>): eredita i font self-hosted.
+         Il viewBox è ritagliato alla sola riga del nome: alla scala della
+         navbar il claim scenderebbe a circa 2px, illeggibile. Il claim per
+         esteso resta nell'hero e nel footer. -->
+    <svg class="scritta" viewBox="60 60 780 76" role="img" aria-hidden="true" focusable="false">
+      <text class="scritta__nome" x="450" y="118" text-anchor="middle">RADIC FORMA</text>
     </svg>
   </a>
 
@@ -71,12 +73,10 @@
     <div class="hero__contenuto">
       <!-- lockup ricomposto con le coordinate esatte del file originale:
            monogramma a translate(211.5 40) dentro viewBox 0 0 900 700 -->
-      <svg class="lockup" viewBox="0 0 900 700" role="img"
+      <svg class="lockup" viewBox="0 0 900 600" role="img"
            data-i18n-attr="aria-label:brand.lockup.alt" aria-label="Radic Forma — Dove la materia prende vita">
         <use href="#rf-mono" class="mono mono--chiaro" x="211.5" y="40" width="477" height="383"></use>
         <text class="lockup__nome" x="450" y="560" text-anchor="middle" fill="#EDE9DB">RADIC FORMA</text>
-        <text class="lockup__claim" x="450" y="618" text-anchor="middle" fill="#9BAA6B"
-              data-i18n="brand.claim.maiuscolo">DOVE LA MATERIA PRENDE VITA</text>
       </svg>
 
       <p class="hero__claim" data-i18n="hero.claim">Dove la materia prende vita</p>
@@ -89,18 +89,193 @@
     </div>
   </section>
 
+
+  <!-- ========================= Servizi ========================= -->
+  <section class="sezione" id="servizi">
+    <div class="contenitore">
+      <div class="sezione__intestazione" data-rivela>
+        <p class="eyebrow" data-i18n="servizi.eyebrow">Servizi</p>
+        <h2 data-i18n="servizi.titolo">Che cosa realizziamo</h2>
+        <p class="testo-guida" data-i18n="servizi.testo">Tre modi di lavorare la materia, spesso combinati nello stesso oggetto.</p>
+      </div>
+
+      <ul class="schede">
+        <li class="scheda" data-rivela>
+          <span class="scheda__numero" aria-hidden="true">01</span>
+          <h3 data-i18n="servizi.uno.titolo">Oggettistica 3D</h3>
+          <p data-i18n="servizi.uno.testo">Complementi per la casa e la cucina, portaoggetti, accessori funzionali. Dalla serie breve al pezzo singolo, stampati in FDM e rifiniti a mano.</p>
+          <p class="dato-tecnico" data-i18n="servizi.uno.dettaglio">Serie brevi · Pezzo unico · Prototipi</p>
+        </li>
+        <li class="scheda" data-rivela="0.08">
+          <span class="scheda__numero" aria-hidden="true">02</span>
+          <h3 data-i18n="servizi.due.titolo">Incisione e taglio laser</h3>
+          <p data-i18n="servizi.due.testo">Marcature, personalizzazioni e tagli di precisione su legno, acrilico, pelle e metallo anodizzato. Testi, loghi, motivi grafici e numerazioni seriali.</p>
+          <p class="dato-tecnico" data-i18n="servizi.due.dettaglio">Incisione · Taglio · Marcatura</p>
+        </li>
+        <li class="scheda" data-rivela="0.16">
+          <span class="scheda__numero" aria-hidden="true">03</span>
+          <h3 data-i18n="servizi.tre.titolo">Progettazione su misura</h3>
+          <p data-i18n="servizi.tre.testo">Partiamo da uno schizzo, una misura o un problema pratico e arriviamo al file di produzione. Modellazione, verifica dimensionale e stampa di prova.</p>
+          <p class="dato-tecnico" data-i18n="servizi.tre.dettaglio">Modellazione 3D · File di produzione</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================= Tecnologie ========================= -->
+  <section class="sezione sezione--scura" id="tecnologie">
+    <div class="contenitore">
+      <div class="sezione__intestazione" data-rivela>
+        <p class="eyebrow" data-i18n="tecnologie.eyebrow">Tecnologie</p>
+        <h2 data-i18n="tecnologie.titolo">Il parco macchine</h2>
+        <p class="testo-guida" data-i18n="tecnologie.testo">Lavoriamo con due tecnologie complementari: la stampa a deposizione di filamento, che costruisce l'oggetto strato dopo strato, e il laser, che incide e taglia sottraendo materia. La scelta dipende dal materiale, dalla tolleranza richiesta e dal numero di pezzi.</p>
+      </div>
+
+      <div class="macchine">
+        <article class="macchina" data-rivela>
+          <h3 data-i18n="tecnologie.stampa.titolo">Stampa 3D FDM</h3>
+          <p data-i18n="tecnologie.stampa.testo">Stampanti Bambu Lab a piattaforma riscaldata, con cambio filamento automatico per le stampe multicolore.</p>
+          <dl class="specifiche">
+            <div class="specifica">
+              <dt data-i18n="tecnologie.stampa.voce1">Volume di stampa</dt>
+              <dd data-i18n="tecnologie.stampa.valore1">[da confermare] mm</dd>
+            </div>
+            <div class="specifica">
+              <dt data-i18n="tecnologie.stampa.voce2">Altezza strato</dt>
+              <dd data-i18n="tecnologie.stampa.valore2">0,08 – 0,28 mm</dd>
+            </div>
+            <div class="specifica">
+              <dt data-i18n="tecnologie.stampa.voce3">Tolleranza dimensionale</dt>
+              <dd data-i18n="tecnologie.stampa.valore3">[da confermare]</dd>
+            </div>
+          </dl>
+        </article>
+
+        <article class="macchina" data-rivela="0.1">
+          <h3 data-i18n="tecnologie.laser.titolo">Laser xTool</h3>
+          <p data-i18n="tecnologie.laser.testo">Incisione raster e taglio vettoriale, con regolazione di potenza e velocità in base al materiale.</p>
+          <dl class="specifiche">
+            <div class="specifica">
+              <dt data-i18n="tecnologie.laser.voce1">Area di lavoro</dt>
+              <dd data-i18n="tecnologie.laser.valore1">[da confermare] mm</dd>
+            </div>
+            <div class="specifica">
+              <dt data-i18n="tecnologie.laser.voce2">Spessore massimo di taglio</dt>
+              <dd data-i18n="tecnologie.laser.valore2">[da confermare] mm</dd>
+            </div>
+            <div class="specifica">
+              <dt data-i18n="tecnologie.laser.voce3">Risoluzione di incisione</dt>
+              <dd data-i18n="tecnologie.laser.valore3">[da confermare] DPI</dd>
+            </div>
+          </dl>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= Materiali ========================= -->
+  <section class="sezione" id="materiali">
+    <div class="contenitore">
+      <div class="sezione__intestazione" data-rivela>
+        <p class="eyebrow" data-i18n="materiali.eyebrow">Materiali</p>
+        <h2 data-i18n="materiali.titolo">Su cosa lavoriamo</h2>
+        <p class="testo-guida" data-i18n="materiali.testo">Ogni materiale ha una resa diversa: il legno scurisce, l'acrilico smerigliata, l'alluminio anodizzato schiarisce. Su richiesta prepariamo un provino prima della produzione.</p>
+      </div>
+
+      <div class="materiali">
+        <div class="materiali__colonna" data-rivela>
+          <h3 data-i18n="materiali.laser.titolo">Incisione e taglio laser</h3>
+          <ul class="elenco-materiali" data-i18n-list="materiali.laser.elenco">
+            <li>Legno massello</li><li>Compensato e MDF</li><li>Acrilico</li>
+            <li>Pelle</li><li>Ardesia</li><li>Alluminio anodizzato</li><li>Vetro</li>
+          </ul>
+        </div>
+        <div class="materiali__colonna" data-rivela="0.1">
+          <h3 data-i18n="materiali.stampa.titolo">Stampa 3D</h3>
+          <ul class="elenco-materiali" data-i18n-list="materiali.stampa.elenco">
+            <li>PLA</li><li>PETG</li><li>ABS</li><li>ASA</li><li>TPU flessibile</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="materiali__nota dato-tecnico" data-rivela data-i18n="materiali.nota">Altri materiali su richiesta, previa prova di lavorabilità.</p>
+    </div>
+  </section>
+
+  <!-- ========================= Processo ========================= -->
+  <section class="sezione sezione--scura" id="processo">
+    <div class="contenitore">
+      <div class="sezione__intestazione" data-rivela>
+        <p class="eyebrow" data-i18n="processo.eyebrow">Processo</p>
+        <h2 data-i18n="processo.titolo">Come si lavora insieme</h2>
+      </div>
+
+      <ol class="passi">
+        <li class="passo" data-rivela>
+          <span class="passo__numero" aria-hidden="true">01</span>
+          <h3 data-i18n="processo.uno.titolo">Idea</h3>
+          <p data-i18n="processo.uno.testo">Ci racconti cosa ti serve, anche con uno schizzo o una foto. Valutiamo fattibilità, materiali e tempi.</p>
+        </li>
+        <li class="passo" data-rivela="0.06">
+          <span class="passo__numero" aria-hidden="true">02</span>
+          <h3 data-i18n="processo.due.titolo">Progetto</h3>
+          <p data-i18n="processo.due.testo">Prepariamo il modello 3D o il file vettoriale e ti mostriamo un'anteprima prima di produrre.</p>
+        </li>
+        <li class="passo" data-rivela="0.12">
+          <span class="passo__numero" aria-hidden="true">03</span>
+          <h3 data-i18n="processo.tre.titolo">Produzione</h3>
+          <p data-i18n="processo.tre.testo">Stampiamo o incidiamo, con un provino di verifica quando il materiale lo richiede.</p>
+        </li>
+        <li class="passo" data-rivela="0.18">
+          <span class="passo__numero" aria-hidden="true">04</span>
+          <h3 data-i18n="processo.quattro.titolo">Consegna</h3>
+          <p data-i18n="processo.quattro.testo">Rifinitura a mano, controllo finale e spedizione, oppure ritiro diretto.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========================= Contatti ========================= -->
+  <section class="sezione contatti" id="contatti">
+    <div class="contenitore">
+      <div class="contatti__griglia">
+        <div data-rivela>
+          <p class="eyebrow" data-i18n="contatti.eyebrow">Contatti</p>
+          <h2 data-i18n="contatti.titolo">Raccontaci il tuo progetto</h2>
+          <p class="testo-guida" data-i18n="contatti.testo">Scrivici con una descrizione, una misura o una foto di riferimento: rispondiamo con una valutazione di fattibilità e un preventivo.</p>
+          <!-- Il sito è statico: nessun form con backend, si scrive per email. -->
+          <a class="bottone" href="mailto:{{EMAIL}}" data-i18n="contatti.cta">Invia una richiesta</a>
+          <p class="dato-tecnico contatti__nota" data-i18n="contatti.nota">Rispondiamo entro [da confermare] giorni lavorativi.</p>
+        </div>
+
+        <dl class="recapiti" data-rivela="0.1">
+          <div class="recapito">
+            <dt data-i18n="contatti.email">Scrivici una mail</dt>
+            <dd><a href="mailto:{{EMAIL}}">{{EMAIL}}</a></dd>
+          </div>
+          <div class="recapito">
+            <dt data-i18n="contatti.telefono">Telefono</dt>
+            <dd><a href="tel:{{TELEFONO}}">{{TELEFONO}}</a></dd>
+          </div>
+          <div class="recapito">
+            <dt data-i18n="contatti.dove">Dove siamo</dt>
+            <dd>{{CITTA}}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <!-- ========================= Footer ========================= -->
 <footer class="footer">
   <div class="contenitore footer__griglia">
     <div>
-      <svg class="lockup" viewBox="0 0 900 700" role="img"
+      <svg class="lockup" viewBox="0 0 900 600" role="img"
            data-i18n-attr="aria-label:brand.lockup.alt" aria-label="Radic Forma — Dove la materia prende vita">
         <use href="#rf-mono" class="mono mono--chiaro" x="211.5" y="40" width="477" height="383"></use>
         <text class="lockup__nome" x="450" y="560" text-anchor="middle" fill="#EDE9DB">RADIC FORMA</text>
-        <text class="lockup__claim" x="450" y="618" text-anchor="middle" fill="#9BAA6B"
-              data-i18n="brand.claim.maiuscolo">DOVE LA MATERIA PRENDE VITA</text>
       </svg>
       <p class="footer__claim" data-i18n="footer.claim">Dove la materia prende vita</p>
     </div>
