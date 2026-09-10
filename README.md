@@ -137,10 +137,15 @@ pubblicare. Si trovano cercando le parentesi graffe nel file `index.html`:
 
 | Segnaposto        | Che cosa metterci                    |
 | ----------------- | ------------------------------------ |
-| `{{EMAIL}}`       | l'indirizzo email di contatto        |
-| `{{TELEFONO}}`    | il numero di telefono                |
-| `{{CITTA}}`       | la città o l'indirizzo               |
-| `{{PARTITA_IVA}}` | la partita IVA                       |
+| `{{PARTITA_IVA}}` | la partita IVA, nella riga in fondo  |
+
+**Finché è lì, quella riga si legge davvero sul sito**: dice
+`P.IVA {{PARTITA_IVA}}`. O la si compila, o si toglie la riga.
+
+Come recapito per ora c'è **solo l'indirizzo email**, `radicforma@gmail.com`.
+Telefono e indirizzo sono stati tolti dalla pagina: per rimetterli si
+aggiungono un blocco `.recapito` nella sezione Contatti e una riga nel piè di
+pagina.
 
 Nei due file dei testi ci sono inoltre alcuni valori marcati **`[da confermare]`**
 (volumi di stampa, tolleranze, area di lavoro del laser, tempi di risposta):

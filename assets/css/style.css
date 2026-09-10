@@ -463,16 +463,18 @@ p, li, figcaption { text-wrap: pretty; }
 }
 
 .hero__descrittore {
-  /* i paragrafi hanno un max-width: senza margini automatici resterebbe
-     ancorato a sinistra invece che centrato sotto il marchio */
-  margin-inline: auto;
+  /* i paragrafi hanno un max-width: senza margini automatici questo resterebbe
+     ancorato a sinistra dentro il suo riquadro, e il testo, pur centrato al
+     suo interno, si vedrebbe spostato rispetto al marchio.
+     Attenzione a non rimettere qui una scorciatoia "margin": azzererebbe
+     entrambe le righe qui sotto. */
   margin-block-start: var(--sp-5);
+  margin-inline: auto;
   font-size: var(--t-tecnico);
   font-weight: 600;
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
   color: var(--foglia);
-  margin: 0;
 }
 
 /* Indicatore di scorrimento discreto */
@@ -665,6 +667,9 @@ p, li, figcaption { text-wrap: pretty; }
    15. Contatti
    -------------------------------------------------------------------------- */
 .contatti { background: linear-gradient(180deg, var(--carta) 0%, #EAE7DA 100%); }
+/* Il titolo qui non sta dentro .sezione__intestazione, quindi non eredita il
+   suo margine inferiore, e resterebbe appiccicato al paragrafo. */
+.contatti__griglia h2 { margin-block-end: var(--sp-3); }
 .contatti__griglia {
   display: grid; gap: var(--sp-6);
   grid-template-columns: 1fr;
@@ -1298,9 +1303,13 @@ p, li, figcaption { text-wrap: pretty; }
   color: var(--foglia);
 }
 .materie__elenco { list-style: none; margin: 0; padding: 0; }
+/* Prima colonna a larghezza fissa e non "auto": ogni voce e' una griglia a se',
+   quindi con auto ognuna si dimensionava sul proprio nome e le note partivano
+   da punti diversi. Otto rem bastano al nome piu' lungo, "Vetro colorato" e il
+   suo "Coloured glass" inglese. */
 .materia {
   display: grid;
-  grid-template-columns: minmax(6.5rem, auto) 1fr;
+  grid-template-columns: 8rem 1fr;
   gap: var(--sp-1) var(--sp-3);
   padding-block: clamp(6px, 1.1vh, 11px);
   border-block-start: 1px solid var(--linea-inv);
@@ -1329,6 +1338,12 @@ p, li, figcaption { text-wrap: pretty; }
   .atto__nota { display: none; }
   .materia__nota { display: none; }
   .materia { grid-template-columns: 1fr; }
+}
+
+/* Su schermo stretto il nome e la nota vanno incolonnati: affiancati, alla
+   nota resterebbero poco piu' di venti caratteri per riga. */
+@media (max-width: 560px) {
+  .materia { grid-template-columns: 1fr; gap: 2px; }
 }
 
 /* --------------------------------------------------------------------------

@@ -47,6 +47,10 @@
       "quattro": {
         "nome": "Vetro colorato",
         "nota": "Superficie satinata che contrasta con il colore, per targhe, insegne e complementi."
+      },
+      "cinque": {
+        "nome": "Pietra",
+        "nota": "Ardesia e pietre a grana fine: il segno resta chiaro sul fondo scuro, per targhe e sottopiatti."
       }
     },
     "hud": {
@@ -79,10 +83,6 @@
       "tre": {
         "nome": "ABS e ASA",
         "nota": "Tengono il calore e la luce del sole, per componenti tecnici."
-      },
-      "quattro": {
-        "nome": "TPU",
-        "nota": "Flessibile ed elastico, per guarnizioni, piedini e protezioni."
       }
     },
     "hud": {
@@ -165,8 +165,7 @@
         "PLA",
         "PETG",
         "ABS",
-        "ASA",
-        "TPU flessibile"
+        "ASA"
       ]
     },
     "nota": "Altri materiali su richiesta, previa prova di lavorabilità."
@@ -196,8 +195,6 @@
     "titolo": "Raccontaci il tuo progetto",
     "testo": "Scrivici con una descrizione, una misura o una foto di riferimento: rispondiamo con una valutazione di fattibilità e un preventivo.",
     "email": "Scrivici una mail",
-    "telefono": "Telefono",
-    "dove": "Dove siamo",
     "cta": "Invia una richiesta",
     "nota": "Rispondiamo entro [da confermare] giorni lavorativi."
   },

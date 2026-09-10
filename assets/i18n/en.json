@@ -47,6 +47,10 @@
       "quattro": {
         "nome": "Coloured glass",
         "nota": "A satin surface that contrasts with the colour, for plaques, signs and fittings."
+      },
+      "cinque": {
+        "nome": "Stone",
+        "nota": "Slate and fine-grained stone: the mark stays pale against the dark ground, for plaques and coasters."
       }
     },
     "hud": {
@@ -79,10 +83,6 @@
       "tre": {
         "nome": "ABS and ASA",
         "nota": "They withstand heat and sunlight, for technical components."
-      },
-      "quattro": {
-        "nome": "TPU",
-        "nota": "Flexible and elastic, for gaskets, feet and protective parts."
       }
     },
     "hud": {
@@ -165,8 +165,7 @@
         "PLA",
         "PETG",
         "ABS",
-        "ASA",
-        "Flexible TPU"
+        "ASA"
       ]
     },
     "nota": "Other materials on request, subject to a workability test."
@@ -196,8 +195,6 @@
     "titolo": "Tell us about your project",
     "testo": "Write to us with a description, a measurement or a reference photo: we reply with a feasibility assessment and a quote.",
     "email": "Send us an email",
-    "telefono": "Phone",
-    "dove": "Where we are",
     "cta": "Send a request",
     "nota": "We reply within [to be confirmed] working days."
   },
