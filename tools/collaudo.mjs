@@ -183,7 +183,9 @@ async function vaiA(pagina, sezione, q) {
   const errori = [];
   p.on('pageerror', (e) => errori.push(e.message));
   const media = [];
-  p.on('request', (r) => /\.(mp4|webm)$/.test(r.url()) && media.push(r.url()));
+  /* gli indirizzi portano il ?v= della versione: il punto interrogativo
+     va previsto, altrimenti il controllo non riconosce nessun video */
+  p.on('request', (r) => /\.(mp4|webm)(\?|$)/.test(r.url()) && media.push(r.url()));
   await p.goto(SITO, { waitUntil: 'networkidle' });
   await p.waitForTimeout(500);
   const prima = media.length;

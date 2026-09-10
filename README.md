@@ -74,6 +74,28 @@ Sostituisci `<utente>` con il nome utente GitHub proprietario del repository.
   essere `Full (strict)`. Con `Flexible` il sito entra in un ciclo infinito di
   reindirizzamenti.
 
+### Se tieni il proxy acceso: la cache
+
+Se la nuvoletta e' **arancione**, Cloudflare mette in cache CSS, JavaScript,
+immagini e video per ore, ma lascia passare l'HTML. Dopo una pubblicazione
+questo produce il caso peggiore: **markup nuovo con fogli di stile e codice
+vecchi**, cioe' una pagina che sembra non essersi aggiornata affatto.
+
+Il sito si difende da solo: gli indirizzi degli asset portano in coda un
+`?v=<impronta>` calcolato sul loro contenuto, quindi un file modificato diventa
+un indirizzo nuovo che nessuna cache puo' avere. Va pero' **rigenerato prima di
+pubblicare**, ogni volta che si tocca un file dentro `assets/`:
+
+```bash
+node tools/marca-versioni.mjs
+```
+
+Se ti trovi comunque davanti a una pagina vecchia, su Cloudflare:
+**Caching → Configuration → Purge Everything**.
+
+Con la nuvoletta **grigia** (*DNS only*), che e' la configurazione consigliata
+qui sopra, il problema non si pone: non c'e' nessuna cache in mezzo.
+
 ### Passo 3 — attivare HTTPS
 
 Quando in *Settings → Pages* compare il segno di spunta verde, attiva
@@ -266,6 +288,11 @@ node tools/gen-brand-images.mjs  # richiede il server locale attivo
 # riallinea il tracciato del monogramma dentro index.html all'asset di brand
 python3 tools/sync-monogramma.py
 python3 tools/sync-monogramma.py --check   # verifica soltanto
+
+# rimarca gli asset con l'impronta del contenuto: DA FARE PRIMA DI PUBBLICARE
+# ogni volta che cambia un file dentro assets/ (vedi sezione 2)
+node tools/marca-versioni.mjs
+node tools/marca-versioni.mjs --check      # verifica soltanto
 ```
 
 Il monogramma è un unico tracciato SVG da 21 KB, presente **una sola volta**

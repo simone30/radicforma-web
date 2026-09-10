@@ -121,7 +121,11 @@
 
   function carica(lingua) {
     if (dizionari[lingua]) return Promise.resolve(dizionari[lingua]);
-    return fetch('./assets/i18n/' + lingua + '.json')
+    /* La versione arriva da index.html, dove la scrive tools/marca-versioni.mjs.
+       Senza, dietro il proxy di Cloudflare i dizionari resterebbero in cache
+       per ore anche dopo una modifica ai testi. */
+    var versione = document.documentElement.dataset.versione;
+    return fetch('./assets/i18n/' + lingua + '.json' + (versione ? '?v=' + versione : ''))
       .then(function (r) {
         if (!r.ok) throw new Error('i18n ' + lingua + ': HTTP ' + r.status);
         return r.json();
