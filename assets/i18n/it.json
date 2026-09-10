@@ -5,7 +5,8 @@
   },
   "a11y": {
     "skip": "Vai al contenuto",
-    "menu": "Apri il menu di navigazione",
+    "menuApri": "Apri il menu di navigazione",
+    "menuChiudi": "Chiudi il menu di navigazione",
     "lingua": "Selezione della lingua"
   },
   "brand": {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-versione="1b197146">
+<html lang="it" data-versione="3544e706">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,7 +37,7 @@
 
 <link rel="preload" href="./assets/fonts/cormorant-garamond-latin-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="./assets/fonts/manrope-latin-500.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="./assets/css/style.css?v=1b197146">
+<link rel="stylesheet" href="./assets/css/style.css?v=3544e706">
 <!-- Senza JavaScript non c'e' animazione a scorrimento: il contenuto deve
      restare tutto visibile, non a opacita' zero in attesa di qualcuno. -->
 <noscript><style>
@@ -96,11 +96,17 @@
     </svg>
   </a>
 
+  <!-- Lo stesso tasto apre e chiude: le tre righe diventano una croce. Le
+       diciture per il lettore di schermo stanno in data-apri e data-chiudi,
+       che i18n.js riempie, e main.js sceglie quale mettere in aria-label. -->
   <button class="navbar__apri" id="apri-menu" aria-expanded="false" aria-controls="nav-principale"
-          data-i18n-attr="aria-label:a11y.menu">
-    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor"
-         stroke-width="1.4" aria-hidden="true">
-      <path d="M3 8h20M3 13h20M3 18h20"></path>
+          data-i18n-attr="aria-label:a11y.menuApri,data-apri:a11y.menuApri,data-chiudi:a11y.menuChiudi"
+          data-apri="Apri il menu di navigazione" data-chiudi="Chiudi il menu di navigazione">
+    <svg class="navbar__icona" width="26" height="26" viewBox="0 0 26 26" fill="none"
+         stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+      <path class="navbar__riga navbar__riga--alta"  d="M3 8h20"></path>
+      <path class="navbar__riga navbar__riga--mezza" d="M3 13h20"></path>
+      <path class="navbar__riga navbar__riga--bassa" d="M3 18h20"></path>
     </svg>
   </button>
 
@@ -179,10 +185,10 @@
 
           <!-- il piano di lavoro inclinato: e' la camera che lo inclina -->
           <div class="laser__piano" data-piano>
-            <img class="laser__legno" src="./assets/img/legno-disco.webp?v=1b197146"
-                 srcset="./assets/img/legno-disco-600.webp?v=1b197146 600w,
-                         ./assets/img/legno-disco-900.webp?v=1b197146 900w,
-                         ./assets/img/legno-disco.webp?v=1b197146 1100w"
+            <img class="laser__legno" src="./assets/img/legno-disco.webp?v=3544e706"
+                 srcset="./assets/img/legno-disco-600.webp?v=3544e706 600w,
+                         ./assets/img/legno-disco-900.webp?v=3544e706 900w,
+                         ./assets/img/legno-disco.webp?v=3544e706 1100w"
                  sizes="(max-width: 1180px) 62vw, 50vw"
                  alt="" width="1100" height="1100"
                  loading="lazy" decoding="async" fetchpriority="low">
@@ -254,11 +260,11 @@
       <figure class="atto__video" data-video>
         <video class="atto__video-elemento" muted loop playsinline preload="none"
                width="960" height="960"
-               data-poster="./assets/video/incisione-poster.webp?v=1b197146"
+               data-poster="./assets/video/incisione-poster.webp?v=3544e706"
                data-i18n-attr="aria-label:incisione.video.titolo"
                aria-label="Incisione del monogramma su legno">
-          <source src="./assets/video/incisione.webm?v=1b197146" type="video/webm">
-          <source src="./assets/video/incisione.mp4?v=1b197146" type="video/mp4">
+          <source src="./assets/video/incisione.webm?v=3544e706" type="video/webm">
+          <source src="./assets/video/incisione.mp4?v=3544e706" type="video/mp4">
         </video>
         <figcaption class="dato-tecnico" data-i18n="incisione.video.didascalia">Il monogramma inciso riga dopo riga su una sezione di tronco.</figcaption>
       </figure>
@@ -416,11 +422,11 @@
       <figure class="atto__video" data-video>
         <video class="atto__video-elemento" muted loop playsinline preload="none"
                width="960" height="960"
-               data-poster="./assets/video/stampa-poster.webp?v=1b197146"
+               data-poster="./assets/video/stampa-poster.webp?v=3544e706"
                data-i18n-attr="aria-label:stampa3d.video.titolo"
                aria-label="Stampa 3D del monogramma">
-          <source src="./assets/video/stampa.webm?v=1b197146" type="video/webm">
-          <source src="./assets/video/stampa.mp4?v=1b197146" type="video/mp4">
+          <source src="./assets/video/stampa.webm?v=3544e706" type="video/webm">
+          <source src="./assets/video/stampa.mp4?v=3544e706" type="video/mp4">
         </video>
         <figcaption class="dato-tecnico" data-i18n="stampa3d.video.didascalia">Lo stesso monogramma costruito strato dopo strato sul piatto di stampa.</figcaption>
       </figure>
@@ -663,10 +669,10 @@
   </div>
 </footer>
 
-<script src="./assets/vendor/gsap.min.js?v=1b197146" defer></script>
-<script src="./assets/vendor/ScrollTrigger.min.js?v=1b197146" defer></script>
-<script src="./assets/js/i18n.js?v=1b197146" defer></script>
-<script src="./assets/js/main.js?v=1b197146" defer></script>
-<script src="./assets/js/scene.js?v=1b197146" defer></script>
+<script src="./assets/vendor/gsap.min.js?v=3544e706" defer></script>
+<script src="./assets/vendor/ScrollTrigger.min.js?v=3544e706" defer></script>
+<script src="./assets/js/i18n.js?v=3544e706" defer></script>
+<script src="./assets/js/main.js?v=3544e706" defer></script>
+<script src="./assets/js/scene.js?v=3544e706" defer></script>
 </body>
 </html>

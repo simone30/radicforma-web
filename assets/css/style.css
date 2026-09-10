@@ -388,6 +388,20 @@ p, li, figcaption { text-wrap: pretty; }
 /* Menu su schermi stretti */
 .navbar__apri { display: none; color: var(--avorio); padding: var(--sp-1); }
 
+/* Le tre righe si trasformano in una croce quando il menu e' aperto: e' lo
+   stesso tasto ad aprire e a chiudere, e la forma dice in quale stato si e'.
+   transform-box: view-box perche' l'origine sia in coordinate del disegno e non
+   del riquadro del singolo tratto, che e' alto un pixel. */
+.navbar__riga {
+  transform-box: view-box;
+  transform-origin: 13px 13px;
+  transition: transform var(--dur-2) var(--ease-out),
+              opacity var(--dur-1) var(--ease-out);
+}
+.navbar__apri[aria-expanded='true'] .navbar__riga--alta  { transform: translateY(5px) rotate(45deg); }
+.navbar__apri[aria-expanded='true'] .navbar__riga--mezza { opacity: 0; }
+.navbar__apri[aria-expanded='true'] .navbar__riga--bassa { transform: translateY(-5px) rotate(-45deg); }
+
 @media (max-width: 860px) {
   .navbar__apri { display: inline-flex; margin-inline-start: auto; }
   .navbar__nav {
@@ -402,8 +416,34 @@ p, li, figcaption { text-wrap: pretty; }
   }
   .navbar__nav[data-aperto='true'] { transform: translateY(0); }
   .navbar__nav .navbar__link { font-size: 1.05rem; color: var(--avorio); }
-  .navbar.is-attaccata .navbar__nav .navbar__link { color: var(--avorio); }
-  .navbar__nav .lingua__voce { color: var(--avorio); }
+
+  /* Il pannello ha un fondo scuro tutto suo, quindi il testo dentro resta
+     chiaro anche quando la barra e' nello stato "attaccata". Senza questa
+     riga, appena si scorreva la pagina le voci IT ed EN diventavano verde
+     scuro su verde scuro: restavano cliccabili, ma invisibili. */
+  .navbar.is-attaccata .navbar__nav,
+  .navbar.is-attaccata .navbar__nav .navbar__link,
+  .navbar.is-attaccata .navbar__nav .lingua__voce { color: var(--avorio); }
+
+  .navbar__nav .lingua {
+    margin-block-start: var(--sp-2);
+    padding-block-start: var(--sp-4);
+    border-block-start: 1px solid var(--linea-inv);
+    width: 100%;
+  }
+  .navbar__nav .lingua__voce { color: var(--avorio); font-size: 0.95rem; padding: var(--sp-2) var(--sp-1); }
+
+  /* Il pannello e' in position fixed, quindi si disegna sopra gli elementi non
+     posizionati: senza questo copriva il tasto, e una volta aperto il menu non
+     c'era piu' niente da premere per richiuderlo. */
+  .navbar__marchio,
+  .navbar__apri { position: relative; z-index: 1; }
+
+  /* Con il menu aperto il fondo sotto al tasto e al marchio e' quello scuro del
+     pannello, quale che sia lo stato della barra. */
+  .navbar.is-menu-aperto .navbar__apri,
+  .navbar.is-attaccata.is-menu-aperto .navbar__apri { color: var(--avorio); }
+  .navbar.is-attaccata.is-menu-aperto .navbar__marchio .scritta__nome { fill: var(--avorio); }
 }
 
 /* L'apertura: hero piu' primo atto. Vedi il commento in index.html. */

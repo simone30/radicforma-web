@@ -29,20 +29,44 @@
   var apri = document.getElementById('apri-menu');
   var nav  = document.getElementById('nav-principale');
 
-  function chiudiMenu() {
-    nav.dataset.aperto = 'false';
-    apri.setAttribute('aria-expanded', 'false');
+  /* Lo stato del menu si scrive in un punto solo. Oltre al pannello serve una
+     classe sulla barra: il pannello e' in position fixed e copre il tasto e il
+     marchio, che vanno riportati sopra e ricolorati sul fondo scuro. */
+  function menu(aperto) {
+    nav.dataset.aperto = String(aperto);
+    apri.setAttribute('aria-expanded', String(aperto));
+    navbar.classList.toggle('is-menu-aperto', aperto);
+    etichettaMenu();
   }
 
-  apri.addEventListener('click', function () {
-    var aperto = nav.dataset.aperto === 'true';
-    nav.dataset.aperto = aperto ? 'false' : 'true';
-    apri.setAttribute('aria-expanded', String(!aperto));
-  });
+  function menuAperto() { return nav.dataset.aperto === 'true'; }
+  function chiudiMenu() { menu(false); }
+
+  /* Lo stesso tasto apre e chiude, quindi la dicitura per il lettore di schermo
+     deve dire cosa fara' adesso. Le due versioni tradotte arrivano da i18n.js
+     in data-apri e data-chiudi. */
+  function etichettaMenu() {
+    var testo = menuAperto() ? apri.dataset.chiudi : apri.dataset.apri;
+    if (testo) apri.setAttribute('aria-label', testo);
+  }
+
+  apri.addEventListener('click', function () { menu(!menuAperto()); });
 
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && nav.dataset.aperto === 'true') { chiudiMenu(); apri.focus(); }
+    if (e.key === 'Escape' && menuAperto()) { chiudiMenu(); apri.focus(); }
   });
+
+  /* Il pannello non copre tutto lo schermo: un tocco sulla pagina sotto lo
+     chiude, come ci si aspetta da un menu a tendina. */
+  document.addEventListener('click', function (e) {
+    if (!menuAperto()) return;
+    if (nav.contains(e.target) || apri.contains(e.target)) return;
+    chiudiMenu();
+  });
+
+  /* Al cambio lingua i18n.js riscrive aria-label con la dicitura di apertura,
+     anche a menu aperto: qui si rimette quella giusta. */
+  document.addEventListener('radicforma:lingua', etichettaMenu);
 
   /* ---------------------------------------------------------------- ancore */
   /* Lo scorrimento morbido è gestito qui e non con scroll-behavior: smooth sul

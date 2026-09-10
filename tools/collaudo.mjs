@@ -204,7 +204,67 @@ async function vaiA(pagina, sezione, q) {
   await p.close();
 }
 
-/* ---- 7. il tracciato del monogramma non e' stato duplicato --------------- */
+/* ---- 7. il menu su schermo stretto, con la pagina gia' scorsa ------------
+   E' il caso che si era rotto: con la barra nello stato "attaccata" le voci
+   IT ed EN prendevano il colore del testo su fondo chiaro e sparivano dentro
+   il pannello scuro, e il pannello in position fixed copriva il tasto. */
+{
+  const p = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  await p.goto(SITO + '?lang=it', { waitUntil: 'networkidle' });
+  await p.waitForTimeout(400);
+  await p.evaluate(() => scrollTo(0, document.getElementById('servizi').offsetTop + 200));
+  await p.waitForTimeout(500);
+
+  const attaccata = await p.evaluate(() =>
+    document.getElementById('navbar').classList.contains('is-attaccata'));
+
+  await p.click('#apri-menu');
+  await p.waitForTimeout(500);
+
+  const r = await p.evaluate(() => {
+    const contrasto = (a, b) => {
+      const lum = (c) => {
+        const [r, g, bl] = c.match(/\d+/g).slice(0, 3).map((v) => {
+          const s = v / 255;
+          return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+      };
+      const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
+      return (x + 0.05) / (y + 0.05);
+    };
+    const pannello = getComputedStyle(document.getElementById('nav-principale')).backgroundColor;
+    const voci = [...document.querySelectorAll('.navbar__nav .lingua__voce')];
+    const tasto = document.getElementById('apri-menu');
+    const rt = tasto.getBoundingClientRect();
+    const sopra = document.elementFromPoint(rt.x + rt.width / 2, rt.y + rt.height / 2);
+    return {
+      contrastoLingua: +Math.min(...voci.map((v) =>
+        contrasto(getComputedStyle(v).color, pannello))).toFixed(2),
+      tastoRaggiungibile: tasto.contains(sopra) || sopra === tasto,
+      diceChiudi: /chiudi/i.test(tasto.getAttribute('aria-label') || ''),
+    };
+  });
+
+  await p.click('.navbar__nav .lingua__voce[data-lang="en"]');
+  await p.waitForTimeout(600);
+  const lingua = await p.evaluate(() => document.documentElement.lang);
+
+  await p.click('#apri-menu');
+  await p.waitForTimeout(400);
+  const chiuso = await p.evaluate(() =>
+    document.getElementById('nav-principale').dataset.aperto === 'false');
+
+  ok('7a. menu a pagina scorsa: IT/EN leggibili e cambiano lingua',
+     attaccata && r.contrastoLingua >= 4.5 && lingua === 'en',
+     `contrasto ${r.contrastoLingua}:1, lingua ${lingua}`);
+  ok('7b. il tasto resta premibile e richiude il menu',
+     r.tastoRaggiungibile && r.diceChiudi && chiuso,
+     JSON.stringify(r) + ' chiuso: ' + chiuso);
+  await p.close();
+}
+
+/* ---- 8. il tracciato del monogramma non e' stato duplicato --------------- */
 {
   const p = await browser.newPage({ viewport: { width: 1600, height: 950 } });
   await p.goto(SITO, { waitUntil: 'networkidle' });
@@ -213,7 +273,7 @@ async function vaiA(pagina, sezione, q) {
     tracciati: document.querySelectorAll('path[id="rf-path"]').length,
     usi: document.querySelectorAll('use').length,
   }));
-  ok('7. il tracciato esiste una volta sola ed e\' riusato',
+  ok('8. il tracciato esiste una volta sola ed e\' riusato',
      n.tracciati === 1 && n.usi > 5, `path ${n.tracciati}, use ${n.usi}`);
   await p.close();
 }
