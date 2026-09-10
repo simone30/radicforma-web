@@ -1,6 +1,6 @@
 # Crediti delle immagini
 
-## legno-sezione.webp, legno-disco.webp, legno-disco-600.webp
+## legno-disco.webp, legno-disco-900.webp, legno-disco-600.webp
 
 Sezione di tronco di abete di Douglas.
 
@@ -14,9 +14,19 @@ L'originale (4896x3264) e' un reperto didattico con cartellini applicati sopra.
 Il ritaglio circolare in `tools/gen-legno.mjs` li esclude e riporta il colore a
 toni naturali: il legno esposto e' verniciato e vira all'arancione.
 
+Il ritaglio e' spostato a sinistra del midollo. Dal midollo parte una fessura di
+ritiro che, con il ritaglio centrato, passava esattamente sotto il marchio
+inciso e lo tagliava in due.
+
 Per rigenerare le immagini serve l'originale in `assets/img/_sorgente-legno.jpg`
 (escluso dal repository perche' pesa 6,9 MB): si riscarica dall'URL qui sopra.
 
 ## og-image.png
 
 Generata da `tools/gen-brand-images.mjs` a partire dal monogramma di brand.
+
+## assets/video/
+
+I due video non sono riprese: sono registrazioni delle animazioni del sito
+stesso, prodotte da `tools/gen-video.mjs`. Contengono quindi la stessa foto di
+legno di cui sopra, e nient'altro di terzi.

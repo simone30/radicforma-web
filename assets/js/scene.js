@@ -1,268 +1,365 @@
 /* ==========================================================================
-   RADIC FORMA — la scena scroll
+   RADIC FORMA — gli atti animati
 
-   Un solo ScrollTrigger con scrub guida una progress 0 → 1 lungo i 500vh
-   della sezione. La progress è divisa in tre atti; ogni atto scrive lo stato
-   completo a partire dalla progress, mai per incrementi: così uno scroll
-   veloce, o all'indietro, non può lasciare la scena in uno stato incoerente.
+   Due sezioni, un ScrollTrigger ciascuna. Ogni atto ha una corsa di 320vh e
+   riceve una progress 0 → 1; da quella progress si scrive lo stato COMPLETO
+   della scena, mai per incrementi. Cosi' uno scroll veloce, o all'indietro,
+   non puo' lasciare la scena a meta' di qualcosa.
 
-   I tempi si regolano tutti da qui sotto.
+   Le due inquadrature sono ravvicinate: il piano di lavoro sborda dal
+   fotogramma e il marchio sta in primo piano. Il piano e' l'unico elemento a
+   ruotare, e tutto quello che gli sta sopra — marchio, punto di incisione,
+   fascio, strati, ombra — e' suo figlio: le posizioni sulla superficie sono
+   esatte per costruzione, senza calcoli di proiezione.
+
+   Su schermo stretto e per chi chiede meno movimento non si anima niente:
+   al posto dell'arte c'e' il video dell'animazione, con il testo sotto.
+
+   I tempi si regolano tutti da T, qui sotto.
    ========================================================================== */
 (function () {
   'use strict';
 
   /* ------------------------------------------------------------- costanti */
   var T = {
-    /* confini dei tre atti sulla progress complessiva */
-    laser:   [0.00, 0.42],
-    camera:  [0.42, 0.56],
-    stampa:  [0.56, 1.00],
+    scrub: 0.7,
 
-    /* atto 1 */
-    burn:      [0.06, 0.90],   /* quando incide, dentro l'atto laser */
-    laserFade: [0.00, 0.08],   /* comparsa del pannello tecnico */
+    /* ------------------------------------------------------ atto: laser */
+    laser: {
+      /* la camera si alza piano per tutta la durata dell'atto */
+      inclDa: 53, inclA: 40,
+      zoomDa: 1.09, zoomA: 1.00,
 
-    /* atto 3 */
-    stampaFade: [0.00, 0.10],  /* comparsa di piatto, ugello e pannello */
-    deposito:   [0.04, 0.78],  /* quando si depositano gli strati */
-    finale:     [0.80, 1.00],  /* rotazione finale e chiamata all'azione */
+      hud:     [0.02, 0.11],
+      buio:    [0.04, 0.52],   /* il fondo scivola dal verde dell'hero al nero */
+      burn:    [0.12, 0.80],   /* quando incide davvero */
+      testo:   [0.05, 0.58],   /* finestra dei blocchi di testo */
+      materie: [0.34, 0.90]    /* le voci dei materiali, una dopo l'altra */
+    },
 
-    corsa:   5,                /* altezze di viewport della corsa (500vh) */
-    scrub:   0.6,
-    tilt:    54,               /* gradi di rotazione della camera nell'atto 2 */
+    /* ----------------------------------------------------- atto: stampa */
+    stampa: {
+      inclDa: 70, inclA: 59,
+      zoomDa: 1.04, zoomA: 1.00,
 
-    strati:      { desktop: 28, mobile: 14 },
-    passoStrato: { desktop: 2,  mobile: 1.6 }   /* px di separazione lungo Z */
+      hud:      [0.01, 0.08],
+      entrata:  [0.00, 0.07],  /* il piatto arriva e la testa compare */
+      deposito: [0.07, 0.82],  /* quando si depositano gli strati */
+      finale:   [0.84, 1.00],  /* rotazione finale */
+      testo:    [0.02, 0.56],
+      materie:  [0.32, 0.90],
+
+      strati:      { largo: 32,  stretto: 18 },
+      passoStrato: { largo: 2.4, stretto: 1.8 }   /* px fra due strati, lungo Z */
+    }
   };
 
-  /* --------------------------------------------------------------- utilità */
+  /* Sopra questa larghezza si anima; sotto si mostra il video. Deve restare
+     allineata alla media query di style.css, sezione 16.6. */
+  var LARGHEZZA_ANIMAZIONE = '(min-width: 901px)';
+
+  /* --------------------------------------------------------------- utilita' */
   function clamp(v, min, max) { return v < min ? min : v > max ? max : v; }
 
   /* Riporta p, che varia fra inMin e inMax, nell'intervallo 0..1 */
   function mapRange(p, inMin, inMax) {
-    if (inMax === inMin) return 0;
+    if (inMax === inMin) return p >= inMax ? 1 : 0;
     return clamp((p - inMin) / (inMax - inMin), 0, 1);
   }
-
   function tra(p, intervallo) { return mapRange(p, intervallo[0], intervallo[1]); }
 
-  /* ------------------------------------------------------------- elementi */
-  var scena = document.querySelector('[data-scena]');
-  if (!scena) return;
+  /* Curve. Niente rimbalzi: partenza e arrivo sempre morbidi, come deve essere
+     un movimento di camera. */
+  function morbido(t) {                                  /* accelera e frena */
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+  function arrivo(t) { return 1 - Math.pow(1 - t, 3); }  /* frena solo in fondo */
 
-  var statica  = document.getElementById('scena-statica');
-  var palco    = scena.querySelector('.scena__palco');
-  var legno    = scena.querySelector('[data-legno]');
-  var incisione = scena.querySelector('.incisione');
-  var burnRect = scena.querySelector('.incisione__burn');
-  var hotRect  = scena.querySelector('.incisione__hot');
-  var hudLaser = scena.querySelector('[data-hud-laser]');
-  var hudPot   = scena.querySelector('[data-hud="potenza"]');
+  function fra(da, a, t) { return da + (a - da) * t; }
 
-  var piatto    = scena.querySelector('[data-piatto]');
-  var pila      = scena.querySelector('[data-pila]');
-  var ombra     = scena.querySelector('[data-ombra]');
-  var ugello    = scena.querySelector('[data-ugello]');
-  var hudStampa = scena.querySelector('[data-hud-stampa]');
-  var hudStrato = scena.querySelector('[data-hud="strato"]');
-  var cta       = scena.querySelector('[data-cta-scena]');
-
-  var motoRidotto = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var schermoStretto = window.matchMedia('(max-width: 560px) and (orientation: portrait)');
-
-  /* Su schermo stretto la scena resta, a meno che il dispositivo non prometta
-     poco: pochi core o poca memoria. Un telefono recente la regge bene, e
-     spegnerla a tutti significherebbe non mostrarla quasi a nessuno.
-     Se poi i fotogrammi non tengono davvero, il controllo qui sotto degrada
-     la scena mentre gira. */
-  function dispositivoModesto() {
-    var core = navigator.hardwareConcurrency || 8;
-    var mem  = navigator.deviceMemory || 8;
-    return core <= 4 || mem <= 4;
+  function scriviVar(el, nome, valore) {
+    if (el) el.style.setProperty(nome, valore);
   }
 
-  var degradato = false;
-
-  /* ----------------------------------------------------- misure della scena
-     Servono a tenere allineati fra loro gli elementi della scena quando la
-     finestra cambia misura. */
-  var M = { top: 0, altezza: 0, lato: 1 };
-
-  function misura() {
-    if (!legno || !incisione) return;
-    var rLegno = legno.getBoundingClientRect();
-    var rInc   = incisione.getBoundingClientRect();
-    if (!rLegno.height) return;
-    M.lato    = rLegno.height;
-    M.top     = rInc.top - rLegno.top;   /* offset dell'incisione dentro il disco */
-    M.altezza = rInc.height;
-  }
-
-  /* ============================================================ ATTO 1
-     Incisione laser: rivelazione a scansione raster, dall'alto verso il basso.
-     ============================================================ */
-  function attoLaser(p) {
-    var q = tra(p, T.laser);                 /* 0..1 dentro l'atto */
-    var avanzamento = tra(q, T.burn);        /* quanto è già inciso */
-    var presenza = tra(q, T.laserFade);
-
-    /* Il disco e' visibile fin dal primo fotogramma del palco: sale dal basso
-       insieme ad esso mentre l'hero si allontana, e le due sezioni si leggono
-       come un movimento solo. Farlo comparire in dissolvenza lasciava un
-       tratto di schermo vuoto fra il marchio e il disco. */
-
-    /* la bruciatura cresce per scaleY: nessun reflow del layout SVG */
-    burnRect.style.transform = 'scaleY(' + avanzamento + ')';
-
-    /* il fronte caldo insegue il bordo inferiore della bruciatura */
-    var yFronte = avanzamento * 383;                    /* coordinate SVG */
-    hotRect.style.transform = 'translateY(' + (yFronte - 4.5) + 'px)';
-
-    /* è acceso solo mentre incide davvero */
-    var acceso = avanzamento > 0.001 && avanzamento < 0.999 ? 1 : 0;
-    hotRect.style.opacity = acceso;
-    hotRect.setAttribute('fill', avanzamento < 0.5 ? '#FFD8A0' : '#B08A4F');
-
-    hudLaser.style.setProperty('--hud-op', String(presenza * (1 - tra(q, [0.94, 1]))));
-
-    if (hudPot) {
-      /* la potenza oscilla un poco, come su una macchina vera */
-      var pot = 74 + Math.round(Math.sin(avanzamento * 11) * 4 + 4);
-      hudPot.textContent = pot + '%';
-    }
-  }
-
-  /* ============================================================ ATTO 2
-     Cambio di prospettiva. Un solo movimento di camera: il piano su cui
-     poggia il legno si inclina, il disco arretra e il piatto di stampa
-     entra scivolando dal fondo dello stesso piano.
-     Oltre l'atto il valore resta a 1, così lo stato dell'atto 3 è coerente.
-     ============================================================ */
-  function attoCamera(p) {
-    var c = tra(p, T.camera);
-
-    palco.style.setProperty('--tilt', (c * T.tilt).toFixed(2) + 'deg');
-    palco.style.setProperty('--buio', c.toFixed(3));
-
-    /* il disco resta visibile come oggetto già finito, più piccolo e in fondo */
-    legno.style.setProperty('--legno-s', (1 - c * 0.72).toFixed(3));
-    legno.style.setProperty('--legno-y', (-c * 46).toFixed(2) + '%');
-
-    /* il piatto entra dal fondo del piano */
-    piatto.style.setProperty('--piatto-op', c.toFixed(3));
-    piatto.style.setProperty('--piatto-y', ((1 - c) * 55).toFixed(2) + '%');
-
-    hudStampa.style.setProperty('--hud-op', c.toFixed(3));
-  }
-
-  /* ============================================================ ATTO 3
-     Stampa 3D: estrusione vera in CSS 3D. N copie del monogramma impilate
-     lungo Z, che diventano visibili una dopo l'altra.
-     ============================================================ */
-  var strati = [];          /* i div .strato, dal più basso al più alto */
-  var nStrati = 0;
-  var passoStrato = T.passoStrato.desktop;
-
-  function costruisciStrati() {
-    if (!pila) return;
-    var mobile = window.matchMedia('(max-width: 760px)').matches;
-    var n = mobile ? T.strati.mobile : T.strati.desktop;
-    var passo = mobile ? T.passoStrato.mobile : T.passoStrato.desktop;
-
-    if (n === nStrati) return;    /* già costruiti per questa fascia */
-    nStrati = n;
-    passoStrato = passo;
-    strati.length = 0;
-    pila.textContent = '';
-    pila.style.setProperty('--passo', passo + 'px');
-
+  /* Fa entrare una fila di elementi uno dopo l'altro dentro una finestra di
+     progress. Le finestre si sovrappongono: e' quello che rende la cascata
+     continua invece di una serie di scatti. */
+  function cascata(elenco, q, finestra, propOp, propY, spostamento) {
+    var n = elenco.length;
+    var ultimo = 0;
+    if (!n) return ultimo;
+    var passo = (finestra[1] - finestra[0]) / n;
     for (var i = 0; i < n; i++) {
-      var div = document.createElement('div');
-      div.className = 'strato';
-      div.style.setProperty('--i', String(i));
-
-      /* Gli strati alternano due verdi: è quello che rende visibili le righe.
-         L'ultimo è più chiaro e saturo, come il filamento appena deposto. */
-      var colore = i % 2 === 0 ? '#6C7A47' : '#5B6739';
-      if (i === n - 1) colore = '#8B9A5C';
-
-      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('viewBox', '0 0 477 383');
-      svg.setAttribute('aria-hidden', 'true');
-      var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-      use.setAttribute('href', '#rf-path');
-      use.setAttribute('fill', colore);
-      svg.appendChild(use);
-      div.appendChild(svg);
-
-      pila.appendChild(div);
-      strati.push(div);
+      var da = finestra[0] + i * passo;
+      var t = arrivo(mapRange(q, da, da + passo * 1.8));
+      elenco[i].style.setProperty(propOp, t.toFixed(3));
+      elenco[i].style.setProperty(propY, ((1 - t) * spostamento).toFixed(1) + 'px');
+      ultimo = t;
     }
+    return ultimo;   /* quanto e' entrato l'ultimo elemento della fila */
   }
 
-  function attoStampa(p) {
-    var q = tra(p, T.stampa);
-    var presenza = tra(q, T.stampaFade);
+  /* =========================================================== ATTO LASER */
+  function costruisciLaser(sezione) {
+    var C = T.laser;
+    var interno = sezione.querySelector('.atto__interno');
+    var laser   = sezione.querySelector('.laser');
+    var piano   = sezione.querySelector('[data-piano]');
+    var raggio  = sezione.querySelector('[data-raggio]');
+    var burn    = sezione.querySelector('.incisione__burn');
+    var hot     = sezione.querySelector('.incisione__hot');
+    var fuoco   = sezione.querySelector('[data-fuoco]');
+    var hud     = sezione.querySelector('[data-hud]');
+    var hudPot  = sezione.querySelector('[data-hud="potenza"]');
+    var hudRiga = sezione.querySelector('[data-hud="riga"]');
 
-    ugello.style.setProperty('--ugello-op',
-      String(presenza * (1 - tra(q, [0.90, 0.99]))));
+    var passi   = sezione.querySelectorAll('.atto__testo > [data-passo]');
+    var materie = sezione.querySelectorAll('.materia');
 
-    /* quanti strati sono stesi: stato assoluto, mai incrementale */
-    var deposito = tra(q, T.deposito);
-    var stesi = Math.round(deposito * nStrati);
+    /* altezza del marchio nel suo sistema di coordinate SVG */
+    var RIGHE = 383;
 
-    for (var i = 0; i < nStrati; i++) {
-      /* la classe cambia solo quando serve: niente scritture inutili nel DOM */
-      var deve = i < stesi;
-      if (strati[i].classList.contains('e-steso') !== deve) {
-        strati[i].classList.toggle('e-steso', deve);
+    /* Dove sta la sorgente nel fotogramma, in frazioni di larghezza e altezza.
+       Deve coincidere con la posizione di .sorgente in style.css. */
+    var SORGENTE = { x: 0.24, y: 0.15 };
+
+    /* Tende il raggio dalla sorgente al punto di incisione.
+
+       Il riquadro dell'inquadratura si misura nello stesso passaggio di quello
+       del punto, e non una volta sola all'avvio: al momento dell'avvio la
+       sezione e' ancora sotto lo schermo, e un riquadro preso li' porta il
+       raggio fuori dal fotogramma.
+
+       La misura si fa in fondo al fotogramma, dopo che il punto e' stato
+       spostato: leggerla prima significa tendere il raggio verso dove il punto
+       era. Costa un ricalcolo di layout per fotogramma, su due elementi. */
+    function tendiRaggio() {
+      if (!raggio || !fuoco || !laser) return;
+
+      var rl = laser.getBoundingClientRect();
+      if (!rl.width) return;
+      var rf = fuoco.getBoundingClientRect();
+
+      var ex = SORGENTE.x * rl.width;      /* sorgente, in coordinate interne */
+      var ey = SORGENTE.y * rl.height;
+      var dx = (rf.left - rl.left) - ex;
+      var dy = (rf.top - rl.top) - ey;
+
+      raggio.style.setProperty('--raggio-x', ex.toFixed(1) + 'px');
+      raggio.style.setProperty('--raggio-y', ey.toFixed(1) + 'px');
+      raggio.style.setProperty('--raggio-l', Math.hypot(dx, dy).toFixed(1) + 'px');
+      /* angolo fra la verticale verso il basso e la direzione del punto */
+      raggio.style.setProperty('--raggio-a',
+        (Math.atan2(-dx, dy) * 180 / Math.PI).toFixed(2) + 'deg');
+    }
+
+    function scrivi(p) {
+      /* --- camera: un solo movimento, lento, per tutta la durata --------- */
+      var c = morbido(p);
+      scriviVar(piano, '--incl', fra(C.inclDa, C.inclA, c).toFixed(2) + 'deg');
+      scriviVar(piano, '--zoom', fra(C.zoomDa, C.zoomA, c).toFixed(4));
+      scriviVar(interno, '--buio', tra(p, C.buio).toFixed(3));
+      scriviVar(interno, '--entrata', tra(p, [0, 0.07]).toFixed(3));
+
+      /* --- incisione: scansione riga per riga ---------------------------- */
+      /* Una scansione raster va a velocita' costante: qui non si addolcisce,
+         perche' e' proprio la regolarita' a farla leggere come una macchina. */
+      var avanzamento = tra(p, C.burn);
+      burn.style.transform = 'scaleY(' + avanzamento.toFixed(4) + ')';
+
+      var yFronte = avanzamento * RIGHE;
+      hot.style.transform = 'translateY(' + (yFronte - 3.5).toFixed(1) + 'px)';
+
+      /* acceso solo mentre incide davvero, con un margine per non far
+         lampeggiare il punto agli estremi */
+      var acceso = mapRange(avanzamento, 0, 0.02) * (1 - mapRange(avanzamento, 0.985, 1));
+      hot.style.opacity = acceso.toFixed(3);
+      hot.setAttribute('fill', avanzamento < 0.5 ? '#FFD8A0' : '#C8964F');
+
+      /* il punto di incisione segue la riga corrente; l'opacita' sta sul
+         contenitore dell'inquadratura perche' la ereditino anche la sorgente e
+         il raggio, che non sono figli del piano di lavoro */
+      scriviVar(fuoco, '--fronte', avanzamento.toFixed(4));
+      scriviVar(laser, '--fuoco-op', acceso.toFixed(3));
+
+      /* --- pannello tecnico --------------------------------------------- */
+      scriviVar(hud, '--hud-op', tra(p, C.hud).toFixed(3));
+      if (hudPot) {
+        /* la potenza oscilla un poco, come su una macchina vera */
+        var pot = acceso > 0.01
+          ? 74 + Math.round(Math.sin(avanzamento * 11) * 4 + 4)
+          : 0;
+        hudPot.textContent = pot + '%';
+      }
+      if (hudRiga) {
+        hudRiga.textContent = String(Math.round(avanzamento * RIGHE)).padStart(3, '0') +
+                              ' / ' + RIGHE;
+      }
+
+      /* --- testo -------------------------------------------------------- */
+      cascata(passi, p, C.testo, '--p-op', '--p-y', 18);
+      cascata(materie, p, C.materie, '--m-op', '--m-y', 10);
+
+      tendiRaggio();
+    }
+
+    return scrivi;
+  }
+
+  /* ========================================================== ATTO STAMPA */
+  function costruisciStampa(sezione) {
+    var C = T.stampa;
+    var interno = sezione.querySelector('.atto__interno');
+    var piano  = sezione.querySelector('[data-piano]');
+    var pila   = sezione.querySelector('[data-pila]');
+    var ombra  = sezione.querySelector('[data-ombra]');
+    var testa  = sezione.querySelector('[data-testa]');
+    var hud    = sezione.querySelector('[data-hud]');
+    var hudStr = sezione.querySelector('[data-hud="strato"]');
+    var cta    = sezione.querySelector('.atto__cta');
+
+    var passi   = sezione.querySelectorAll('.atto__testo > [data-passo]');
+    var materie = sezione.querySelectorAll('.materia');
+
+    var strati = [];
+    var nStrati = 0;
+    var passoStrato = C.passoStrato.largo;
+
+    /* Costruisce gli strati: N copie del marchio separate lungo Z. Il tracciato
+       resta uno solo nel documento, richiamato via <use>. */
+    function costruisci() {
+      if (!pila) return;
+      var stretto = window.matchMedia('(max-width: 1180px)').matches;
+      var n = stretto ? C.strati.stretto : C.strati.largo;
+      if (n === nStrati) return;          /* gia' costruiti per questa fascia */
+
+      nStrati = n;
+      passoStrato = stretto ? C.passoStrato.stretto : C.passoStrato.largo;
+      strati.length = 0;
+      pila.textContent = '';
+      pila.style.setProperty('--passo', passoStrato + 'px');
+
+      for (var i = 0; i < n; i++) {
+        var div = document.createElement('div');
+        div.className = 'strato';
+        div.style.setProperty('--i', String(i));
+
+        /* Gli strati alternano due sfumature: e' quello che rende visibili le
+           righe di deposizione. L'ultimo e' piu' chiaro, come il filamento
+           appena uscito dall'ugello e ancora lucido. */
+        var tinta = i % 2 === 0 ? 'url(#filo)' : 'url(#filo-scuro)';
+        if (i === n - 1) tinta = 'url(#filo-cima)';
+
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 477 383');
+        svg.setAttribute('aria-hidden', 'true');
+        var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+        use.setAttribute('href', '#rf-path');
+        use.setAttribute('fill', tinta);
+        svg.appendChild(use);
+        div.appendChild(svg);
+
+        pila.appendChild(div);
+        strati.push(div);
       }
     }
 
-    /* l'ombra si accentua man mano che l'oggetto cresce */
-    ombra.style.setProperty('--ombra-op', String(presenza * (0.25 + deposito * 0.75)));
-    ombra.style.setProperty('--ombra-s', String(0.6 + deposito * 0.45));
+    function scrivi(p) {
+      /* --- camera ------------------------------------------------------- */
+      var c = morbido(p);
+      scriviVar(piano, '--incl', fra(C.inclDa, C.inclA, c).toFixed(2) + 'deg');
+      scriviVar(piano, '--zoom', fra(C.zoomDa, C.zoomA, c).toFixed(4));
 
-    /* l'ugello sta alla quota dello strato corrente e si muove per conto suo */
-    ugello.style.setProperty('--ugello-z', (stesi * passoStrato) + 'px');
+      /* --- entrata ------------------------------------------------------ */
+      var e = arrivo(tra(p, C.entrata));
+      scriviVar(interno, '--entrata', tra(p, [0, 0.07]).toFixed(3));
+      scriviVar(piano, '--piano-y', ((1 - e) * 6).toFixed(2) + '%');
+      scriviVar(piano, '--luce-op', e.toFixed(3));
+      scriviVar(testa, '--testa-op', (e * (1 - tra(p, [0.94, 1.00]))).toFixed(3));
 
-    if (hudStrato) {
-      hudStrato.textContent = String(stesi).padStart(3, '0') + ' / ' +
-                              String(nStrati).padStart(3, '0');
+      /* --- deposizione degli strati ------------------------------------- */
+      var deposito = tra(p, C.deposito);
+      var stesi = Math.round(deposito * nStrati);
+
+      for (var i = 0; i < nStrati; i++) {
+        /* la classe cambia solo quando serve: niente scritture inutili */
+        var deve = i < stesi;
+        if (strati[i].classList.contains('e-steso') !== deve) {
+          strati[i].classList.toggle('e-steso', deve);
+        }
+      }
+
+      scriviVar(ombra, '--ombra-op', (e * (0.28 + deposito * 0.72)).toFixed(3));
+      scriviVar(ombra, '--ombra-s', (0.62 + deposito * 0.44).toFixed(3));
+
+      /* L'ugello sta alla quota dello strato corrente. Gli strati crescono
+         lungo la normale al piatto: con il piatto inclinato di incl, un passo
+         lungo Z si vede sullo schermo come sin(incl) di salita. */
+      var incl = fra(C.inclDa, C.inclA, c) * Math.PI / 180;
+      var salita = stesi * passoStrato * Math.sin(incl);
+      scriviVar(testa, '--testa-su', salita.toFixed(1) + 'px');
+
+      if (hudStr) {
+        hudStr.textContent = String(stesi).padStart(3, '0') + ' / ' +
+                             String(nStrati).padStart(3, '0');
+      }
+
+      /* --- finale ------------------------------------------------------- */
+      var finale = tra(p, C.finale);
+      scriviVar(pila, '--pila-rz',
+        (Math.sin(finale * Math.PI) * 7).toFixed(2) + 'deg');
+
+      /* --- testo -------------------------------------------------------- */
+      var ultimoBlocco = cascata(passi, p, C.testo, '--p-op', '--p-y', 18);
+      cascata(materie, p, C.materie, '--m-op', '--m-y', 10);
+
+      /* Finche' non e' visibile, la chiamata all'azione non deve essere
+         raggiungibile da tastiera: un link invisibile ma focalizzabile
+         disorienta chi naviga con il tabulatore. Il valore arriva da cascata:
+         leggerlo con getComputedStyle costerebbe un calcolo di stile per
+         fotogramma. */
+      if (cta) {
+        var vista = ultimoBlocco > 0.6;
+        cta.style.setProperty('--cta-eventi', vista ? 'auto' : 'none');
+        if (vista) {
+          cta.removeAttribute('tabindex');
+          cta.removeAttribute('aria-hidden');
+        } else if (!cta.hasAttribute('tabindex')) {
+          cta.setAttribute('tabindex', '-1');
+          cta.setAttribute('aria-hidden', 'true');
+        }
+      }
     }
 
-    /* alla fine l'oggetto ruota di pochi gradi e compare la chiamata all'azione */
-    var finale = tra(q, T.finale);
-    pila.style.setProperty('--pila-ry', (Math.sin(finale * Math.PI * 2) * 9).toFixed(2) + 'deg');
-    cta.style.setProperty('--cta-op', String(finale));
-
-    /* Finche' non e' visibile la CTA non deve nemmeno essere raggiungibile
-       da tastiera: un link invisibile ma focalizzabile disorienta. */
-    var attiva = finale > 0.6;
-    cta.style.setProperty('--cta-eventi', attiva ? 'auto' : 'none');
-    if (attiva) {
-      cta.removeAttribute('tabindex');
-      cta.removeAttribute('aria-hidden');
-    } else if (!cta.hasAttribute('tabindex')) {
-      cta.setAttribute('tabindex', '-1');
-      cta.setAttribute('aria-hidden', 'true');
-    }
+    scrivi.prepara = costruisci;
+    return scrivi;
   }
 
-  /* ------------------------------------------------------- fluidita'
+  /* ================================================================ atti */
+  var COSTRUTTORI = { laser: costruisciLaser, stampa: costruisciStampa };
+
+  var atti = [];
+  document.querySelectorAll('[data-atto]').forEach(function (sezione) {
+    var costruttore = COSTRUTTORI[sezione.dataset.atto];
+    if (!costruttore) return;
+    atti.push({
+      nome: sezione.dataset.atto,
+      sezione: sezione,
+      scrivi: costruttore(sezione),
+      st: null
+    });
+  });
+  if (!atti.length) return;
+
+  /* --------------------------------------------------------------- fluidita'
      Un controllo leggero sul ritmo dei fotogrammi: se restano lunghi per circa
-     due secondi di fila la scena non e' sostenibile qui, e si passa ai riquadri
-     statici invece di offrire un'animazione a scatti. */
-  var lenti = 0;
-  var ultimoFrame = 0;
-  var vigileId = 0;
+     due secondi di fila l'animazione non e' sostenibile su questo dispositivo,
+     e si passa al video invece di offrire uno scorrimento a scatti. */
+  var motoRidotto = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var puoAnimare  = window.matchMedia(LARGHEZZA_ANIMAZIONE);
+  var degradato = false;
 
-  function degrada() {
-    if (degradato) return;
-    degradato = true;
-    if (st) { st.kill(); st = null; }
-    attivaStatica();
-  }
+  var lenti = 0, ultimoFrame = 0, vigileId = 0;
 
   function vigila(ora) {
     if (!vigileId) return;
@@ -274,84 +371,132 @@
     }
     ultimoFrame = ora;
   }
-
   function avviaVigile() {
     if (vigileId) return;
-    ultimoFrame = 0;
-    lenti = 0;
+    ultimoFrame = 0; lenti = 0;
     vigileId = requestAnimationFrame(vigila);
   }
+  function fermaVigile() { cancelAnimationFrame(vigileId); vigileId = 0; }
 
-  function fermaVigile() {
-    cancelAnimationFrame(vigileId);
-    vigileId = 0;
-  }
-
-  /* ====================================================== stato complessivo */
-  function scrivi(p) {
-    attoLaser(p);
-    attoCamera(p);
-    attoStampa(p);
-  }
-
-  /* =============================================================== fallback
-     Con prefers-reduced-motion, o su schermi molto stretti in verticale,
-     la scena animata sparisce e restano i tre riquadri statici.
-     ============================================================== */
-  function usaStatica() {
-    return motoRidotto.matches || degradato ||
-           (schermoStretto.matches && dispositivoModesto());
-  }
-
-  function attivaStatica() {
-    scena.hidden = true;
-    scena.style.display = 'none';
-    if (statica) statica.hidden = false;
+  function degrada() {
+    if (degradato) return;
+    degradato = true;
     fermaVigile();
-    spegniHero();     /* senza scena non c'e' raccordo da fare */
+    attivaVideo();
   }
 
-  var st = null;
+  /* ============================================================== modalita' */
+  function modoVideo() {
+    return motoRidotto.matches || !puoAnimare.matches || degradato;
+  }
 
-  function attivaAnimata() {
-    scena.hidden = false;
-    scena.style.display = '';
-    if (statica) statica.hidden = true;
+  /* ---------------------------------------------------------------- video */
+  var osservatore = null;
 
-    costruisciStrati();
-    attivaHero();
-    misura();
+  function attivaVideo() {
+    spegniAnimazione();
 
-    st = window.ScrollTrigger.create({
-      trigger: scena,
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: T.scrub,
-      onUpdate: function (self) { scrivi(self.progress); },
-      onToggle: function (self) {
-        /* niente cicli di disegno né will-change fuori dallo schermo */
-        palco.classList.toggle('e-attiva', self.isActive);
-        if (self.isActive) { misura(); avviaVigile(); }
-        else { fermaVigile(); }
-      },
-      onRefresh: function () { misura(); }
+    atti.forEach(function (a) {
+      a.sezione.classList.add('atto--video');
+      var video = a.sezione.querySelector('.atto__video-elemento');
+      if (!video) return;
+
+      /* Il fermo immagine si chiede solo adesso: su schermo largo, dove
+         l'animazione gira, non deve essere scaricato. */
+      if (!video.poster && video.dataset.poster) video.poster = video.dataset.poster;
+
+      /* Chi ha chiesto meno movimento non deve vedere partire niente da solo:
+         il video resta sul fermo immagine, con i comandi per avviarlo. */
+      if (motoRidotto.matches) {
+        video.controls = true;
+        video.autoplay = false;
+        video.pause();
+        return;
+      }
+      video.controls = false;
+      osserva(video);
+    });
+  }
+
+  /* Il video parte solo quando entra nello schermo e si ferma quando esce:
+     con preload="none" non scarica niente prima di allora. */
+  function osserva(video) {
+    if (!('IntersectionObserver' in window)) {
+      video.play().catch(function () { /* niente autoplay: resta il fermo immagine */ });
+      return;
+    }
+    if (!osservatore) {
+      osservatore = new IntersectionObserver(function (voci) {
+        voci.forEach(function (v) {
+          var el = v.target;
+          if (v.isIntersecting) {
+            el.play().catch(function () { el.controls = true; });
+          } else if (!el.paused) {
+            el.pause();
+          }
+        });
+      }, { threshold: 0.35 });
+    }
+    osservatore.observe(video);
+  }
+
+  function spegniVideo() {
+    atti.forEach(function (a) {
+      a.sezione.classList.remove('atto--video');
+      var video = a.sezione.querySelector('.atto__video-elemento');
+      if (!video) return;
+      if (osservatore) osservatore.unobserve(video);
+      video.pause();
+      video.controls = false;
+    });
+  }
+
+  /* ------------------------------------------------------------ animazione */
+  function attivaAnimazione() {
+    spegniVideo();
+
+    atti.forEach(function (a) {
+      if (a.scrivi.prepara) a.scrivi.prepara();
+      if (a.st) return;
+
+      a.st = window.ScrollTrigger.create({
+        trigger: a.sezione,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: T.scrub,
+        onUpdate: function (self) { a.scrivi(self.progress); },
+        onToggle: function (self) {
+          /* niente cicli di disegno ne' will-change fuori dallo schermo */
+          a.sezione.classList.toggle('e-attiva', self.isActive);
+          if (self.isActive) avviaVigile(); else fermaVigile();
+        }
+      });
+
+      a.scrivi(0);
     });
 
-    scrivi(0);
+    attivaHero();
   }
 
-  /* --------------------------------------------------------- raccordo hero
-     L'hero e' incollata in alto e la scena le scorre sopra. Mentre si esce
-     dall'hero il lockup si allontana e sfuma, cosi' il passaggio alla scena
-     non si legge come un salto fra due sezioni. */
+  function spegniAnimazione() {
+    atti.forEach(function (a) {
+      if (a.st) { a.st.kill(); a.st = null; }
+      a.sezione.classList.remove('e-attiva');
+    });
+    spegniHero();
+  }
+
+  /* ----------------------------------------------------------- raccordo hero
+     L'hero e' incollata in alto e il primo atto le scorre sopra. Mentre si
+     esce dall'hero il marchio si allontana e sfuma, cosi' il passaggio non si
+     legge come un salto fra due sezioni. */
   var hero = document.querySelector('.hero');
-  var heroContenuto = hero && hero.querySelector('.hero__contenuto');
   var stHero = null;
 
   function scriviHero(p) {
     if (!hero) return;
     /* La dissolvenza parte tardi e accelera alla fine: con un calo lineare
-       restava un tratto di schermo vuoto fra il marchio e il disco. */
+       restava un tratto di schermo vuoto fra il marchio e il piano di lavoro. */
     var uscita = Math.pow(p, 2.2);
     hero.style.setProperty('--hero-op', (1 - uscita).toFixed(3));
     hero.style.setProperty('--hero-y', (-uscita * 70).toFixed(1) + 'px');
@@ -381,34 +526,43 @@
 
   /* ------------------------------------------------------------------ avvio */
   function avvia() {
-    if (!window.gsap || !window.ScrollTrigger) { attivaStatica(); return; }
+    if (!window.gsap || !window.ScrollTrigger) { attivaVideo(); return; }
     window.gsap.registerPlugin(window.ScrollTrigger);
 
-    if (usaStatica()) { attivaStatica(); return; }
-    attivaAnimata();
+    if (modoVideo()) attivaVideo();
+    else attivaAnimazione();
   }
 
-  /* il cambio di preferenza o di dimensione va rispettato subito */
   function riconsidera() {
-    if (usaStatica()) {
-      if (st) { st.kill(); st = null; }
-      attivaStatica();
-    } else if (!st) {
-      attivaAnimata();
-    }
+    if (modoVideo()) attivaVideo();
+    else if (!atti[0].st) attivaAnimazione();
   }
 
   if (motoRidotto.addEventListener) {
     motoRidotto.addEventListener('change', riconsidera);
-    schermoStretto.addEventListener('change', riconsidera);
+    puoAnimare.addEventListener('change', riconsidera);
   }
 
   window.addEventListener('resize', function () {
-    costruisciStrati();
-    attivaHero();
-    misura();
+    atti.forEach(function (a) { if (a.st && a.scrivi.prepara) a.scrivi.prepara(); });
   }, { passive: true });
-  document.addEventListener('radicforma:lingua', function () { misura(); });
+
+  /* --------------------------------------------------------------- esposto
+     Serve a tools/gen-video.mjs, che per registrare i video deve poter
+     imporre una progress precisa invece di simulare lo scorrimento, e al
+     collaudo automatico. */
+  window.RadicForma = window.RadicForma || {};
+  window.RadicForma.atti = {
+    nomi: atti.map(function (a) { return a.nome; }),
+    scrivi: function (nome, p) {
+      atti.forEach(function (a) {
+        if (a.nome !== nome) return;
+        if (a.scrivi.prepara) a.scrivi.prepara();
+        a.scrivi(clamp(p, 0, 1));
+      });
+    },
+    modoVideo: modoVideo
+  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', avvia);

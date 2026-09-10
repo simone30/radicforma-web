@@ -13,9 +13,10 @@ gratuitamente con GitHub Pages.
 3. [Come cambiare i testi](#3-come-cambiare-i-testi)
 4. [I dati da completare](#4-i-dati-da-completare)
 5. [La foto del legno](#5-la-foto-del-legno)
-6. [Com'è fatto il sito](#6-comè-fatto-il-sito)
-7. [Strumenti per gli sviluppatori](#7-strumenti-per-gli-sviluppatori)
-8. [Limiti noti](#8-limiti-noti)
+6. [I video delle animazioni](#6-i-video-delle-animazioni)
+7. [Com'è fatto il sito](#7-comè-fatto-il-sito)
+8. [Strumenti per gli sviluppatori](#8-strumenti-per-gli-sviluppatori)
+9. [Limiti noti](#9-limiti-noti)
 
 ---
 
@@ -123,14 +124,32 @@ Nei due file dei testi ci sono inoltre alcuni valori marcati **`[da confermare]`
 (volumi di stampa, tolleranze, area di lavoro del laser, tempi di risposta):
 vanno sostituiti con i dati reali delle macchine.
 
+### Affermazioni da verificare
+
+Nelle due sezioni animate ci sono frasi scritte in modo plausibile ma **non
+verificate**, perché dipendono dalla macchina e dai materiali che usi davvero.
+Vanno lette e corrette prima di considerare il sito finito:
+
+| Dove | Che cosa dice | Da controllare |
+| ---- | ------------- | -------------- |
+| `incisione.materiali.due.nota` | «acciaio inox e alluminio anodizzato» | quali metalli marchi davvero |
+| `incisione.materiali.uno.nota` | «acrilico, ABS e policarbonato» | il policarbonato non si taglia con tutte le sorgenti |
+| `incisione.materiali.quattro.nota` | vetro colorato satinato | resa e spessori che reggi |
+| `stampa3d.hud` (nell'animazione) | strato da 0,20 mm, PLA | è il valore mostrato nel pannello tecnico |
+
 ---
 
 ## 5. La foto del legno
 
-La sezione di tronco usata nella scena e' una fotografia con licenza **CC0**
+La sezione di tronco usata nell'animazione e' una fotografia con licenza **CC0**
 (pubblico dominio): si puo' usare commercialmente, senza pagare nulla e senza
 obbligo di citare l'autore. La provenienza e' annotata in
 `assets/img/CREDITI.md` per tracciabilita'.
+
+Il ritaglio **non** e' centrato sul midollo: da li' parte una fessura di ritiro
+che taglierebbe in due il marchio inciso. E' spostato su una zona di anelli
+puliti, che alla distanza ravvicinata dell'inquadratura si legge comunque come
+legno di sezione.
 
 Non c'e' quindi niente da sostituire. Se in futuro vorrai usare una tua
 fotografia:
@@ -138,38 +157,80 @@ fotografia:
 1. Salvala come `assets/img/_sorgente-legno.jpg`. Va bene una sezione di tronco
    vista dall'alto, ben illuminata, con gli anelli visibili, almeno 2000 pixel
    di lato.
-2. In `tools/gen-legno.mjs` aggiorna `CENTRO` (le coordinate del midollo nella
-   tua foto) e `LATO` (il diametro del ritaglio).
+2. In `tools/gen-legno.mjs` aggiorna `CENTRO` (il centro del ritaglio nella tua
+   foto) e `LATO` (il suo diametro).
 3. Esegui `npm install sharp && node tools/gen-legno.mjs`.
+4. Rigenera anche i video, che contengono quella foto:
+   `node tools/gen-video.mjs` (vedi la sezione 6).
 
 Lo script ritaglia il disco in tondo, corregge il colore e produce le tre
 versioni usate dal sito.
 
+## 6. I video delle animazioni
+
+Su telefono, e per chi ha chiesto meno movimento, il sito non anima niente: al
+posto della scena a scorrimento mostra due video, con il testo sotto. Stanno in
+`assets/video/` e sono **registrati dalla stessa scena del sito**, fotogramma
+per fotogramma. Per questo restano sempre allineati alla grafica: se cambi
+qualcosa nell'animazione, li rigeneri e basta.
+
+```bash
+npm install playwright sharp ffmpeg-static
+npx playwright install chromium
+node tools/gen-video.mjs
+```
+
+Lo script apre la pagina a 960x960, impone la progress un fotogramma alla volta
+e codifica in H.264 (`.mp4`, lo leggono tutti i telefoni) e VP9 (`.webm`, piu'
+leggero dove e' supportato). Produce anche il fermo immagine.
+
+### Sostituirli con riprese vere
+
+Sono render della nostra animazione, non riprese fotografiche. **Un video vero
+della tua macchina che incide o stampa il monogramma RF vale di piu'**: e' il
+tuo prodotto, non un'illustrazione. Per sostituirli non serve toccare il
+codice, bastano file con questi nomi:
+
+```
+assets/video/incisione.mp4    assets/video/incisione.webm    assets/video/incisione-poster.webp
+assets/video/stampa.mp4       assets/video/stampa.webm       assets/video/stampa-poster.webp
+```
+
+Il formato migliore e' **quadrato**, perche' e' quello che occupa meglio lo
+schermo di un telefono con il testo sotto. Il `.webm` e' facoltativo: se manca,
+il browser usa l'`.mp4`.
+
 ---
 
-## 6. Com'è fatto il sito
+## 7. Com'è fatto il sito
 
 ```
 index.html                 la pagina, unica
 assets/css/style.css       tutto l'aspetto grafico
 assets/js/main.js          menu, navigazione, comparsa delle sezioni
 assets/js/i18n.js          cambio lingua
-assets/js/scene.js         l'animazione al centro della pagina
+assets/js/scene.js         le due animazioni a scorrimento
 assets/i18n/*.json         i testi
 assets/brand/              logo e marchio
 assets/fonts/              i caratteri tipografici
 assets/vendor/             GSAP, la libreria delle animazioni
 assets/img/                fotografie e anteprima social
+assets/video/              i video delle animazioni, per il telefono
 tools/                     script di manutenzione, non fanno parte del sito
 ```
 
-Scorrendo la pagina si incontra una sequenza in tre momenti: il marchio viene
-inciso a laser su una sezione di tronco, la prospettiva ruota, e lo stesso
-marchio viene ricostruito strato su strato su un piatto di stampa 3D.
+Scorrendo la pagina si incontrano due sezioni animate. Nella prima il marchio
+viene inciso a laser su una sezione di tronco, riga dopo riga, in inquadratura
+ravvicinata, con il testo a lato. Nella seconda lo stesso marchio viene
+ricostruito strato su strato sul piatto di una stampante 3D.
 
-Chi ha attivato sul proprio dispositivo la riduzione delle animazioni, e chi
-usa uno schermo molto stretto, vede al suo posto tre immagini ferme con le
-stesse informazioni.
+Sotto i 900 pixel di larghezza, e per chi ha chiesto meno movimento, non si
+anima niente: al posto della scena ci sono i video, con il testo sotto. La
+scelta la fa `scene.js`, ma la soglia sta anche in `style.css` (sezione 16.6):
+**se ne cambi una devi cambiare l'altra**.
+
+C'e' inoltre un controllo sul ritmo dei fotogrammi: se un dispositivo non
+regge l'animazione, il sito passa da solo ai video mentre si scorre.
 
 **Nessuna richiesta esce verso siti esterni**: caratteri tipografici, libreria
 di animazione e immagini sono tutti dentro il repository. Non ci sono cookie né
@@ -177,7 +238,7 @@ sistemi di tracciamento.
 
 ---
 
-## 7. Strumenti per gli sviluppatori
+## 8. Strumenti per gli sviluppatori
 
 Gli script in `tools/` servono solo alla manutenzione e **non** sono necessari
 per pubblicare il sito.
@@ -186,9 +247,17 @@ per pubblicare il sito.
 # anteprima locale
 python3 -m http.server 8765      # poi apri http://localhost:8765
 
+# collaudo automatico: 13 controlli sulla pagina (richiede il server attivo)
+npm install playwright && npx playwright install chromium
+node tools/collaudo.mjs
+
 # ritaglia e corregge le versioni del disco di legno dalla foto sorgente
 npm install sharp
 node tools/gen-legno.mjs
+
+# registra i video delle due animazioni dalla scena del sito
+npm install playwright sharp ffmpeg-static
+node tools/gen-video.mjs
 
 # rigenera anteprima social e favicon dal monogramma
 npm install sharp playwright && npx playwright install chromium
@@ -209,7 +278,7 @@ modificarlo si sostituisce `assets/brand/monogramma-light.svg` e si rilancia
 
 ---
 
-## 8. Limiti noti
+## 9. Limiti noti
 
 - **Indicizzazione della versione inglese.** Il sito è una pagina sola in cui la
   lingua cambia via JavaScript, quindi i motori di ricerca indicizzano
@@ -217,6 +286,7 @@ modificarlo si sostituisce `assets/brand/monogramma-light.svg` e si rilancia
   servirebbe una seconda pagina servita separatamente, per esempio
   `/en/index.html`. Non è un problema per l'uso attuale.
 - **Dati tecnici e recapiti** ancora da completare, vedi la sezione 4.
+- **I video sono render**, non riprese: vedi la sezione 6 per sostituirli.
 - Il modulo di contatto non esiste: essendo il sito statico, i contatti passano
   da un link `mailto:`. Volendo un vero modulo si può collegare un servizio
   esterno (per esempio Formspree) senza cambiare l'impianto del sito.

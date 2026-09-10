@@ -1,7 +1,7 @@
 /* ==========================================================================
    RADIC FORMA — foglio di stile unico
    Ordine: font · token · reset · tipografia · navbar · hero · footer ·
-           sezioni di contenuto · scena scroll · fallback e reduced motion
+           sezioni di contenuto · atti animati · versione con video
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -84,13 +84,31 @@
   /* Spaziature */
   --sp-1: 0.5rem;  --sp-2: 0.75rem; --sp-3: 1rem;   --sp-4: 1.5rem;
   --sp-5: 2rem;    --sp-6: 3rem;    --sp-7: 4.5rem; --sp-8: 7rem;
-  --sezione-y: clamp(4.5rem, 3rem + 7vw, 9rem);
+  --sezione-y: clamp(5rem, 3.4rem + 7.5vw, 10rem);
   --gutter:    clamp(1.25rem, 0.5rem + 3vw, 3.5rem);
   --max-w:     1240px;
   --max-testo: 62ch;
 
   --raggio: 3px;              /* angoli quasi vivi: è un marchio inciso */
-  --transizione: 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Movimento. Quattro durate e due curve, usate in tutto il sito: una scala
+     ristretta e' quello che fa sembrare le transizioni parte della stessa
+     cosa invece di una collezione di scelte diverse.
+     La durata si sceglie dal peso del gesto, non dalla distanza percorsa:
+     --dur-1 per un cambio di stato che l'utente ha appena provocato (colore,
+     opacita' di un bottone), --dur-2 per un elemento che si muove, --dur-3 per
+     qualcosa che entra in scena, --dur-4 per un movimento ampio e narrativo. */
+  --dur-1: 150ms;
+  --dur-2: 260ms;
+  --dur-3: 420ms;
+  --dur-4: 680ms;
+  /* uscita decisa, arrivo lungo: e' la curva che non fa sentire l'inizio */
+  --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);
+  /* per andata e ritorno simmetrici */
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* alias storico, usato dove basta la transizione di base */
+  --transizione: var(--dur-2) var(--ease-out);
 }
 
 /* --------------------------------------------------------------------------
@@ -117,7 +135,12 @@ body {
   overflow-x: hidden;
 }
 
+/* La navbar e' fissa: senza questo, un link di ancoraggio porta il titolo
+   della sezione a finirci sotto. */
+:where(main, footer) [id] { scroll-margin-block-start: 92px; }
+
 img, svg, canvas { display: block; max-width: 100%; }
+video { display: block; max-width: 100%; }
 img { height: auto; }
 
 a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.22em; }
@@ -159,18 +182,29 @@ h1, h2, h3, h4 {
   font-family: var(--serif);
   font-weight: 500;
   line-height: 1.12;
+  /* Il Cormorant a corpo grande ha un incastro naturale largo: stringerlo di
+     un soffio e' quello che gli da' il passo del titolo invece della frase. */
+  letter-spacing: -0.006em;
   margin: 0;
   text-wrap: balance;
 }
 
-h2 { font-size: var(--t-h2); }
+h2 { font-size: var(--t-h2); line-height: 1.06; }
 h3 { font-size: var(--t-h3); line-height: 1.25; }
 
 p { margin: 0 0 var(--sp-3); max-width: var(--max-testo); }
 p:last-child { margin-bottom: 0; }
 
-/* Occhiello: piccola etichetta in maiuscolo sopra i titoli */
+/* Evita le righe finali con una parola sola. Dove non e' supportato non
+   cambia niente. */
+p, li, figcaption { text-wrap: pretty; }
+
+/* Occhiello: piccola etichetta in maiuscolo sopra i titoli, preceduta da un
+   filetto. E' il segno che tiene insieme le intestazioni di tutto il sito. */
 .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
   font-family: var(--sans);
   font-size: var(--t-tecnico);
   font-weight: 600;
@@ -178,6 +212,14 @@ p:last-child { margin-bottom: 0; }
   text-transform: uppercase;
   color: var(--alloro-testo);
   margin: 0 0 var(--sp-3);
+}
+.eyebrow::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 1.75rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
 }
 .sezione--scura .eyebrow { color: var(--foglia); }
 
@@ -197,7 +239,7 @@ p:last-child { margin-bottom: 0; }
 }
 /* Su fondo scuro serve il verso opposto: la variante scurita sparirebbe. */
 .sezione--scura .dato-tecnico,
-.scena-statica .dato-tecnico { color: var(--pietra); }
+.atto .dato-tecnico { color: var(--pietra); }
 
 /* --------------------------------------------------------------------------
    5. Impaginazione
@@ -209,7 +251,13 @@ p:last-child { margin-bottom: 0; }
   padding-inline: var(--gutter);
 }
 
-.sezione { padding-block: var(--sezione-y); position: relative; }
+/* Ogni sezione dichiara il proprio fondo: dietro c'e' la hero incollata, e una
+   sezione trasparente la lascerebbe vedere. */
+.sezione {
+  padding-block: var(--sezione-y);
+  position: relative;
+  background: var(--bg);
+}
 
 .sezione--scura {
   background: var(--bg-scuro);
@@ -217,7 +265,7 @@ p:last-child { margin-bottom: 0; }
 }
 .sezione--scura h2, .sezione--scura h3 { color: var(--avorio); }
 
-.sezione__intestazione { margin-bottom: var(--sp-6); max-width: 56ch; }
+.sezione__intestazione { margin-bottom: var(--sp-7); max-width: 56ch; }
 .sezione__intestazione h2 { margin-block-end: var(--sp-3); }
 
 /* --------------------------------------------------------------------------
@@ -357,6 +405,9 @@ p:last-child { margin-bottom: 0; }
   .navbar.is-attaccata .navbar__nav .navbar__link { color: var(--avorio); }
   .navbar__nav .lingua__voce { color: var(--avorio); }
 }
+
+/* L'apertura: hero piu' primo atto. Vedi il commento in index.html. */
+.apertura { position: relative; }
 
 /* --------------------------------------------------------------------------
    8. Hero
@@ -501,7 +552,7 @@ p:last-child { margin-bottom: 0; }
    Stato iniziale in CSS, arrivo animato da GSAP. Se il JS non parte o l'utente
    ha chiesto meno movimento, il contenuto resta comunque leggibile.
    -------------------------------------------------------------------------- */
-[data-rivela] { opacity: 0; transform: translateY(16px); }
+[data-rivela] { opacity: 0; transform: translateY(20px); }
 
 @media (prefers-reduced-motion: reduce) {
   [data-rivela] { opacity: 1; transform: none; }
@@ -522,13 +573,16 @@ p:last-child { margin-bottom: 0; }
   border: 1px solid var(--linea);
   border-radius: var(--raggio);
   background: rgba(255, 255, 255, 0.42);
-  transition: transform var(--transizione), border-color var(--transizione),
-              box-shadow var(--transizione);
+  transition: transform var(--dur-3) var(--ease-out),
+              border-color var(--dur-2) var(--ease-out),
+              background-color var(--dur-2) var(--ease-out),
+              box-shadow var(--dur-3) var(--ease-out);
 }
 .scheda:hover {
-  transform: translateY(-3px);           /* sollevamento minimo */
-  border-color: rgba(108, 122, 71, 0.42);
-  box-shadow: 0 10px 28px -18px rgba(34, 40, 31, 0.5);
+  transform: translateY(-2px);           /* sollevamento minimo */
+  border-color: rgba(108, 122, 71, 0.5);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 16px 36px -26px rgba(34, 40, 31, 0.55);
 }
 .scheda h3 { margin-block: var(--sp-2) var(--sp-2); }
 .scheda p { font-size: 0.975rem; color: var(--testo-soft); }
@@ -632,9 +686,17 @@ p:last-child { margin-bottom: 0; }
   font-weight: 600;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  transition: background-color var(--transizione), transform var(--transizione);
+  border: 1px solid transparent;
+  transition: background-color var(--dur-2) var(--ease-out),
+              transform var(--dur-2) var(--ease-out),
+              box-shadow var(--dur-3) var(--ease-out);
 }
-.bottone:hover { background: #2E3628; transform: translateY(-2px); }
+.bottone:hover {
+  background: #2E3628;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px -18px rgba(34, 40, 31, 0.6);
+}
+.bottone:active { transform: translateY(0); }
 
 .contatti__nota { margin-block-start: var(--sp-3); }
 
@@ -650,191 +712,504 @@ p:last-child { margin-bottom: 0; }
 .recapito a:hover { text-decoration-color: currentColor; }
 
 /* ==========================================================================
-   16. Scena scroll
-   Un contenitore alto 500vh fa da corsa; dentro, un palco in sticky alto
-   100svh. La "camera" è la variabile --tilt, che l'atto 2 porta da 0 a 54deg.
-   Si animano solo transform e opacity.
+   16. Gli atti — incisione laser e stampa 3D
+
+   Ogni atto e' una sezione alta 320vh che fa da corsa allo scroll; dentro,
+   .atto__interno resta in sticky e riempie lo schermo. L'arte animata sta da
+   un lato e il testo dall'altro, a specchio fra i due atti.
+
+   L'inquadratura e' ravvicinata: il piano di lavoro sborda dal fotogramma e il
+   marchio sta in primo piano. La camera e' una sola variabile per atto (--incl),
+   e si animano soltanto transform, opacity e variabili custom.
+
+   Su schermo stretto, e per chi chiede meno movimento, l'arte lascia il posto
+   a un video e il testo gli va sotto: vedi 16.6.
    ========================================================================== */
-.scena {
+.atto {
   position: relative;
-  z-index: 1;                        /* sale sopra l'hero, che resta incollata */
-  height: 500vh;                     /* la corsa dello scroll */
-  background: transparent;
+  height: 320vh;
+  z-index: 1;                  /* sopra l'hero, che resta incollata in alto */
+  color: var(--avorio);
 }
 
-.scena__palco {
+/* L'atto della stampa scorre sopra quello dell'incisione, che resta in sticky
+   con il suo fondo: fra i due non si vede una cucitura. */
+.atto--stampa { z-index: 2; }
+
+.atto__interno {
   position: sticky;
   top: 0;
   height: 100svh;
   overflow: hidden;
   display: grid;
-  place-items: center;
-  /* il fondo passa da neutro a Nero Corteccia nell'atto 2 */
-  /* Parte dal Verde Corteccia dell'hero e scivola verso il nero durante il
-     cambio di prospettiva: il passaggio fra le due sezioni non si vede. */
+  grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr);
+  align-items: center;
+  gap: clamp(var(--sp-4), 3.4vw, var(--sp-7));
+  padding-inline: var(--gutter);
+  /* in alto lo spazio della navbar, in basso il respiro minimo */
+  padding-block: clamp(80px, 11vh, 124px) clamp(var(--sp-4), 5vh, var(--sp-6));
+}
+
+/* Il fondo dell'incisione parte dal Verde Corteccia dell'hero e scivola verso
+   il nero mentre l'atto avanza: il passaggio dall'hero non si vede. */
+.atto--incisione .atto__interno {
   background-color: color-mix(in srgb,
     var(--nero-corteccia) calc(var(--buio, 0) * 100%), var(--verde-corteccia));
-  background-image: radial-gradient(58% 46% at 50% 42%,
-    rgba(176, 138, 79, 0.13), transparent 70%);
-  perspective: 1400px;
-  perspective-origin: 50% 44%;
 }
+.atto--stampa .atto__interno { background-color: var(--nero-corteccia); }
 
-/* Lo spazio 3D condiviso da legno e piatto di stampa */
-.palco {
-  position: absolute; inset: 0;
-  display: grid; place-items: center;
-  transform-style: preserve-3d;
+/* L'arte occupa tutto il fotogramma e il testo le sta sopra, da un lato: e'
+   quello che le da' la scala ravvicinata. Dividere lo schermo in due riquadri
+   affiancati lasciava una cucitura verticale in mezzo, e l'inquadratura si
+   leggeva come una figurina incollata accanto al testo invece che come una
+   ripresa. */
+.atto__arte {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.atto--incisione .atto__testo { grid-column: 2; }
+.atto--stampa   .atto__testo { grid-column: 1; }
+
+/* Velo dal lato del testo: garantisce il contrasto sopra l'immagine e chiude
+   l'inquadratura. Si ferma prima della meta', cosi' il soggetto resta pulito.
+
+   --entrata: tutto cio' che non e' il colore di fondo compare insieme all'atto.
+   Il motivo e' la cucitura: mentre la sezione scorre sopra la precedente, il
+   suo bordo superiore e' una riga orizzontale, e qualunque cosa la sezione
+   disegni sopra il proprio fondo rende quella riga visibile. Il valore lo
+   scrive scene.js; senza JavaScript resta 0 e i veli non si vedono, che e' il
+   comportamento giusto perche' sono decorativi. */
+.atto__interno::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: var(--entrata, 0);
   pointer-events: none;
 }
-.palco__camera {
-  position: relative;
-  width: min(78vw, 62vh);
-  aspect-ratio: 1;
-  transform-style: preserve-3d;
-  transform: rotateX(var(--tilt, 0deg));
+.atto--incisione .atto__interno::before {
+  background: linear-gradient(to left,
+    rgba(9, 11, 8, 0.96) 0%, rgba(9, 11, 8, 0.92) 28%,
+    rgba(9, 11, 8, 0.62) 46%, rgba(9, 11, 8, 0) 68%);
+}
+.atto--stampa .atto__interno::before {
+  background: linear-gradient(to right,
+    rgba(9, 11, 8, 0.96) 0%, rgba(9, 11, 8, 0.92) 28%,
+    rgba(9, 11, 8, 0.62) 46%, rgba(9, 11, 8, 0) 68%);
 }
 
-/* will-change costa memoria GPU: si dichiara solo mentre la scena e' attiva,
-   e la classe viene tolta appena esce dal viewport. */
-.scena__palco.e-attiva .legno,
-.scena__palco.e-attiva .pila { will-change: transform; }
+/* will-change costa memoria GPU: si dichiara solo mentre l'atto e' davvero
+   sullo schermo, e la classe viene tolta appena esce. */
+.atto.e-attiva .laser__piano,
+.atto.e-attiva .stampa__piano,
+.atto.e-attiva .pila { will-change: transform; }
+
+/* Veli ai bordi del fotogramma: chiudono l'inquadratura in alto e in basso e
+   tengono il testo sempre su un fondo scuro. */
+.atto__velo {
+  position: absolute;
+  inset-inline: -6%;
+  height: 26%;
+  pointer-events: none;
+  z-index: 2;
+}
+.atto__velo--alto {
+  inset-block-start: 0;
+  background: linear-gradient(180deg, rgba(10, 12, 9, 0.82) 0%, rgba(10, 12, 9, 0) 100%);
+  opacity: var(--entrata, 0);
+}
+.atto__velo--basso {
+  inset-block-end: 0;
+  background: linear-gradient(0deg, rgba(10, 12, 9, 0.9) 0%, rgba(10, 12, 9, 0) 100%);
+}
 
 /* --------------------------------------------------------------------------
-   16.1 Atto 1 — il disco di legno e l'incisione
+   16.1 Atto 1 — l'incisione laser
    -------------------------------------------------------------------------- */
-.legno {
-  position: absolute; inset: 0;
-  transform-style: preserve-3d;
-  transform: translate3d(0, var(--legno-y, 0%), 0) scale(var(--legno-s, 1));
+.laser {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* Prospettiva lunga, non corta: e' un teleobiettivo macro come nelle riprese
+     di riferimento. Con una prospettiva corta il bordo vicino del piano si
+     ingrandisce a tal punto da uscire dal fotogramma. */
+  perspective: 2300px;
+  perspective-origin: 36% 42%;
 }
 
-.legno__foto {
-  width: 100%; height: 100%;
+/* La macchina intorno: solo masse scure, mai una sagoma riconoscibile. */
+.laser__ambiente {
+  position: absolute;
+  inset: -12%;
+  background:
+    radial-gradient(52% 44% at 36% 40%, rgba(176, 138, 79, 0.15), transparent 74%),
+    radial-gradient(130% 110% at 40% 130%, rgba(0, 0, 0, 0.66), transparent 62%);
+  opacity: var(--entrata, 0);
+}
+
+/* La guida del portale, molto fuori fuoco: da' profondita' senza raccontare
+   una macchina precisa. */
+.laser__guida {
+  position: absolute;
+  inset-block-start: 3%;
+  inset-inline: -14% 26%;
+  height: clamp(18px, 3.4vh, 30px);
+  border-radius: 40px;
+  background: linear-gradient(180deg, #33383B 0%, #14171A 52%, #040506 100%);
+  filter: blur(9px);
+  opacity: calc(var(--entrata, 0) * 0.9);
+}
+.laser__guida::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 210%;
+  inset-inline: 6%;
+  height: 60%;
+  border-radius: 30px;
+  background: linear-gradient(180deg, #23272A, #0A0C0D);
+  filter: blur(6px);
+  opacity: 0.75;
+}
+
+/* Il piano di lavoro. E' la camera a inclinarlo: tutto quello che ci sta
+   sopra — marchio, punto di incisione, fascio — e' suo figlio, quindi resta
+   sempre sulla superficie senza dover ricalcolare niente. */
+.laser__piano {
+  position: absolute;
+  inset-inline-start: 36%;      /* il soggetto sta a sinistra, il testo a destra */
+  inset-block-start: 54%;
+  width: min(58%, 84vh);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--incl, 52deg)) scale(var(--zoom, 1.04));
+}
+
+.laser__legno {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8),
-              inset 0 0 60px rgba(0, 0, 0, 0.35);
+  /* La fotografia di partenza e' molto calda: desaturata scende sui toni del
+     rovere e sta insieme al resto della palette. */
+  filter: saturate(0.6) brightness(0.9) contrast(1.07);
+  box-shadow: 0 44px 96px -34px rgba(0, 0, 0, 0.9),
+              inset 0 0 90px rgba(0, 0, 0, 0.42);
+}
+
+/* Luce radente sul legno, come nella ripresa ravvicinata. */
+.laser__piano::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(56% 44% at 50% 26%, rgba(255, 228, 176, 0.11), transparent 74%);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+/* Il riquadro condiviso dal marchio e dal punto di incisione. */
+/* Il riquadro sta poco sotto il centro geometrico del piano: con la
+   prospettiva la meta' lontana si comprime piu' di quella vicina, quindi il
+   centro geometrico si proietta sopra il centro apparente dell'ellisse. Questi
+   quattro punti percentuali riportano il marchio al centro di cio' che si
+   vede. */
+.laser__marchio {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 54%;
+  width: 62%;
+  aspect-ratio: 477 / 383;
+  translate: -50% -50%;
+  transform-style: preserve-3d;
 }
 
 .incisione {
   position: absolute;
-  /* centrato sul disco: il marchio non deve mai toccare la corteccia */
-  inset-inline-start: 50%;
-  inset-block-start: 50%;
-  width: 58%;
-  translate: -50% -50%;
+  inset: 0;
+  width: 100%;
   /* multiply: gli anelli del legno restano leggibili sotto la bruciatura */
   mix-blend-mode: multiply;
-  opacity: var(--incisione-op, 1);
 }
-
 .incisione__burn {
   transform-origin: top;
   transform: scaleY(var(--burn, 0));    /* transform, non l'attributo height */
 }
 .incisione__hot {
-  filter: url(#hot-glow);
   transform: translateY(var(--hot-y, 0px));
   opacity: var(--hot-op, 0);
 }
 
-
-
-/* --------------------------------------------------------------------------
-   16.2 Atto 3 — piatto di stampa e oggetto stampato
-   -------------------------------------------------------------------------- */
-.piatto {
-  position: absolute;
-  inset-inline: -4%;
-  inset-block-end: -6%;
-  height: 108%;
-  transform-style: preserve-3d;
-  /* Giace sullo stesso piano del disco di legno: e' la camera a inclinarlo.
-     Entra scivolando dal fondo del piano. */
-  transform: translate3d(0, var(--piatto-y, 60%), -1px);
-  opacity: var(--piatto-op, 0);
-}
-
-.piatto__griglia {
-  position: absolute; inset: 0;
-  background:
-    linear-gradient(rgba(155, 170, 107, 0.10) 1px, transparent 1px) 0 0 / 100% 5.5%,
-    linear-gradient(90deg, rgba(155, 170, 107, 0.10) 1px, transparent 1px) 0 0 / 5.5% 100%,
-    radial-gradient(120% 90% at 50% 40%, #232821 0%, #14170F 100%);
-  border-radius: 4px;
-  box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.8);
-}
-
-.piatto__ombra {
+/* Il punto di incisione, ancorato alla riga corrente. Vive dentro il piano,
+   quindi la sua posizione sulla superficie e' esatta per costruzione. */
+/* Attenzione: qui non ci vanno ne' opacity ne' filter. Entrambi appiattiscono
+   il contesto 3D dei figli, e un fascio ruotato di -90deg dentro un contesto
+   appiattito viene proiettato ad altezza zero, cioe' sparisce. L'opacita' la
+   portano i singoli figli. */
+.fuoco {
   position: absolute;
   inset-inline-start: 50%;
-  inset-block-start: 54%;
-  width: 42%; height: 34%;
+  inset-block-start: calc(var(--fronte, 0) * 100%);
+  transform-style: preserve-3d;
+}
+
+/* Il fascio sta in piedi perpendicolare al piano di lavoro: rotateX(-90deg)
+   dentro un piano gia' inclinato porta l'asse Y locale lungo la normale alla
+   superficie. Nessun calcolo di proiezione, e il piede resta sul punto. */
+/* La sorgente: una massa scura molto fuori fuoco in alto, con la lente accesa.
+   Non e' la sagoma di nessuna macchina in commercio: e' solo una presenza. */
+.sorgente {
+  position: absolute;
+  /* spostata rispetto al centro del marchio: il raggio arriva di sbieco,
+     come in una ripresa vera, invece che a piombo */
+  inset-inline-start: 24%;
+  inset-block-start: 15%;
+  width: clamp(44px, 5.4vw, 76px);
+  height: clamp(26px, 3.4vw, 44px);
+  translate: -50% -50%;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #23262A 0%, #121416 62%, #05060700 100%);
+  filter: blur(9px);
+  opacity: calc(var(--fuoco-op, 0) * 0.7);
+  z-index: 1;
+}
+.sorgente::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 88%;
+  inset-inline-start: 50%;
+  width: 34%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(214, 206, 255, 0.9) 0%, rgba(124, 108, 255, 0.35) 46%, transparent 72%);
+}
+
+/* Il raggio: ancorato alla sorgente e ruotato verso il punto di incisione.
+   La lunghezza e l'angolo li scrive scene.js, che misura dove cade il punto. */
+.raggio {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 0;
+  height: 0;
+  transform: translate3d(var(--raggio-x, 0px), var(--raggio-y, 0px), 0)
+             rotate(var(--raggio-a, 0deg));
+  transform-origin: 0 0;
+  opacity: var(--fuoco-op, 0);
+  z-index: 1;
+  pointer-events: none;
+}
+.raggio__nucleo,
+.raggio__aria {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  height: var(--raggio-l, 0px);
+  translate: -50% 0;
+}
+/* il raggio vero: sottile, e piu' acceso man mano che si avvicina al legno */
+.raggio__nucleo {
+  width: clamp(2.5px, 0.4vw, 5px);
+  background: linear-gradient(180deg,
+    rgba(198, 188, 255, 0.55) 0%,
+    rgba(168, 152, 255, 0.78) 40%,
+    rgba(226, 220, 255, 0.96) 100%);
+  filter: blur(0.6px);
+}
+/* la luce che il raggio lascia nell'aria intorno a se' */
+.raggio__aria {
+  width: clamp(16px, 2.4vw, 34px);
+  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+  background: linear-gradient(180deg,
+    rgba(112, 94, 240, 0.06) 0%,
+    rgba(124, 106, 248, 0.2) 52%,
+    rgba(158, 142, 255, 0.44) 100%);
+  filter: blur(6px);
+}
+
+.fuoco__alone {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  width: clamp(90px, 13vw, 168px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255, 198, 124, 0.44) 0%, rgba(255, 142, 52, 0.16) 28%, transparent 60%),
+    radial-gradient(circle, rgba(132, 116, 255, 0.34) 0%, rgba(92, 76, 232, 0.12) 42%, transparent 72%);
+  opacity: var(--fuoco-op, 0);
+}
+
+.fuoco__punto {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  width: clamp(14px, 2.1vw, 26px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    #FFFFFF 0%, #F0F3FF 24%, #A79AFF 48%, rgba(124, 108, 255, 0) 74%);
+  opacity: var(--fuoco-op, 0);
+}
+
+/* --------------------------------------------------------------------------
+   16.2 Atto 2 — la stampa 3D
+   -------------------------------------------------------------------------- */
+.stampa {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  perspective: 2000px;
+  perspective-origin: 64% 34%;
+}
+
+.stampa__ambiente {
+  position: absolute;
+  inset: -12%;
+  background:
+    radial-gradient(48% 40% at 64% 60%, rgba(155, 170, 107, 0.15), transparent 74%),
+    radial-gradient(130% 110% at 60% -18%, rgba(0, 0, 0, 0.7), transparent 58%);
+  opacity: var(--entrata, 0);
+}
+
+/* La guida lineare dietro la testa, fuori fuoco. */
+.stampa__rotaia {
+  position: absolute;
+  inset-block-start: 17%;
+  inset-inline: 54% -18%;
+  height: clamp(16px, 3vh, 28px);
+  border-radius: 40px;
+  background: linear-gradient(180deg, #4A4F53 0%, #949AA0 34%, #565C61 62%, #191C1F 100%);
+  filter: blur(6px);
+  opacity: calc(var(--entrata, 0) * 0.5);
+}
+
+/* Il piatto di stampa, quasi orizzontale: la ripresa e' molto radente. */
+.stampa__piano {
+  position: absolute;
+  inset-inline-start: 64%;      /* il soggetto sta a destra, il testo a sinistra */
+  inset-block-start: 62%;
+  width: min(92%, 122vh);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--incl, 74deg)) scale(var(--zoom, 1)) translateY(var(--piano-y, 0%));
+  border-radius: 8px;
+  background: linear-gradient(178deg, #2B2822 0%, #1C1A16 58%, #121110 100%);
+  box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.72);
+  opacity: var(--piano-op, 1);
+}
+
+/* La grana del piatto: rumore procedurale calcolato dal browser. */
+.stampa__grana {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* La pozza di luce che la testa getta sul piatto. */
+.stampa__luce {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  width: 62%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side,
+    rgba(255, 236, 200, 0.16) 0%, rgba(155, 170, 107, 0.09) 42%, transparent 74%);
+  opacity: var(--luce-op, 0);
+}
+
+.stampa__ombra {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  width: 44%;
+  height: 36%;
   translate: -50% -46%;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.55), transparent 76%);
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.62), transparent 76%);
   opacity: var(--ombra-op, 0);
   transform: scale(var(--ombra-s, 0.6));
 }
 
-/* La pila di strati: N copie del monogramma separate lungo Z */
+/* Gli strati: N copie del marchio separate lungo Z, cioe' perpendicolari al
+   piatto, perche' la pila vive dentro il piano inclinato. */
 .pila {
   position: absolute;
   inset-inline-start: 50%;
-  inset-block-start: 52%;
-  width: 46%;
+  inset-block-start: 50%;
+  width: 42%;
   aspect-ratio: 477 / 383;
   translate: -50% -50%;
   transform-style: preserve-3d;
-  /* Gli strati salgono lungo Z, cioe' perpendicolari al piano di stampa. */
-  transform: rotateZ(var(--pila-ry, 0deg));
+  transform: rotateZ(var(--pila-rz, 0deg));
 }
 .strato {
-  position: absolute; inset: 0;
+  position: absolute;
+  inset: 0;
   transform: translateZ(calc(var(--i) * var(--passo, 2px)));
   opacity: 0;
-  transition: opacity 120ms linear;   /* la comparsa non deve scattare */
+  transition: opacity var(--dur-1) linear;
 }
 .strato.e-steso { opacity: 1; }
 .strato svg { width: 100%; height: 100%; }
 
-/* Ugello: sagoma generica, ancorata alla quota dello strato corrente */
-.ugello {
+/* La testa di stampa: in primo piano e appena fuori fuoco, come nella ripresa
+   ravvicinata. Non e' la copia di una macchina in commercio. */
+/* La testa e' posizionata perche' la punta dell'ugello cada sulla superficie
+   superiore dell'oggetto; --testa-su la fa salire mano a mano che l'oggetto
+   cresce. */
+.testa {
   position: absolute;
-  inset-inline-start: 50%;
-  inset-block-start: 52%;
-  translate: -50% -128%;
-  transform: translate3d(0, 0, calc(var(--ugello-z, 0px) + 52px));
-  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6));
-  transform-style: preserve-3d;
-  opacity: var(--ugello-op, 0);
+  inset-inline-start: 64%;
+  inset-block-start: 36%;
+  width: clamp(104px, 15vw, 196px);
+  translate: -50% 0;
+  transform: translateY(calc(var(--testa-su, 0px) * -1));
+  filter: blur(1.1px) drop-shadow(0 18px 30px rgba(0, 0, 0, 0.72));
+  opacity: var(--testa-op, 0);
+  z-index: 1;
 }
-/* Il corpo vaga in X/Y con un ciclo suo, cosi' si muove anche a scroll fermo */
-.ugello__corpo {
+/* Il corpo vaga con un ciclo suo: si muove anche a scroll fermo, come una
+   macchina che sta lavorando. */
+.testa__corpo {
   position: relative;
-  animation: vaga-x 3.1s ease-in-out infinite alternate,
-             vaga-y 2.3s ease-in-out infinite alternate;
+  animation: testa-x 3.4s ease-in-out infinite alternate,
+             testa-y 2.6s ease-in-out infinite alternate;
 }
-@keyframes vaga-x { from { translate: -46px 0; } to { translate: 46px 0; } }
-@keyframes vaga-y { from { transform: translateY(-24px); } to { transform: translateY(24px); } }
+.testa__corpo svg { width: 100%; height: auto; }
+@keyframes testa-x { from { translate: -7% 0; } to { translate: 7% 0; } }
+@keyframes testa-y { from { transform: translateY(-2.5%); } to { transform: translateY(2.5%); } }
 
-.ugello__punta {
+/* Il filamento fuso che esce, e il calore all'ugello. */
+.testa__caldo {
   position: absolute;
-  inset-block-start: 58px;
+  inset-block-start: 96%;
   inset-inline-start: 50%;
-  width: 10px; height: 10px;
-  translate: -50% 0;
+  width: 34%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
   border-radius: 50%;
-  background: radial-gradient(circle, #FFCE85 0%, rgba(255, 140, 40, 0) 70%);
+  background: radial-gradient(circle, rgba(255, 206, 133, 0.5) 0%, rgba(255, 140, 40, 0) 70%);
 }
-.ugello__filo {
+.testa__filo {
   position: absolute;
-  inset-block-start: 62px;
+  inset-block-start: 97%;
   inset-inline-start: 50%;
-  width: 1.5px; height: 14px;
+  width: 2px;
+  height: 7%;
   translate: -50% 0;
-  background: linear-gradient(180deg, var(--foglia), rgba(155, 170, 107, 0));
+  background: linear-gradient(180deg, #B6C486, rgba(155, 170, 107, 0));
 }
 
 /* --------------------------------------------------------------------------
@@ -842,23 +1217,29 @@ p:last-child { margin-bottom: 0; }
    -------------------------------------------------------------------------- */
 .hud {
   position: absolute;
-  inset-block-start: clamp(74px, 12vh, 116px);
-  inset-inline-start: var(--gutter);
+  /* sotto la navbar, che e' alta fra 72 e 84px */
+  inset-block-start: clamp(94px, 13vh, 132px);
+  inset-inline-start: clamp(var(--sp-3), 2vw, var(--sp-5));
+  z-index: 3;
   font-family: var(--sans);
   font-size: var(--t-tecnico);
   color: var(--pietra);
   letter-spacing: 0.08em;
   opacity: var(--hud-op, 0);
   pointer-events: none;
-  max-width: 230px;
+  max-width: 15rem;
 }
-.hud--stampa { inset-inline-start: auto; inset-inline-end: var(--gutter); text-align: right; }
-
+.hud--stampa {
+  inset-inline-start: auto;
+  inset-inline-end: clamp(var(--sp-3), 2vw, var(--sp-5));
+  text-align: right;
+}
 .hud__macchina {
   margin: 0 0 var(--sp-2);
   color: var(--foglia);
   font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.14em;
 }
 .hud__dati { margin: 0; display: grid; gap: 3px; }
 .hud__dati > div { display: flex; gap: var(--sp-3); justify-content: space-between; }
@@ -867,88 +1248,176 @@ p:last-child { margin-bottom: 0; }
 .hud__dati dd { margin: 0; color: var(--avorio); font-variant-numeric: tabular-nums; }
 
 /* --------------------------------------------------------------------------
-   16.4 Il testo della scena
+   16.4 Il testo dell'atto, a lato dell'arte
    -------------------------------------------------------------------------- */
-/* Velo scuro sotto al testo: senza, la didascalia finirebbe sopra la foto del
-   legno e il contrasto non sarebbe garantito. Puramente decorativo. */
-.scena__palco::after {
-  content: '';
-  position: absolute;
-  inset-inline: 0;
-  inset-block-end: 0;
-  height: 46%;
-  background: linear-gradient(180deg, rgba(20, 23, 15, 0) 0%,
-              rgba(20, 23, 15, 0.72) 46%, rgba(20, 23, 15, 0.94) 100%);
-  pointer-events: none;
-  z-index: 1;
+.atto__testo {
+  position: relative;
+  z-index: 3;
+  max-width: 46ch;
+  justify-self: start;
+}
+.atto--stampa .atto__testo { justify-self: end; }
+
+.atto__testo h2 {
+  color: var(--avorio);
+  margin-block: var(--sp-2) var(--sp-3);
+}
+.atto__paragrafo {
+  color: rgba(237, 233, 219, 0.76);
+  max-width: 42ch;
+}
+.atto__nota {
+  font-size: var(--t-tecnico);
+  line-height: 1.6;
+  color: var(--pietra);
+  max-width: 40ch;
+  padding-inline-start: var(--sp-3);
+  border-inline-start: 1px solid rgba(176, 138, 79, 0.42);
 }
 
-.scena__testo {
-  position: absolute;
-  inset-inline: var(--gutter);
-  inset-block-end: clamp(var(--sp-4), 5vh, var(--sp-7));
-  max-width: 640px;
-  margin-inline: auto;
-  text-align: center;
+/* I blocchi del testo entrano uno dopo l'altro mentre l'atto avanza: i valori
+   li scrive scene.js, uno per blocco. Senza JavaScript restano visibili. */
+@media (min-width: 901px) {
+  .atto__testo > [data-passo] {
+    opacity: var(--p-op, 1);
+    transform: translate3d(0, var(--p-y, 0px), 0);
+  }
+  .materia {
+    opacity: var(--m-op, 1);
+    transform: translate3d(0, var(--m-y, 0px), 0);
+  }
+}
+
+.materie { margin-block-start: clamp(var(--sp-3), 3.4vh, var(--sp-5)); }
+.materie__titolo {
+  margin: 0 0 var(--sp-1);
+  font-size: var(--t-tecnico);
+  font-weight: 600;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--foglia);
+}
+.materie__elenco { list-style: none; margin: 0; padding: 0; }
+.materia {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, auto) 1fr;
+  gap: var(--sp-1) var(--sp-3);
+  padding-block: clamp(6px, 1.1vh, 11px);
+  border-block-start: 1px solid var(--linea-inv);
+}
+.materia__nome {
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
   color: var(--avorio);
-  opacity: var(--testo-op, 1);
-  z-index: 2;
 }
-.scena__testo h2 { color: var(--avorio); margin-block: var(--sp-2) var(--sp-3); }
-.scena__descrizione {
-  color: rgba(237, 233, 219, 0.72);
-  font-size: 0.975rem;
-  margin-inline: auto;
-  max-width: 56ch;
+.materia__nota {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(237, 233, 219, 0.62);
 }
-.scena__cta {
+
+.atto__cta {
   background: var(--ottone);
   color: #1B1E1A;
-  opacity: var(--cta-op, 0);
-  pointer-events: var(--cta-eventi, none);
+  pointer-events: var(--cta-eventi, auto);
 }
-.scena__cta:hover { background: #C29A5B; }
+.atto__cta:hover { background: #C29A5B; }
 
-/* Su schermi bassi il testo ruberebbe spazio alla scena */
-@media (max-height: 640px) {
-  .scena__descrizione { display: none; }
+/* Su schermi bassi il testo ruberebbe spazio all'inquadratura. */
+@media (min-width: 901px) and (max-height: 700px) {
+  .atto__nota { display: none; }
+  .materia__nota { display: none; }
+  .materia { grid-template-columns: 1fr; }
 }
 
 /* --------------------------------------------------------------------------
-   16.5 Versione statica in tre riquadri
+   16.5 Larghezze intermedie
    -------------------------------------------------------------------------- */
-.scena-statica {
-  background: var(--nero-corteccia);
-  color: var(--avorio);
-  padding-block: var(--sezione-y);
+@media (min-width: 901px) and (max-width: 1180px) {
+  .atto__interno { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .atto__testo { max-width: 40ch; }
+  .materia__nota { font-size: 0.83rem; }
 }
-.scena-statica h2 { color: var(--avorio); }
-.scena-statica .testo-guida { color: rgba(237, 233, 219, 0.78); }
 
-.riquadri {
-  list-style: none; margin: 0 0 var(--sp-6); padding: 0;
-  display: grid; gap: var(--sp-5);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
-  counter-reset: riquadro;
-}
-.riquadro__figura {
-  position: relative;
+/* --------------------------------------------------------------------------
+   16.6 Versione con video
+   Su schermo stretto, e per chi chiede meno movimento, l'animazione a
+   scorrimento lascia il posto al video dell'animazione con il testo sotto.
+
+   Il video ha preload="none" e nessun attributo poster finche' serve davvero:
+   il fermo immagine sta in data-poster e lo promuove scene.js. Cosi' su schermo
+   largo, dove l'animazione gira, non si scarica un byte di video.
+   -------------------------------------------------------------------------- */
+.atto__video { display: none; margin: 0; }
+.atto__video-elemento {
+  width: 100%;
+  height: auto;
   aspect-ratio: 1;
-  perspective: 900px;      /* senza, le inclinazioni dei riquadri non si vedono */
-  display: grid; place-items: center;
+  object-fit: cover;
   border: 1px solid var(--linea-inv);
   border-radius: var(--raggio);
-  overflow: hidden;
-  margin-block-end: var(--sp-3);
+  background-color: #101210;
 }
-.riquadro__figura img { width: 100%; height: 100%; object-fit: cover; }
-.riquadro__incisione {
-  position: absolute; inset-inline: 14%; width: 72%;
-  mix-blend-mode: multiply;
+.atto__video figcaption {
+  margin-block-start: var(--sp-2);
+  color: var(--pietra);
+  font-size: var(--t-tecnico);
+  letter-spacing: 0.04em;
 }
-.riquadro__figura--transizione,
-.riquadro__figura--stampa {
-  background: radial-gradient(120% 90% at 50% 40%, #232821, #14170F);
+
+/* Il passaggio alla versione con video: niente corsa, niente sticky. */
+.atto--video,
+.atto--video .atto__interno { height: auto; }
+.atto--video .atto__interno {
+  position: static;
+  overflow: visible;
+  padding-block: var(--sezione-y);
+  background-color: var(--nero-corteccia);
 }
-.riquadro__mono-inclinato { width: 64%; transform: rotateX(46deg) rotateZ(-4deg); }
-.riquadro__strati { width: 64%; transform: rotateX(52deg); }
+.atto--video .atto__arte { display: none; }
+.atto--video .atto__video { display: block; }
+.atto--video .atto__velo { display: none; }
+
+/* su schermo largo, con moto ridotto, video e testo restano affiancati */
+.atto--incisione.atto--video .atto__video { grid-column: 1; }
+.atto--stampa.atto--video .atto__video { grid-column: 2; }
+
+@media (max-width: 900px) {
+  .atto,
+  .atto .atto__interno { height: auto; }
+  .atto .atto__interno {
+    position: static;
+    overflow: visible;
+    display: block;
+    padding-block: var(--sezione-y);
+    background-color: var(--nero-corteccia);
+  }
+  .atto .atto__arte,
+  .atto .atto__velo { display: none; }
+  .atto .atto__video { display: block; margin-block-end: var(--sp-5); }
+  .atto .atto__testo,
+  .atto--stampa .atto__testo { max-width: none; justify-self: stretch; }
+  .atto .atto__paragrafo { max-width: var(--max-testo); }
+  .atto--incisione .atto__arte { margin-inline-start: 0; }
+  .atto--stampa .atto__arte { margin-inline-end: 0; }
+}
+
+/* Nessun movimento richiesto: il video resta fermo sul fermo immagine finche'
+   non lo si avvia a mano, quindi con i comandi visibili. */
+@media (prefers-reduced-motion: reduce) {
+  .atto,
+  .atto .atto__interno { height: auto; }
+  .atto .atto__interno {
+    position: static;
+    overflow: visible;
+    padding-block: var(--sezione-y);
+    background-color: var(--nero-corteccia);
+  }
+  .atto .atto__arte,
+  .atto .atto__velo { display: none; }
+  .atto .atto__video { display: block; }
+  .atto--incisione .atto__video { grid-column: 1; }
+  .atto--stampa .atto__video { grid-column: 2; }
+  .testa__corpo { animation: none; }
+}

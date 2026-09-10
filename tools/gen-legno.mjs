@@ -16,17 +16,24 @@
  *
  * Prodotti:
  *   assets/img/legno-sezione.webp     1450x1450, sorgente ritagliata
- *   assets/img/legno-disco.webp       1400x1400, desktop
+ *   assets/img/legno-disco.webp       1100x1100, schermi grandi
+ *   assets/img/legno-disco-900.webp    900x900
  *   assets/img/legno-disco-600.webp    600x600,  schermi piccoli
  *
  * Per usare una fotografia diversa basta passarne il percorso e adattare
- * CENTRO e LATO: il centro va sul midollo, il lato e' il diametro del ritaglio.
+ * CENTRO e LATO: il centro del ritaglio e il suo diametro.
+ *
+ * Il ritaglio NON e' centrato sul midollo. Nella fotografia una fessura di
+ * ritiro parte dal midollo e scende fino al bordo: centrando li', quella
+ * fessura taglia in due il marchio inciso. Spostandosi verso sinistra si
+ * prendono anelli concentrici puliti, che alla scala ravvicinata della scena
+ * si leggono comunque come legno di sezione.
  */
 import sharp from 'sharp';
 
 const ORIGINALE = process.argv[2] || 'assets/img/_sorgente-legno.jpg';
-const CENTRO = { x: 2250, y: 1750 };   /* il midollo nell'originale */
-const LATO = 1450;                     /* diametro del ritaglio */
+const CENTRO = { x: 1550, y: 1950 };   /* anelli puliti, a sinistra del midollo */
+const LATO = 1380;                     /* diametro del ritaglio */
 
 const meta = await sharp(ORIGINALE).metadata();
 console.log(`sorgente ${meta.width}x${meta.height}`);
@@ -50,7 +57,13 @@ await sharp(ORIGINALE)
 const sorgente = await sharp('assets/img/legno-sezione.webp').metadata();
 console.log(`legno-sezione.webp     ${sorgente.width}x${sorgente.height}  ${(sorgente.size / 1024) | 0} KB`);
 
-for (const [nome, misura, q] of [['legno-disco.webp', 1400, 88], ['legno-disco-600.webp', 600, 86]]) {
+/* Le misure servono a coprire il ventaglio di srcset dichiarato in index.html.
+   Oltre i 1100px il disco non guadagna nulla di visibile: e' una superficie di
+   legno sfocata dalla prospettiva, e ogni raddoppio di lato costa il triplo di
+   byte sulla pagina. */
+for (const [nome, misura, q] of [['legno-disco.webp', 1100, 80],
+                                 ['legno-disco-900.webp', 900, 80],
+                                 ['legno-disco-600.webp', 600, 82]]) {
   const info = await sharp('assets/img/legno-sezione.webp')
     .resize(misura, misura, { kernel: 'lanczos3' })
     .webp({ quality: q, effort: 5 })

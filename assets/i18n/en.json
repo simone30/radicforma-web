@@ -6,8 +6,7 @@
   "a11y": {
     "skip": "Skip to content",
     "menu": "Open navigation menu",
-    "lingua": "Language selection",
-    "scena": "Illustration of the production process"
+    "lingua": "Language selection"
   },
   "brand": {
     "claim": "Where matter comes to life",
@@ -26,27 +25,78 @@
     "descrittore": "3D Models · Laser Engraving",
     "scroll": "Scroll"
   },
-  "scena": {
-    "eyebrow": "From mark to object",
-    "titolo": "Two machines, one gesture",
-    "testo": "The mark is first laser engraved onto the surface of a log, line after line, then rebuilt layer upon layer by the nozzle of a 3D printer. It is the most direct way to show what we do: removing material and adding it, with the same precision.",
-    "alternativa": "A sequence in three moments: the Radic Forma monogram laser engraved onto a log section, the shift in perspective from top-down to three-quarter view, and the same monogram 3D printed layer by layer on a build plate.",
-    "didascalia1": "Laser engraving — line-by-line scan on wood",
-    "didascalia2": "Shift in perspective — from plane to volume",
-    "didascalia3": "3D printing — twenty-eight 0.20 mm layers",
-    "cta": "Let's talk about your project",
-    "laser": {
-      "macchina": "Laser engraving · raster",
+  "incisione": {
+    "eyebrow": "Laser engraving",
+    "titolo": "The difference is a tenth of a millimetre",
+    "testo": "The beam travels the surface line by line and, on every pass, decides how much material to remove. Power, speed and number of passes are calibrated on each single material: it is that calibration, not the machine, that separates an engraved mark from a scorch.",
+    "nota": "On every new material we run a stepped-power test piece, to find the point where the mark is crisp and the edge stays clean.",
+    "materiali": {
+      "titolo": "What we engrave",
+      "uno": {
+        "nome": "Plastic",
+        "nota": "Acrylic, ABS and polycarbonate: satin engraving and clean-edged cutting."
+      },
+      "due": {
+        "nome": "Metal",
+        "nota": "Permanent marking on stainless steel and anodised aluminium, with no loss of thickness."
+      },
+      "tre": {
+        "nome": "Wood",
+        "nota": "Solid timber, plywood and MDF: the mark darkens by burning and the grain stays readable."
+      },
+      "quattro": {
+        "nome": "Coloured glass",
+        "nota": "A satin surface that contrasts with the colour, for plaques, signs and fittings."
+      }
+    },
+    "hud": {
+      "macchina": "Raster engraving",
       "potenza": "POWER",
-      "velocita": "FEED RATE",
+      "riga": "LINE",
       "passata": "PASS"
     },
-    "stampa": {
-      "macchina": "3D printing · FDM",
+    "alt": "The Radic Forma monogram is laser-engraved on a section of tree trunk: the beam descends line by line and leaves a dark brown burnt trace on the wood.",
+    "video": {
+      "titolo": "Engraving the monogram on wood",
+      "didascalia": "The monogram engraved line by line on a section of tree trunk."
+    }
+  },
+  "stampa3d": {
+    "eyebrow": "3D printing",
+    "titolo": "An object built one line at a time",
+    "testo": "The nozzle lays molten filament along the perimeter and then fills the inside; the bed drops two tenths of a millimetre and it starts again. Every layer has to weld to the one below while it cools: that is where temperature and deposition speed decide whether the finished piece will hold.",
+    "nota": "We orient the piece according to where it will work: with the same material, the direction of the layers changes its strength.",
+    "materiali": {
+      "titolo": "What we print with",
+      "uno": {
+        "nome": "PLA",
+        "nota": "Rigid and dimensionally stable, for homeware and form prototypes."
+      },
+      "due": {
+        "nome": "PETG",
+        "nota": "Resistant to moisture and impact, for pieces kept outdoors or handled often."
+      },
+      "tre": {
+        "nome": "ABS and ASA",
+        "nota": "They withstand heat and sunlight, for technical components."
+      },
+      "quattro": {
+        "nome": "TPU",
+        "nota": "Flexible and elastic, for gaskets, feet and protective parts."
+      }
+    },
+    "hud": {
+      "macchina": "Fused filament deposition",
       "strato": "LAYER",
       "altezza": "HEIGHT",
       "materiale": "MATERIAL"
-    }
+    },
+    "alt": "The same monogram is 3D-printed on a build plate: the nozzle lays down green filament and the object grows layer after layer until it is complete.",
+    "video": {
+      "titolo": "3D printing the monogram",
+      "didascalia": "The same monogram built layer after layer on the build plate."
+    },
+    "cta": "Let's talk about your project"
   },
   "servizi": {
     "eyebrow": "Services",

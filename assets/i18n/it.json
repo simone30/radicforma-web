@@ -6,8 +6,7 @@
   "a11y": {
     "skip": "Vai al contenuto",
     "menu": "Apri il menu di navigazione",
-    "lingua": "Selezione della lingua",
-    "scena": "Illustrazione del processo produttivo"
+    "lingua": "Selezione della lingua"
   },
   "brand": {
     "claim": "Dove la materia prende vita",
@@ -26,27 +25,78 @@
     "descrittore": "Modelli 3D · Incisioni laser",
     "scroll": "Scorri"
   },
-  "scena": {
-    "eyebrow": "Dal segno all'oggetto",
-    "titolo": "Due macchine, un solo gesto",
-    "testo": "Il marchio viene prima inciso a laser sulla superficie di un tronco, riga dopo riga, poi ricostruito strato su strato dall'ugello di una stampante 3D. È il modo più diretto per raccontare cosa facciamo: sottrarre materia e aggiungerne, con la stessa precisione.",
-    "alternativa": "Sequenza in tre momenti: il monogramma Radic Forma inciso a laser su una sezione di tronco, il cambio di prospettiva dal piano zenitale alla vista in tre quarti, e lo stesso monogramma stampato in 3D strato dopo strato su un piatto di stampa.",
-    "didascalia1": "Incisione laser — scansione riga per riga sul legno",
-    "didascalia2": "Cambio di prospettiva — dal piano al volume",
-    "didascalia3": "Stampa 3D — ventotto strati da 0,20 mm",
-    "cta": "Parliamo del tuo progetto",
-    "laser": {
-      "macchina": "Incisione laser · raster",
+  "incisione": {
+    "eyebrow": "Incisione laser",
+    "titolo": "La differenza sta nel decimo di millimetro",
+    "testo": "Il fascio percorre la superficie riga dopo riga e a ogni passaggio decide quanta materia togliere. Potenza, velocità e numero di passate si tarano sul singolo materiale: è quella taratura, non la macchina, a separare un segno inciso da una bruciatura.",
+    "nota": "Su ogni materiale nuovo facciamo un provino a potenza scalare, per trovare il punto in cui il segno è netto e il bordo resta pulito.",
+    "materiali": {
+      "titolo": "Che cosa incidiamo",
+      "uno": {
+        "nome": "Plastica",
+        "nota": "Acrilico, ABS e policarbonato: incisione satinata e taglio dal bordo pulito."
+      },
+      "due": {
+        "nome": "Metallo",
+        "nota": "Marcatura permanente su acciaio inox e alluminio anodizzato, senza asportare spessore."
+      },
+      "tre": {
+        "nome": "Legno",
+        "nota": "Massello, compensato e MDF: il segno scurisce per bruciatura e il grano resta leggibile."
+      },
+      "quattro": {
+        "nome": "Vetro colorato",
+        "nota": "Superficie satinata che contrasta con il colore, per targhe, insegne e complementi."
+      }
+    },
+    "hud": {
+      "macchina": "Incisione raster",
       "potenza": "POTENZA",
-      "velocita": "AVANZAMENTO",
+      "riga": "RIGA",
       "passata": "PASSATA"
     },
-    "stampa": {
-      "macchina": "Stampa 3D · FDM",
+    "alt": "Il monogramma Radic Forma viene inciso a laser su una sezione di tronco: il fascio scende riga dopo riga e lascia sul legno una traccia bruciata color marrone scuro.",
+    "video": {
+      "titolo": "Incisione del monogramma su legno",
+      "didascalia": "Il monogramma inciso riga dopo riga su una sezione di tronco."
+    }
+  },
+  "stampa3d": {
+    "eyebrow": "Stampa 3D",
+    "titolo": "Un oggetto costruito una riga alla volta",
+    "testo": "L'ugello depone il filamento fuso lungo il perimetro e poi riempie l'interno; il piano scende di due decimi di millimetro e si ricomincia. Ogni strato deve saldarsi al precedente mentre si raffredda: è lì, nella temperatura e nella velocità di deposizione, che si decide se il pezzo finito terrà.",
+    "nota": "Orientiamo il pezzo in funzione di dove lavorerà: a parità di materiale, la direzione degli strati cambia la resistenza.",
+    "materiali": {
+      "titolo": "Con che cosa stampiamo",
+      "uno": {
+        "nome": "PLA",
+        "nota": "Rigido e stabile nella forma, per complementi d'arredo e prototipi."
+      },
+      "due": {
+        "nome": "PETG",
+        "nota": "Resistente all'umidità e agli urti, per pezzi che stanno all'aperto o si maneggiano."
+      },
+      "tre": {
+        "nome": "ABS e ASA",
+        "nota": "Tengono il calore e la luce del sole, per componenti tecnici."
+      },
+      "quattro": {
+        "nome": "TPU",
+        "nota": "Flessibile ed elastico, per guarnizioni, piedini e protezioni."
+      }
+    },
+    "hud": {
+      "macchina": "Deposizione di filamento",
       "strato": "STRATO",
       "altezza": "ALTEZZA",
       "materiale": "MATERIALE"
-    }
+    },
+    "alt": "Lo stesso monogramma viene stampato in 3D su un piatto di stampa: l'ugello depone il filamento verde e l'oggetto cresce strato dopo strato fino a essere completo.",
+    "video": {
+      "titolo": "Stampa 3D del monogramma",
+      "didascalia": "Lo stesso monogramma costruito strato dopo strato sul piatto di stampa."
+    },
+    "cta": "Parliamo del tuo progetto"
   },
   "servizi": {
     "eyebrow": "Servizi",

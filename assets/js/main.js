@@ -57,8 +57,10 @@
       e.preventDefault();
       chiudiMenu();
 
-      var y = meta.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({ top: y, behavior: motoRidotto.matches ? 'auto' : 'smooth' });
+      /* la navbar e' fissa: senza scostamento il titolo finisce sotto */
+      var barra = navbar ? navbar.offsetHeight : 0;
+      var y = meta.getBoundingClientRect().top + window.scrollY - barra - 12;
+      window.scrollTo({ top: Math.max(0, y), behavior: motoRidotto.matches ? 'auto' : 'smooth' });
 
       /* l'ancora deve restare raggiungibile da tastiera */
       meta.setAttribute('tabindex', '-1');
@@ -68,7 +70,10 @@
   });
 
   /* --------------------------------------------- rivelazione delle sezioni */
-  /* Fade + 16px di traslazione, una sola volta, senza scrub. */
+  /* Fade + 20px di traslazione, una sola volta, senza scrub.
+     power3.out e' l'equivalente in GSAP della --ease-out del foglio di stile:
+     partenza decisa e arrivo lungo. Il core di GSAP non accetta una
+     cubic-bezier scritta per esteso, serve il plugin CustomEase. */
   function attivaRivelazioni() {
     var elementi = document.querySelectorAll('[data-rivela]');
     if (!elementi.length) return;
@@ -81,8 +86,8 @@
     elementi.forEach(function (el) {
       var ritardo = parseFloat(el.dataset.rivela) || 0;
       window.gsap.to(el, {
-        opacity: 1, y: 0, duration: 0.5, delay: ritardo, ease: 'power1.out',
-        scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+        opacity: 1, y: 0, duration: 0.7, delay: ritardo, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 86%', once: true }
       });
     });
   }
