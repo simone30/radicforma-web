@@ -132,10 +132,11 @@ file. Dopo la modifica, `git push` e il sito si aggiorna.
 
 ## 4. I dati da completare
 
-Come recapito per ora c'è **solo l'indirizzo email**, `info@radicforma.com`.
-Telefono e indirizzo sono stati tolti dalla pagina: per rimetterli si
-aggiungono un blocco `.recapito` nella sezione Contatti e una riga nel piè di
-pagina.
+I recapiti sono l'indirizzo email `info@radicforma.com` e due cellulari,
+Thomas Furnò e Simone Trucci, che sul telefono si chiamano con un tocco. Si
+trovano nella sezione Contatti di `index.html` e nel piè di pagina di
+`index.html` e `lavori.html`: per cambiarne uno vanno aggiornati tutti e tre
+i punti. Nel link `tel:` il numero va scritto con +39 e senza spazi.
 
 ### Affermazioni da verificare
 

@@ -880,6 +880,15 @@ p, li, figcaption { text-wrap: pretty; }
 .recapito dd { margin: 0; font-size: 1.05rem; }
 .recapito a { color: var(--testo); text-decoration-color: var(--linea); }
 .recapito a:hover { text-decoration-color: currentColor; }
+/* Un recapito per persona: il nome piccolo a sinistra, il numero a destra.
+   Sotto i 400px circa vanno a capo, il numero sotto il nome. */
+.recapito__persona {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  justify-content: space-between; gap: 2px var(--sp-3);
+}
+.recapito__persona + .recapito__persona { margin-block-start: var(--sp-1); }
+.recapito__nome { font-size: var(--t-piccolo); color: var(--testo-soft); }
+.recapito__persona a { font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 /* ==========================================================================
    16. Gli atti — incisione laser e stampa 3D

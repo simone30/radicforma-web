@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-versione="59a10d27">
+<html lang="it" data-versione="438ff43e">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,7 +37,7 @@
 
 <link rel="preload" href="./assets/fonts/cormorant-garamond-latin-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="./assets/fonts/manrope-latin-500.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="./assets/css/style.css?v=59a10d27">
+<link rel="stylesheet" href="./assets/css/style.css?v=438ff43e">
 <!-- Senza JavaScript non c'e' animazione a scorrimento: il contenuto deve
      restare tutto visibile, non a opacita' zero in attesa di qualcuno. -->
 <noscript><style>
@@ -185,10 +185,10 @@
 
           <!-- il piano di lavoro inclinato: e' la camera che lo inclina -->
           <div class="laser__piano" data-piano>
-            <img class="laser__legno" src="./assets/img/legno-disco.webp?v=59a10d27"
-                 srcset="./assets/img/legno-disco-600.webp?v=59a10d27 600w,
-                         ./assets/img/legno-disco-900.webp?v=59a10d27 900w,
-                         ./assets/img/legno-disco.webp?v=59a10d27 1100w"
+            <img class="laser__legno" src="./assets/img/legno-disco.webp?v=438ff43e"
+                 srcset="./assets/img/legno-disco-600.webp?v=438ff43e 600w,
+                         ./assets/img/legno-disco-900.webp?v=438ff43e 900w,
+                         ./assets/img/legno-disco.webp?v=438ff43e 1100w"
                  sizes="(max-width: 1180px) 62vw, 50vw"
                  alt="" width="1100" height="1100"
                  loading="lazy" decoding="async" fetchpriority="low">
@@ -260,11 +260,11 @@
       <figure class="atto__video" data-video>
         <video class="atto__video-elemento" muted loop playsinline preload="none"
                width="960" height="960"
-               data-poster="./assets/video/incisione-poster.webp?v=59a10d27"
+               data-poster="./assets/video/incisione-poster.webp?v=438ff43e"
                data-i18n-attr="aria-label:incisione.video.titolo"
                aria-label="Incisione del monogramma su legno">
-          <source src="./assets/video/incisione.webm?v=59a10d27" type="video/webm">
-          <source src="./assets/video/incisione.mp4?v=59a10d27" type="video/mp4">
+          <source src="./assets/video/incisione.webm?v=438ff43e" type="video/webm">
+          <source src="./assets/video/incisione.mp4?v=438ff43e" type="video/mp4">
         </video>
         <figcaption class="dato-tecnico" data-i18n="incisione.video.didascalia">Il monogramma inciso riga dopo riga su una sezione di tronco.</figcaption>
       </figure>
@@ -422,11 +422,11 @@
       <figure class="atto__video" data-video>
         <video class="atto__video-elemento" muted loop playsinline preload="none"
                width="960" height="960"
-               data-poster="./assets/video/stampa-poster.webp?v=59a10d27"
+               data-poster="./assets/video/stampa-poster.webp?v=438ff43e"
                data-i18n-attr="aria-label:stampa3d.video.titolo"
                aria-label="Stampa 3D del monogramma">
-          <source src="./assets/video/stampa.webm?v=59a10d27" type="video/webm">
-          <source src="./assets/video/stampa.mp4?v=59a10d27" type="video/mp4">
+          <source src="./assets/video/stampa.webm?v=438ff43e" type="video/webm">
+          <source src="./assets/video/stampa.mp4?v=438ff43e" type="video/mp4">
         </video>
         <figcaption class="dato-tecnico" data-i18n="stampa3d.video.didascalia">Lo stesso monogramma costruito strato dopo strato sul piatto di stampa.</figcaption>
       </figure>
@@ -625,6 +625,19 @@
             <dt data-i18n="contatti.email">Scrivici una mail</dt>
             <dd><a href="mailto:info@radicforma.com">info@radicforma.com</a></dd>
           </div>
+          <!-- tel: con il prefisso internazionale e senza spazi, cosi' la
+               chiamata parte da qualsiasi telefono, anche dall'estero. -->
+          <div class="recapito">
+            <dt data-i18n="contatti.telefono">Chiamaci</dt>
+            <dd class="recapito__persona">
+              <span class="recapito__nome">Thomas Furnò</span>
+              <a href="tel:+393793830987">+39 379 383 0987</a>
+            </dd>
+            <dd class="recapito__persona">
+              <span class="recapito__nome">Simone Trucci</span>
+              <a href="tel:+393665250204">+39 366 525 0204</a>
+            </dd>
+          </div>
         </dl>
       </div>
     </div>
@@ -656,6 +669,8 @@
       <div>
         <p class="footer__titolo" data-i18n="footer.contatti">Contatti</p>
         <a class="footer__link" href="mailto:info@radicforma.com">info@radicforma.com</a>
+        <a class="footer__link" href="tel:+393793830987">Thomas Furnò · +39 379 383 0987</a>
+        <a class="footer__link" href="tel:+393665250204">Simone Trucci · +39 366 525 0204</a>
       </div>
     </div>
   </div>
@@ -668,11 +683,11 @@
   </div>
 </footer>
 
-<script src="./assets/vendor/gsap.min.js?v=59a10d27" defer></script>
-<script src="./assets/vendor/ScrollTrigger.min.js?v=59a10d27" defer></script>
-<script src="./assets/js/i18n.js?v=59a10d27" defer></script>
-<script src="./assets/js/main.js?v=59a10d27" defer></script>
-<script src="./assets/js/lavori.js?v=59a10d27" defer></script>
-<script src="./assets/js/scene.js?v=59a10d27" defer></script>
+<script src="./assets/vendor/gsap.min.js?v=438ff43e" defer></script>
+<script src="./assets/vendor/ScrollTrigger.min.js?v=438ff43e" defer></script>
+<script src="./assets/js/i18n.js?v=438ff43e" defer></script>
+<script src="./assets/js/main.js?v=438ff43e" defer></script>
+<script src="./assets/js/lavori.js?v=438ff43e" defer></script>
+<script src="./assets/js/scene.js?v=438ff43e" defer></script>
 </body>
 </html>
