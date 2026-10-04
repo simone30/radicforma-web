@@ -145,58 +145,70 @@
   }
 
   /* ------------------------------------------- la striscia segue la pagina */
-  /* Mentre la pagina scende, la striscia scorre verso sinistra, fino a
-     mostrare la scheda "Vedi tutti i lavori" quando la sezione e' ancora ben
-     in vista. Niente pin: la pagina continua a scorrere normalmente.
+  /* Solo su schermi grandi con il mouse: quando la striscia e' tutta in
+     vista la sezione si ferma, e lo scorrimento della pagina la fa avanzare
+     verso sinistra fino alla scheda "Vedi tutti i lavori". Poi la pagina
+     riprende. Sul telefono resta lo scorrimento col dito, e basta.
 
-     Appena chi visita la sposta da se' (frecce, dito in orizzontale, rotella
-     laterale, tastiera, mouse sulla barra) la guida si stacca per sempre:
-     la pagina non deve piu' riportarla dove vuole lei. */
-  var lasciaGuida = function () {};
+     PASSO e' quanta pagina serve per ogni pixel di striscia: piu' e' alto,
+     piu' lo scorrimento e' lento. INSEGUIMENTO e' il ritardo con cui la
+     striscia raggiunge la posizione, in secondi.
+
+     Appena chi visita la sposta da se' (frecce, rotella laterale, tastiera,
+     mouse sulla barra) la striscia smette di seguire la pagina. La sezione
+     resta comunque ferma per il tratto previsto: togliere il pin a meta'
+     farebbe saltare la pagina. */
+  var GUIDA_MEDIA = '(min-width: 901px) and (hover: hover) and (pointer: fine) ' +
+                    'and (prefers-reduced-motion: no-preference)';
+  var PASSO = 1.8;
+  var INSEGUIMENTO = 0.9;
+
+  var guidaAttiva = false;
+  function lasciaGuida() {
+    if (!guidaAttiva) return;
+    guidaAttiva = false;
+    if (window.gsap) window.gsap.killTweensOf(vetrina);
+    vetrina.classList.remove('is-guidata');
+  }
 
   function attivaGuida() {
-    if (motoRidotto.matches || !window.gsap || !window.ScrollTrigger) return;
-    window.gsap.registerPlugin(window.ScrollTrigger);
+    if (!window.gsap || !window.ScrollTrigger || !window.gsap.matchMedia) return;
+    var gsap = window.gsap;
+    gsap.registerPlugin(window.ScrollTrigger);
 
     function corsa() { return Math.max(0, vetrina.scrollWidth - vetrina.clientWidth); }
 
-    /* Lo scroll-snap riaggancerebbe la striscia a ogni passo del tween:
-       finche' la guida e' attiva resta spento (classe in style.css). */
-    vetrina.classList.add('is-guidata');
-    var tween = window.gsap.fromTo(vetrina, { scrollLeft: 0 }, {
-      scrollLeft: corsa,
-      ease: 'none',
-      scrollTrigger: {
+    gsap.matchMedia().add(GUIDA_MEDIA, function () {
+      guidaAttiva = true;
+      /* Lo scroll-snap riaggancerebbe la striscia a ogni passo: finche' la
+         guida e' attiva resta spento (classe in style.css). */
+      vetrina.classList.add('is-guidata');
+
+      window.ScrollTrigger.create({
         trigger: vetrina,
-        start: 'top 85%',
-        end: 'top 20%',
-        scrub: 0.6,
-        invalidateOnRefresh: true
-      }
+        start: 'top 18%',
+        end: function () { return '+=' + Math.round(corsa() * PASSO); },
+        pin: '#lavori',
+        invalidateOnRefresh: true,
+        onUpdate: function (self) {
+          if (!guidaAttiva) return;
+          gsap.to(vetrina, {
+            scrollLeft: self.progress * corsa(),
+            duration: INSEGUIMENTO, ease: 'power2.out', overwrite: true
+          });
+        }
+      });
+      /* Questo trigger nasce dopo quelli delle sezioni sotto (creati da
+         main.js al caricamento): vanno rimessi in ordine di pagina, o
+         calcolerebbero la loro posizione senza lo spazio del pin. */
+      window.ScrollTrigger.sort();
+      window.ScrollTrigger.refresh();
+
+      return function () { lasciaGuida(); };
     });
 
-    var attiva = true;
-    lasciaGuida = function () {
-      if (!attiva) return;
-      attiva = false;
-      tween.scrollTrigger.kill();
-      tween.kill();
-      vetrina.classList.remove('is-guidata');
-      ['wheel', 'touchstart', 'touchmove', 'pointerdown', 'keydown'].forEach(function (t) {
-        vetrina.removeEventListener(t, gesti[t]);
-      });
-    };
-
-    /* Un dito che scorre in verticale sopra la striscia sta solo scendendo
-       nella pagina: conta solo il gesto che va soprattutto di lato. */
-    var x0 = 0, y0 = 0;
     var gesti = {
       wheel: function (e) { if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) lasciaGuida(); },
-      touchstart: function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; },
-      touchmove: function (e) {
-        var dx = Math.abs(e.touches[0].clientX - x0), dy = Math.abs(e.touches[0].clientY - y0);
-        if (dx > 8 && dx > dy) lasciaGuida();
-      },
       pointerdown: function (e) { if (e.pointerType === 'mouse') lasciaGuida(); },
       keydown: function (e) {
         if (['ArrowLeft', 'ArrowRight', 'Home', 'End', 'PageUp', 'PageDown'].indexOf(e.key) !== -1) lasciaGuida();

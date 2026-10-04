@@ -255,6 +255,11 @@ Nella home, dopo i Servizi, c'è una striscia che si scorre in orizzontale con
 una selezione di lavori; l'ultima scheda porta a `lavori.html`, che li mostra
 tutti, con i filtri per tecnica e la foto a tutto schermo.
 
+Sui computer, quando la striscia è tutta in vista, la sezione si ferma per un
+tratto e scorrendo la pagina le schede avanzano verso sinistra fino a «Vedi
+tutti i lavori». Velocità e ritardo si regolano con `PASSO` e `INSEGUIMENTO`
+in `assets/js/lavori.js`. Sul telefono si scorre solo col dito.
+
 Le due viste leggono lo stesso elenco, `assets/data/lavori.json`. Per ogni
 lavoro:
 
