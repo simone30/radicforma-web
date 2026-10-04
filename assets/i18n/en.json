@@ -203,8 +203,7 @@
     "titolo": "Tell us about your project",
     "testo": "Write to us with a description, a measurement or a reference photo: we reply with a feasibility assessment and a quote.",
     "email": "Send us an email",
-    "cta": "Send a request",
-    "nota": "We reply within [to be confirmed] working days."
+    "cta": "Send a request"
   },
   "footer": {
     "claim": "Where matter comes to life",

@@ -140,7 +140,71 @@
        ci resta agganciato: senza questo la striscia partirebbe dal fondo. */
     vetrina.scrollLeft = 0;
     traduciVetrina();
+    attivaGuida();
     attivaFrecce();
+  }
+
+  /* ------------------------------------------- la striscia segue la pagina */
+  /* Mentre la pagina scende, la striscia scorre verso sinistra, fino a
+     mostrare la scheda "Vedi tutti i lavori" quando la sezione e' ancora ben
+     in vista. Niente pin: la pagina continua a scorrere normalmente.
+
+     Appena chi visita la sposta da se' (frecce, dito in orizzontale, rotella
+     laterale, tastiera, mouse sulla barra) la guida si stacca per sempre:
+     la pagina non deve piu' riportarla dove vuole lei. */
+  var lasciaGuida = function () {};
+
+  function attivaGuida() {
+    if (motoRidotto.matches || !window.gsap || !window.ScrollTrigger) return;
+    window.gsap.registerPlugin(window.ScrollTrigger);
+
+    function corsa() { return Math.max(0, vetrina.scrollWidth - vetrina.clientWidth); }
+
+    /* Lo scroll-snap riaggancerebbe la striscia a ogni passo del tween:
+       finche' la guida e' attiva resta spento (classe in style.css). */
+    vetrina.classList.add('is-guidata');
+    var tween = window.gsap.fromTo(vetrina, { scrollLeft: 0 }, {
+      scrollLeft: corsa,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: vetrina,
+        start: 'top 85%',
+        end: 'top 20%',
+        scrub: 0.6,
+        invalidateOnRefresh: true
+      }
+    });
+
+    var attiva = true;
+    lasciaGuida = function () {
+      if (!attiva) return;
+      attiva = false;
+      tween.scrollTrigger.kill();
+      tween.kill();
+      vetrina.classList.remove('is-guidata');
+      ['wheel', 'touchstart', 'touchmove', 'pointerdown', 'keydown'].forEach(function (t) {
+        vetrina.removeEventListener(t, gesti[t]);
+      });
+    };
+
+    /* Un dito che scorre in verticale sopra la striscia sta solo scendendo
+       nella pagina: conta solo il gesto che va soprattutto di lato. */
+    var x0 = 0, y0 = 0;
+    var gesti = {
+      wheel: function (e) { if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) lasciaGuida(); },
+      touchstart: function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; },
+      touchmove: function (e) {
+        var dx = Math.abs(e.touches[0].clientX - x0), dy = Math.abs(e.touches[0].clientY - y0);
+        if (dx > 8 && dx > dy) lasciaGuida();
+      },
+      pointerdown: function (e) { if (e.pointerType === 'mouse') lasciaGuida(); },
+      keydown: function (e) {
+        if (['ArrowLeft', 'ArrowRight', 'Home', 'End', 'PageUp', 'PageDown'].indexOf(e.key) !== -1) lasciaGuida();
+      }
+    };
+    Object.keys(gesti).forEach(function (t) {
+      vetrina.addEventListener(t, gesti[t], { passive: true });
+    });
   }
 
   function traduciVetrina() {
@@ -168,8 +232,8 @@
       avanti.disabled = vetrina.scrollLeft >= max;
     }
 
-    indietro.addEventListener('click', function () { sposta(-1); });
-    avanti.addEventListener('click', function () { sposta(1); });
+    indietro.addEventListener('click', function () { lasciaGuida(); sposta(-1); });
+    avanti.addEventListener('click', function () { lasciaGuida(); sposta(1); });
 
     var inAttesa = false;
     vetrina.addEventListener('scroll', function () {

@@ -132,23 +132,10 @@ file. Dopo la modifica, `git push` e il sito si aggiorna.
 
 ## 4. I dati da completare
 
-Alcuni dati non sono stati inventati apposta e vanno sostituiti prima di
-pubblicare. Si trovano cercando le parentesi graffe nel file `index.html`:
-
-| Segnaposto        | Che cosa metterci                    |
-| ----------------- | ------------------------------------ |
-| `{{PARTITA_IVA}}` | la partita IVA, nella riga in fondo  |
-
-**Finché è lì, quella riga si legge davvero sul sito**: dice
-`P.IVA {{PARTITA_IVA}}`. O la si compila, o si toglie la riga.
-
 Come recapito per ora c'è **solo l'indirizzo email**, `info@radicforma.com`.
 Telefono e indirizzo sono stati tolti dalla pagina: per rimetterli si
 aggiungono un blocco `.recapito` nella sezione Contatti e una riga nel piè di
 pagina.
-
-Nei due file dei testi c'è inoltre un valore marcato **`[da confermare]`**:
-i giorni lavorativi entro cui si risponde, nella sezione Contatti.
 
 ### Affermazioni da verificare
 
@@ -356,7 +343,7 @@ modificarlo si sostituisce `assets/brand/monogramma-light.svg` e si rilancia
   soprattutto la versione italiana. Per posizionare davvero anche l'inglese
   servirebbe una seconda pagina servita separatamente, per esempio
   `/en/index.html`. Non è un problema per l'uso attuale.
-- **Dati tecnici e recapiti** ancora da completare, vedi la sezione 4.
+- **Affermazioni sui materiali** ancora da verificare, vedi la sezione 4.
 - **I video sono render**, non riprese: vedi la sezione 6 per sostituirli.
 - Il modulo di contatto non esiste: essendo il sito statico, i contatti passano
   da un link `mailto:`. Volendo un vero modulo si può collegare un servizio

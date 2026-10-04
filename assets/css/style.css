@@ -683,6 +683,9 @@ p, li, figcaption { text-wrap: pretty; }
   scrollbar-color: rgba(237, 233, 219, 0.25) transparent;
 }
 .vetrina:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+/* Mentre la striscia segue lo scorrimento della pagina (lavori.js) lo snap
+   la tirerebbe indietro a ogni passo. */
+.vetrina.is-guidata { scroll-snap-type: none; }
 
 .vetrina__voce,
 .vetrina__fine { flex: 0 0 auto; scroll-snap-align: start; }
@@ -866,7 +869,6 @@ p, li, figcaption { text-wrap: pretty; }
 }
 .bottone:active { transform: translateY(0); }
 
-.contatti__nota { margin-block-start: var(--sp-3); }
 
 .recapiti { margin: 0; }
 .recapito { padding-block: var(--sp-3); border-block-start: 1px solid var(--linea); }
