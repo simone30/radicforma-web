@@ -16,7 +16,7 @@
   },
   "nav": {
     "servizi": "Services",
-    "tecnologie": "Technology",
+    "lavori": "Work",
     "materiali": "Materials",
     "processo": "Process",
     "contatti": "Contact"
@@ -119,30 +119,37 @@
       "dettaglio": "3D modelling · Production files"
     }
   },
-  "tecnologie": {
-    "eyebrow": "Technology",
-    "titolo": "The workshop",
-    "testo": "We work with two complementary technologies: fused deposition, which builds the object layer by layer, and the laser, which engraves and cuts by removing material. The choice depends on the material, the tolerance required and the number of pieces.",
-    "stampa": {
-      "titolo": "Filament 3D printing",
-      "testo": "Fused deposition printers with heated bed and automatic colour changing. Suited to functional parts, short runs and rapid prototypes.",
-      "voce1": "Build volume",
-      "valore1": "[to be confirmed] mm",
-      "voce2": "Layer height",
-      "valore2": "0.08 – 0.28 mm",
-      "voce3": "Dimensional tolerance",
-      "valore3": "[to be confirmed]"
-    },
-    "laser": {
-      "titolo": "Laser engraving and cutting",
-      "testo": "A CNC laser source for raster engraving and vector cutting, with power and feed rate tuned to each material.",
-      "voce1": "Work area",
-      "valore1": "[to be confirmed] mm",
-      "voce2": "Maximum cutting thickness",
-      "valore2": "[to be confirmed] mm",
-      "voce3": "Engraving resolution",
-      "valore3": "[to be confirmed] DPI"
+  "lavori": {
+    "eyebrow": "Work",
+    "titolo": "From our workshop",
+    "testo": "A selection of pieces from the workshop: engravings, printed objects and work that combines both techniques.",
+    "striscia": "Selection of work, scrollable",
+    "indietro": "Previous work",
+    "avanti": "Next work",
+    "tutti": "See all our work",
+    "inArrivo": "Photo coming soon",
+    "categorie": {
+      "tutti": "All",
+      "laser": "Laser engraving",
+      "stampa": "3D printing",
+      "misto": "Laser and 3D printing"
     }
+  },
+  "galleria": {
+    "title": "Work — Radic Forma",
+    "descrizione": "Work by Radic Forma: laser engraving and cutting on wood, leather, acrylic and stone, 3D printed objects, one-offs and small batches.",
+    "eyebrow": "Work",
+    "titolo": "Everything we make",
+    "testo": "Laser engraving and cutting, 3D printed objects, one-offs and small batches. Tap a photo to see it in full.",
+    "filtri": "Filter by technique",
+    "vuoto": "Nothing in this category yet.",
+    "chiudi": "Close",
+    "precedente": "Previous photo",
+    "successiva": "Next photo",
+    "ctaTitolo": "Have something similar in mind?",
+    "ctaTesto": "Tell us about your project: we can start from a photo, a measurement or a sketch.",
+    "cta": "Send a request",
+    "home": "Back to home"
   },
   "materiali": {
     "eyebrow": "Materials",

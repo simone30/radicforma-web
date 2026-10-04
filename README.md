@@ -142,14 +142,13 @@ pubblicare. Si trovano cercando le parentesi graffe nel file `index.html`:
 **Finché è lì, quella riga si legge davvero sul sito**: dice
 `P.IVA {{PARTITA_IVA}}`. O la si compila, o si toglie la riga.
 
-Come recapito per ora c'è **solo l'indirizzo email**, `radicforma@gmail.com`.
+Come recapito per ora c'è **solo l'indirizzo email**, `info@radicforma.com`.
 Telefono e indirizzo sono stati tolti dalla pagina: per rimetterli si
 aggiungono un blocco `.recapito` nella sezione Contatti e una riga nel piè di
 pagina.
 
-Nei due file dei testi ci sono inoltre alcuni valori marcati **`[da confermare]`**
-(volumi di stampa, tolleranze, area di lavoro del laser, tempi di risposta):
-vanno sostituiti con i dati reali delle macchine.
+Nei due file dei testi c'è inoltre un valore marcato **`[da confermare]`**:
+i giorni lavorativi entro cui si risponde, nella sezione Contatti.
 
 ### Affermazioni da verificare
 
@@ -232,16 +231,20 @@ il browser usa l'`.mp4`.
 ## 7. Com'è fatto il sito
 
 ```
-index.html                 la pagina, unica
+index.html                 la home
+lavori.html                la galleria con tutti i lavori
 assets/css/style.css       tutto l'aspetto grafico
 assets/js/main.js          menu, navigazione, comparsa delle sezioni
 assets/js/i18n.js          cambio lingua
 assets/js/scene.js         le due animazioni a scorrimento
+assets/js/lavori.js        striscia dei lavori nella home e galleria
+assets/data/lavori.json    l'elenco dei lavori, con titoli e materiali
 assets/i18n/*.json         i testi
 assets/brand/              logo e marchio
 assets/fonts/              i caratteri tipografici
 assets/vendor/             GSAP, la libreria delle animazioni
 assets/img/                fotografie e anteprima social
+assets/img/lavori/         le foto dei lavori, generate da tools/gen-lavori.mjs
 assets/video/              i video delle animazioni, per il telefono
 tools/                     script di manutenzione, non fanno parte del sito
 ```
@@ -258,6 +261,38 @@ scelta la fa `scene.js`, ma la soglia sta anche in `style.css` (sezione 16.6):
 
 C'e' inoltre un controllo sul ritmo dei fotogrammi: se un dispositivo non
 regge l'animazione, il sito passa da solo ai video mentre si scorre.
+
+### I lavori
+
+Nella home, dopo i Servizi, c'è una striscia che si scorre in orizzontale con
+una selezione di lavori; l'ultima scheda porta a `lavori.html`, che li mostra
+tutti, con i filtri per tecnica e la foto a tutto schermo.
+
+Le due viste leggono lo stesso elenco, `assets/data/lavori.json`. Per ogni
+lavoro:
+
+| Campo       | Che cosa contiene |
+| ----------- | ----------------- |
+| `foto`      | il nome base dei file in `assets/img/lavori/`; vuoto = segnaposto «Foto in arrivo» |
+| `w`, `h`    | le misure della foto, le scrive lo script |
+| `categoria` | `laser`, `stampa` oppure `misto`: decide il filtro |
+| `home`      | `true` se il lavoro va anche nella striscia della home |
+| `titolo`, `materiale`, `alt` | in italiano (`it`) e inglese (`en`); `alt` descrive la foto a chi non la vede |
+| `nota`      | facoltativa, in `it` e `en`: una frase sotto la didascalia, per esempio quando il pezzo l'ha fornito il cliente |
+
+L'ordine del file è l'ordine sul sito. Per aggiungere delle foto:
+
+```bash
+npm install sharp
+node tools/gen-lavori.mjs <cartella-con-le-foto-originali>
+# completare categoria, titoli e materiali in assets/data/lavori.json
+node tools/marca-versioni.mjs
+```
+
+Lo script fa due versioni webp di ogni foto (640 e 1280 pixel di larghezza),
+raddrizza le foto scattate col telefono e toglie i metadati, compresa la
+posizione GPS. Le voci di esempio senza foto vanno cancellate dall'elenco
+quando ci sono abbastanza lavori veri.
 
 **Nessuna richiesta esce verso siti esterni**: caratteri tipografici, libreria
 di animazione e immagini sono tutti dentro il repository. Non ci sono cookie né
@@ -294,6 +329,10 @@ node tools/gen-brand-images.mjs  # richiede il server locale attivo
 python3 tools/sync-monogramma.py
 python3 tools/sync-monogramma.py --check   # verifica soltanto
 
+# prepara le foto dei lavori e le aggiunge a assets/data/lavori.json
+npm install sharp
+node tools/gen-lavori.mjs <cartella-originali>
+
 # rimarca gli asset con l'impronta del contenuto: DA FARE PRIMA DI PUBBLICARE
 # ogni volta che cambia un file dentro assets/ (vedi sezione 2)
 node tools/marca-versioni.mjs
@@ -312,7 +351,7 @@ modificarlo si sostituisce `assets/brand/monogramma-light.svg` e si rilancia
 
 ## 9. Limiti noti
 
-- **Indicizzazione della versione inglese.** Il sito è una pagina sola in cui la
+- **Indicizzazione della versione inglese.** In ogni pagina la
   lingua cambia via JavaScript, quindi i motori di ricerca indicizzano
   soprattutto la versione italiana. Per posizionare davvero anche l'inglese
   servirebbe una seconda pagina servita separatamente, per esempio

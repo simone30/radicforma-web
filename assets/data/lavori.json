@@ -1,0 +1,89 @@
+{
+  "_leggimi": "Elenco dei lavori mostrati nella home (solo quelli con home: true) e nella pagina lavori.html (tutti), nell'ordine di questo file. foto: nome base dei file in assets/img/lavori/, senza dimensione ne' estensione (li crea tools/gen-lavori.mjs). Con foto vuota il lavoro compare come segnaposto. categoria: laser | stampa | misto. nota (facoltativa): una frase che compare sotto la didascalia. Vedi README, sezione 7.",
+  "lavori": [
+    {
+      "foto": "biglietti-da-visita",
+      "w": 896,
+      "h": 1200,
+      "categoria": "laser",
+      "home": true,
+      "titolo": {
+        "it": "Biglietti da visita",
+        "en": "Business cards"
+      },
+      "materiale": {
+        "it": "Alluminio verniciato",
+        "en": "Painted aluminium"
+      },
+      "alt": {
+        "it": "Tre biglietti da visita in alluminio verniciato nero lucido, con il monogramma e la scritta Radic Forma incisi in oro, appoggiati su una lastra di travertino e un ceppo di legno",
+        "en": "Three business cards in gloss black painted aluminium, with the Radic Forma monogram and name engraved in gold, resting on a travertine slab and a wooden block"
+      }
+    },
+    {
+      "foto": "lampada-rovere",
+      "w": 896,
+      "h": 1200,
+      "categoria": "laser",
+      "home": true,
+      "titolo": {
+        "it": "Incisione su una lampada del cliente",
+        "en": "Engraving on a client’s lamp"
+      },
+      "materiale": {
+        "it": "Metallo verniciato",
+        "en": "Painted metal"
+      },
+      "nota": {
+        "it": "La lampada ce l’ha portata il cliente: noi abbiamo inciso il monogramma sul piede. Personalizziamo anche oggetti che hai già.",
+        "en": "The client brought us the lamp; we engraved the monogram on its base. We also personalise objects you already own."
+      },
+      "alt": {
+        "it": "Lampada da tavolo in metallo verniciato blu, con il monogramma RF inciso sul piede, appoggiata su un disco di legno",
+        "en": "Blue painted metal table lamp with the RF monogram engraved on its base, standing on a wooden disc"
+      }
+    },
+    {
+      "foto": "ardesia-monogramma",
+      "w": 896,
+      "h": 1200,
+      "categoria": "laser",
+      "home": true,
+      "titolo": {
+        "it": "Incisione su un piatto in ardesia del cliente",
+        "en": "Engraving on a client’s slate plate"
+      },
+      "materiale": {
+        "it": "Ardesia",
+        "en": "Slate"
+      },
+      "nota": {
+        "it": "Il piatto ce l’ha fornito il cliente: noi abbiamo inciso il monogramma. Personalizziamo anche oggetti che hai già.",
+        "en": "The client supplied the plate; we engraved the monogram. We also personalise objects you already own."
+      },
+      "alt": {
+        "it": "Piatto quadrato in ardesia grezza con il monogramma RF inciso in chiaro nell’angolo, appoggiato a un blocco di legno",
+        "en": "Square natural slate plate with the RF monogram engraved in light tones in the corner, leaning on a wooden block"
+      }
+    },
+    {
+      "foto": "espositori-recensioni",
+      "w": 896,
+      "h": 1200,
+      "categoria": "laser",
+      "home": true,
+      "titolo": {
+        "it": "Espositori con QR code per le recensioni",
+        "en": "QR code review stands"
+      },
+      "materiale": {
+        "it": "Noce e compensato",
+        "en": "Walnut and plywood"
+      },
+      "alt": {
+        "it": "Due espositori da banco in legno di noce con QR code incisi su inserti in compensato, per lasciare una recensione su Google e Tripadvisor",
+        "en": "Two walnut countertop stands with QR codes engraved on plywood inserts, for leaving a review on Google and Tripadvisor"
+      }
+    }
+  ]
+}

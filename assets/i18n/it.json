@@ -16,7 +16,7 @@
   },
   "nav": {
     "servizi": "Servizi",
-    "tecnologie": "Tecnologie",
+    "lavori": "Lavori",
     "materiali": "Materiali",
     "processo": "Processo",
     "contatti": "Contatti"
@@ -119,30 +119,37 @@
       "dettaglio": "Modellazione 3D · File di produzione"
     }
   },
-  "tecnologie": {
-    "eyebrow": "Tecnologie",
-    "titolo": "Il parco macchine",
-    "testo": "Lavoriamo con due tecnologie complementari: la deposizione di filamento, che costruisce l’oggetto strato dopo strato, e il laser, che incide e taglia sottraendo materia. La scelta dipende dal materiale, dalla tolleranza richiesta e dal numero di pezzi.",
-    "stampa": {
-      "titolo": "Stampa 3D a filamento",
-      "testo": "Stampanti a deposizione di filamento con piano riscaldato e cambio colore automatico. Adatte a pezzi funzionali, serie brevi e prototipi rapidi.",
-      "voce1": "Volume di stampa",
-      "valore1": "[da confermare] mm",
-      "voce2": "Altezza strato",
-      "valore2": "0,08 – 0,28 mm",
-      "voce3": "Tolleranza dimensionale",
-      "valore3": "[da confermare]"
-    },
-    "laser": {
-      "titolo": "Incisione e taglio laser",
-      "testo": "Sorgente laser a controllo numerico per incisione raster e taglio vettoriale, con potenza e avanzamento regolati su ogni materiale.",
-      "voce1": "Area di lavoro",
-      "valore1": "[da confermare] mm",
-      "voce2": "Spessore massimo di taglio",
-      "valore2": "[da confermare] mm",
-      "voce3": "Risoluzione di incisione",
-      "valore3": "[da confermare] DPI"
+  "lavori": {
+    "eyebrow": "Lavori",
+    "titolo": "Dal nostro laboratorio",
+    "testo": "Una selezione di pezzi usciti dal laboratorio: incisioni, oggetti stampati e lavori che uniscono le due tecniche.",
+    "striscia": "Selezione di lavori, scorrevole",
+    "indietro": "Lavori precedenti",
+    "avanti": "Lavori successivi",
+    "tutti": "Vedi tutti i lavori",
+    "inArrivo": "Foto in arrivo",
+    "categorie": {
+      "tutti": "Tutti",
+      "laser": "Incisione laser",
+      "stampa": "Stampa 3D",
+      "misto": "Laser e stampa 3D"
     }
+  },
+  "galleria": {
+    "title": "Lavori — Radic Forma",
+    "descrizione": "I lavori di Radic Forma: incisioni e tagli laser su legno, pelle, acrilico e pietra, oggetti in stampa 3D, pezzi unici e piccole serie.",
+    "eyebrow": "Lavori",
+    "titolo": "Tutto quello che realizziamo",
+    "testo": "Incisioni e tagli laser, oggetti stampati in 3D, pezzi unici e piccole serie. Tocca una foto per vederla per intero.",
+    "filtri": "Filtra per tecnica",
+    "vuoto": "Nessun lavoro in questa categoria, per ora.",
+    "chiudi": "Chiudi",
+    "precedente": "Foto precedente",
+    "successiva": "Foto successiva",
+    "ctaTitolo": "Hai in mente qualcosa di simile?",
+    "ctaTesto": "Raccontaci il tuo progetto: partiamo da una foto, una misura o uno schizzo.",
+    "cta": "Invia una richiesta",
+    "home": "Torna alla home"
   },
   "materiali": {
     "eyebrow": "Materiali",

@@ -1,7 +1,8 @@
 /* ==========================================================================
    RADIC FORMA — foglio di stile unico
    Ordine: font · token · reset · tipografia · navbar · hero · footer ·
-           sezioni di contenuto · atti animati · versione con video
+           sezioni di contenuto · atti animati · versione con video ·
+           pagina lavori
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -368,7 +369,8 @@ p, li, figcaption { text-wrap: pretty; }
   transition: transform var(--transizione);
 }
 .navbar__link:hover::after,
-.navbar__link[aria-current='true']::after { transform: scaleX(1); }
+.navbar__link[aria-current='true']::after,
+.navbar__link[aria-current='page']::after { transform: scaleX(1); }
 
 /* Selettore di lingua: IT | EN testuale, senza bandiere */
 .lingua {
@@ -638,26 +640,147 @@ p, li, figcaption { text-wrap: pretty; }
 }
 
 /* --------------------------------------------------------------------------
-   12. Tecnologie
+   12. Lavori — la striscia scorrevole della home
+   Le schede le crea lavori.js da assets/data/lavori.json. La stessa scheda
+   (.lavoro) serve anche alla galleria di lavori.html, sezione 17.
    -------------------------------------------------------------------------- */
-.macchine {
-  display: grid; gap: var(--sp-6);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+.vetrina__testa {
+  display: flex; flex-wrap: wrap; align-items: flex-end;
+  justify-content: space-between; gap: var(--sp-4);
+  margin-block-end: var(--sp-6);
 }
-.macchina p { color: rgba(237, 233, 219, 0.75); font-size: 0.975rem; }
-.macchina h3 { margin-block-end: var(--sp-2); }
+.vetrina__testa .sezione__intestazione { margin-block-end: 0; }
 
-.specifiche { margin: var(--sp-4) 0 0; }
-.specifica {
-  display: flex; justify-content: space-between; gap: var(--sp-3);
-  padding-block: var(--sp-2);
-  border-block-start: 1px solid var(--linea-inv);
-  font-size: var(--t-tecnico);
+.vetrina__comandi { display: flex; gap: var(--sp-2); }
+.vetrina__freccia {
+  display: inline-grid; place-items: center;
+  width: 48px; height: 48px;
+  border: 1px solid var(--linea-inv);
+  border-radius: 50%;
+  color: var(--avorio);
+  transition: background-color var(--dur-1) var(--ease-out),
+              border-color var(--dur-1) var(--ease-out),
+              opacity var(--dur-1) var(--ease-out);
 }
-.specifica dt { color: rgba(237, 233, 219, 0.62); letter-spacing: 0.04em; }
-.specifica dd {
-  margin: 0; color: var(--foglia); font-weight: 600;
-  font-variant-numeric: tabular-nums; text-align: right;
+.vetrina__freccia:hover:not(:disabled) {
+  background: rgba(237, 233, 219, 0.08);
+  border-color: rgba(237, 233, 219, 0.4);
+}
+.vetrina__freccia:disabled { opacity: 0.3; cursor: default; }
+
+/* La striscia e' larga quanto lo schermo, ma la prima scheda parte allineata
+   al contenitore: il rientro a sinistra replica quello di .contenitore. */
+.vetrina {
+  --rientro: max(var(--gutter), calc((100vw - var(--max-w)) / 2 + var(--gutter)));
+  list-style: none; margin: 0;
+  display: flex; gap: var(--sp-4);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  padding: 0 var(--rientro) var(--sp-4);
+  scroll-padding-inline: var(--rientro);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(237, 233, 219, 0.25) transparent;
+}
+.vetrina:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+
+.vetrina__voce,
+.vetrina__fine { flex: 0 0 auto; scroll-snap-align: start; }
+.vetrina__voce { width: clamp(240px, 72vw, 340px); }
+.vetrina__fine { width: clamp(200px, 52vw, 260px); }
+
+/* L'ultima scheda: stesso formato di una foto, porta alla galleria */
+.vetrina__tutti {
+  display: flex; flex-direction: column; justify-content: space-between;
+  aspect-ratio: 4 / 5;
+  padding: var(--sp-4);
+  border: 1px solid var(--linea-inv);
+  border-radius: var(--raggio);
+  color: var(--avorio);
+  text-decoration: none;
+  transition: background-color var(--dur-2) var(--ease-out),
+              border-color var(--dur-2) var(--ease-out);
+}
+.vetrina__tutti-testo {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+  line-height: 1.1;
+}
+.vetrina__tutti svg { align-self: flex-end; color: var(--foglia);
+  transition: transform var(--dur-2) var(--ease-out); }
+.vetrina__tutti:hover { background: rgba(155, 170, 107, 0.1); border-color: rgba(155, 170, 107, 0.5); }
+.vetrina__tutti:hover svg { transform: translateX(4px); }
+
+.vetrina__link {
+  display: inline-block;
+  margin-block-start: var(--sp-4);
+  font-size: var(--t-piccolo); font-weight: 600;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--foglia);
+  text-underline-offset: 0.3em;
+}
+.vetrina__link::after { content: ' \2192'; }
+
+/* Sul telefono si scorre col dito: le frecce non servono */
+@media (max-width: 700px), (hover: none) {
+  .vetrina__comandi { display: none; }
+}
+
+/* ---- la scheda di un lavoro, comune a striscia e galleria ---- */
+.lavoro__figura { margin: 0; }
+.lavoro__cornice {
+  display: block; width: 100%;
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--raggio);
+  background: #2A3125;
+  padding: 0;
+}
+.lavoro__foto {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-4) var(--ease-out);
+}
+.lavoro:hover .lavoro__foto { transform: scale(1.03); }
+
+.lavoro__didascalia { display: block; margin-block-start: var(--sp-3); }
+.lavoro__titolo {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1.3rem; line-height: 1.2;
+}
+.lavoro__dato { display: block; margin-block-start: 4px; }
+/* La nota: una riga in corsivo, staccata dal dato tecnico da un filetto
+   d'ottone, lo stesso segno degli elenchi dei materiali. */
+.lavoro__nota,
+.lightbox__nota {
+  display: block;
+  margin-block-start: var(--sp-2);
+  padding-inline-start: var(--sp-2);
+  border-inline-start: 1px solid var(--ottone);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.05rem; line-height: 1.35;
+  color: rgba(237, 233, 219, 0.78);
+  max-width: 40ch;
+}
+.galleria .lavoro__nota { color: var(--testo-soft); }
+
+/* Segnaposto finche' la foto non c'e': righe sottili, come una superficie
+   appena incisa, e il monogramma in filigrana. */
+.lavoro__segnaposto {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  background:
+    repeating-linear-gradient(0deg, rgba(237, 233, 219, 0.035) 0 1px, transparent 1px 7px),
+    linear-gradient(160deg, #2E3628, #1F241C);
+}
+.lavoro__filigrana { width: 42%; opacity: 0.16; }
+.lavoro__in-arrivo {
+  position: absolute; inset-inline-start: var(--sp-3); inset-block-end: var(--sp-3);
+  font-size: var(--t-tecnico); letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(237, 233, 219, 0.5);
 }
 
 /* --------------------------------------------------------------------------
@@ -1475,4 +1598,120 @@ p, li, figcaption { text-wrap: pretty; }
   .atto--incisione .atto__video { grid-column: 1; }
   .atto--stampa .atto__video { grid-column: 2; }
   .testa__corpo { animation: none; }
+}
+
+
+/* ==========================================================================
+   17. Pagina lavori
+   ========================================================================== */
+/* Testata scura: sotto la navbar trasparente le voci chiare si leggono.
+   Lo spazio in alto e' quello della navbar fissa. */
+.pagina-testa { padding-block: calc(var(--sp-8) + var(--sp-5)) var(--sp-7); }
+.pagina-testa h1 {
+  font-size: clamp(2.4rem, 1.7rem + 3vw, 4.4rem);
+  line-height: 1.04;
+  color: var(--avorio);
+  margin-block-end: var(--sp-3);
+}
+.pagina-testa .sezione__intestazione { margin-block-end: var(--sp-5); }
+
+/* Filtri per tecnica: bottoni a stato, quello attivo pieno */
+.filtri { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.filtro {
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--linea-inv);
+  border-radius: var(--raggio);
+  font-size: var(--t-tecnico); font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(237, 233, 219, 0.82);
+  transition: background-color var(--dur-1) var(--ease-out),
+              border-color var(--dur-1) var(--ease-out),
+              color var(--dur-1) var(--ease-out);
+}
+.filtro:hover { border-color: rgba(237, 233, 219, 0.45); color: var(--avorio); }
+.filtro[hidden] { display: none; }
+.filtro[aria-pressed='true'] {
+  background: var(--foglia); border-color: var(--foglia);
+  color: var(--verde-corteccia);
+}
+
+.galleria-sezione { padding-block: var(--sp-7) var(--sezione-y); }
+.galleria {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--sp-6) var(--sp-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+}
+.galleria__voce[hidden] { display: none; }
+.galleria button.lavoro__cornice { cursor: zoom-in; }
+.galleria .lavoro__titolo { color: var(--testo); }
+
+/* Su fondo chiaro il segnaposto passa ai toni della carta */
+.galleria .lavoro__cornice { background: #E6E2D3; }
+.galleria .lavoro__segnaposto {
+  background:
+    repeating-linear-gradient(0deg, rgba(34, 40, 31, 0.04) 0 1px, transparent 1px 7px),
+    linear-gradient(160deg, #ECE9DD, #DEDACA);
+}
+.galleria .lavoro__filigrana { opacity: 0.3; }
+.galleria .lavoro__in-arrivo { color: var(--testo-tecnico); }
+
+.galleria__vuota { margin-block-start: var(--sp-5); }
+
+/* ---- foto a tutto schermo ---- */
+html.is-bloccato { overflow: hidden; }
+
+.lightbox {
+  width: 100%; height: 100%;
+  max-width: none; max-height: none;
+  margin: 0; padding: var(--sp-6) var(--gutter) var(--sp-4);
+  border: 0;
+  background: rgba(27, 30, 26, 0.97);
+  color: var(--avorio);
+}
+.lightbox[open] { display: grid; place-items: center; }
+.lightbox::backdrop { background: rgba(0, 0, 0, 0.5); }
+
+.lightbox__figura {
+  margin: 0;
+  display: flex; flex-direction: column; align-items: center;
+  max-width: 100%; max-height: 100%;
+}
+.lightbox__foto {
+  max-width: min(100%, 1280px);
+  max-height: calc(100vh - 10rem);
+  max-height: calc(100dvh - 10rem);
+  width: auto; height: auto;
+  object-fit: contain;
+  border-radius: var(--raggio);
+}
+.lightbox__didascalia { margin-block-start: var(--sp-3); text-align: center; }
+.lightbox__titolo { display: block; font-family: var(--serif); font-size: 1.4rem; }
+.lightbox__dato { display: block; margin-block-start: 4px; color: var(--pietra); }
+.lightbox__nota { margin-inline: auto; text-align: start; }
+.lightbox__nota[hidden] { display: none; }
+
+.lightbox__tasto {
+  position: absolute;
+  display: inline-grid; place-items: center;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(237, 233, 219, 0.08);
+  color: var(--avorio);
+  transition: background-color var(--dur-1) var(--ease-out);
+}
+.lightbox__tasto:hover { background: rgba(237, 233, 219, 0.18); }
+.lightbox__tasto[hidden] { display: none; }
+.lightbox__chiudi { inset-block-start: var(--sp-3); inset-inline-end: var(--sp-3); }
+.lightbox__scorri { inset-block-start: 50%; translate: 0 -50%; }
+.lightbox__scorri--indietro { inset-inline-start: var(--sp-3); }
+.lightbox__scorri--avanti   { inset-inline-end: var(--sp-3); }
+
+/* Sul telefono le frecce scendono in basso, per non coprire la foto */
+@media (max-width: 700px) {
+  .lightbox__scorri { inset-block-start: auto; inset-block-end: var(--sp-3); translate: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lavoro__foto, .vetrina__tutti svg { transition: none; }
+  .lavoro:hover .lavoro__foto { transform: none; }
 }

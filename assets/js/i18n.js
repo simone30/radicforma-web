@@ -14,6 +14,7 @@
 
   var dizionari = {};   /* cache: lingua → oggetto piatto di stringhe */
   var attuale = null;
+  var corrente = {};    /* il dizionario applicato, per chi genera testo a runtime */
 
   /* ------------------------------------------------------- utilità di lettura */
 
@@ -88,9 +89,10 @@
       });
     });
 
-    /* testa e metadati */
+    /* testa e metadati. Ogni pagina dichiara su <body data-titolo> la chiave
+       del proprio titolo; senza, vale quello della home. */
     document.documentElement.lang = lingua;
-    var titolo = leggi(dizionario, 'meta.title');
+    var titolo = leggi(dizionario, document.body.dataset.titolo || 'meta.title');
     if (titolo) document.title = titolo;
 
     /* il marchio ha una versione per lingua: cambia la parola sotto il nome */
@@ -112,7 +114,19 @@
     else url.searchParams.set('lang', lingua);
     history.replaceState(null, '', url.pathname + url.search + url.hash);
 
+    /* I link verso le altre pagine del sito portano con se' la lingua: se e'
+       arrivata dall'indirizzo e non da un clic, non e' in localStorage e
+       andrebbe persa al cambio di pagina. */
+    document.querySelectorAll('a[data-pagina]').forEach(function (a) {
+      var dest = new URL(a.getAttribute('href'), location.href);
+      if (lingua === PREDEFINITA) dest.searchParams.delete('lang');
+      else dest.searchParams.set('lang', lingua);
+      var rel = a.getAttribute('href').split(/[?#]/)[0];
+      a.setAttribute('href', rel + dest.search + dest.hash);
+    });
+
     attuale = lingua;
+    corrente = dizionario;
     document.dispatchEvent(new CustomEvent('radicforma:lingua', { detail: { lingua: lingua } }));
 
     /* i testi cambiano altezza: il pin va ricalcolato */
@@ -161,7 +175,11 @@
   }
 
   window.RadicForma = window.RadicForma || {};
-  window.RadicForma.lingua = { imposta: imposta, attuale: function () { return attuale; } };
+  window.RadicForma.lingua = {
+    imposta: imposta,
+    attuale: function () { return attuale; },
+    testo: function (chiave) { return leggi(corrente, chiave); }
+  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', avvia);

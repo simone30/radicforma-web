@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-versione="3544e706">
+<html lang="it" data-versione="cf8f0633">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,7 +37,7 @@
 
 <link rel="preload" href="./assets/fonts/cormorant-garamond-latin-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="./assets/fonts/manrope-latin-500.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="./assets/css/style.css?v=3544e706">
+<link rel="stylesheet" href="./assets/css/style.css?v=cf8f0633">
 <!-- Senza JavaScript non c'e' animazione a scorrimento: il contenuto deve
      restare tutto visibile, non a opacita' zero in attesa di qualcuno. -->
 <noscript><style>
@@ -112,7 +112,7 @@
 
   <nav class="navbar__nav" id="nav-principale" data-aperto="false">
     <a class="navbar__link" href="#servizi"    data-i18n="nav.servizi">Servizi</a>
-    <a class="navbar__link" href="#tecnologie" data-i18n="nav.tecnologie">Tecnologie</a>
+    <a class="navbar__link" href="#lavori"     data-i18n="nav.lavori">Lavori</a>
     <a class="navbar__link" href="#materiali"  data-i18n="nav.materiali">Materiali</a>
     <a class="navbar__link" href="#processo"   data-i18n="nav.processo">Processo</a>
     <a class="navbar__link" href="#contatti"   data-i18n="nav.contatti">Contatti</a>
@@ -185,10 +185,10 @@
 
           <!-- il piano di lavoro inclinato: e' la camera che lo inclina -->
           <div class="laser__piano" data-piano>
-            <img class="laser__legno" src="./assets/img/legno-disco.webp?v=3544e706"
-                 srcset="./assets/img/legno-disco-600.webp?v=3544e706 600w,
-                         ./assets/img/legno-disco-900.webp?v=3544e706 900w,
-                         ./assets/img/legno-disco.webp?v=3544e706 1100w"
+            <img class="laser__legno" src="./assets/img/legno-disco.webp?v=cf8f0633"
+                 srcset="./assets/img/legno-disco-600.webp?v=cf8f0633 600w,
+                         ./assets/img/legno-disco-900.webp?v=cf8f0633 900w,
+                         ./assets/img/legno-disco.webp?v=cf8f0633 1100w"
                  sizes="(max-width: 1180px) 62vw, 50vw"
                  alt="" width="1100" height="1100"
                  loading="lazy" decoding="async" fetchpriority="low">
@@ -260,11 +260,11 @@
       <figure class="atto__video" data-video>
         <video class="atto__video-elemento" muted loop playsinline preload="none"
                width="960" height="960"
-               data-poster="./assets/video/incisione-poster.webp?v=3544e706"
+               data-poster="./assets/video/incisione-poster.webp?v=cf8f0633"
                data-i18n-attr="aria-label:incisione.video.titolo"
                aria-label="Incisione del monogramma su legno">
-          <source src="./assets/video/incisione.webm?v=3544e706" type="video/webm">
-          <source src="./assets/video/incisione.mp4?v=3544e706" type="video/mp4">
+          <source src="./assets/video/incisione.webm?v=cf8f0633" type="video/webm">
+          <source src="./assets/video/incisione.mp4?v=cf8f0633" type="video/mp4">
         </video>
         <figcaption class="dato-tecnico" data-i18n="incisione.video.didascalia">Il monogramma inciso riga dopo riga su una sezione di tronco.</figcaption>
       </figure>
@@ -422,11 +422,11 @@
       <figure class="atto__video" data-video>
         <video class="atto__video-elemento" muted loop playsinline preload="none"
                width="960" height="960"
-               data-poster="./assets/video/stampa-poster.webp?v=3544e706"
+               data-poster="./assets/video/stampa-poster.webp?v=cf8f0633"
                data-i18n-attr="aria-label:stampa3d.video.titolo"
                aria-label="Stampa 3D del monogramma">
-          <source src="./assets/video/stampa.webm?v=3544e706" type="video/webm">
-          <source src="./assets/video/stampa.mp4?v=3544e706" type="video/mp4">
+          <source src="./assets/video/stampa.webm?v=cf8f0633" type="video/webm">
+          <source src="./assets/video/stampa.mp4?v=cf8f0633" type="video/mp4">
         </video>
         <figcaption class="dato-tecnico" data-i18n="stampa3d.video.didascalia">Lo stesso monogramma costruito strato dopo strato sul piatto di stampa.</figcaption>
       </figure>
@@ -494,54 +494,55 @@
     </div>
   </section>
 
-  <!-- ========================= Tecnologie ========================= -->
-  <section class="sezione sezione--scura" id="tecnologie">
+  <!-- ========================= Lavori =========================
+       La striscia si riempie da assets/data/lavori.json (vedi lavori.js):
+       ci entrano i lavori con "home": true, nell'ordine del file. L'ultima
+       scheda porta alla pagina con tutti i lavori. -->
+  <section class="sezione sezione--scura" id="lavori">
     <div class="contenitore">
-      <div class="sezione__intestazione" data-rivela>
-        <p class="eyebrow" data-i18n="tecnologie.eyebrow">Tecnologie</p>
-        <h2 data-i18n="tecnologie.titolo">Il parco macchine</h2>
-        <p class="testo-guida" data-i18n="tecnologie.testo">Lavoriamo con due tecnologie complementari: la deposizione di filamento, che costruisce l'oggetto strato dopo strato, e il laser, che incide e taglia sottraendo materia. La scelta dipende dal materiale, dalla tolleranza richiesta e dal numero di pezzi.</p>
-      </div>
+      <div class="vetrina__testa">
+        <div class="sezione__intestazione" data-rivela>
+          <p class="eyebrow" data-i18n="lavori.eyebrow">Lavori</p>
+          <h2 data-i18n="lavori.titolo">Dal nostro laboratorio</h2>
+          <p class="testo-guida" data-i18n="lavori.testo">Una selezione di pezzi usciti dal laboratorio: incisioni, oggetti stampati e lavori che uniscono le due tecniche.</p>
+        </div>
 
-      <div class="macchine">
-        <article class="macchina" data-rivela>
-          <h3 data-i18n="tecnologie.stampa.titolo">Stampa 3D a filamento</h3>
-          <p data-i18n="tecnologie.stampa.testo">Stampanti a deposizione di filamento con piano riscaldato e cambio colore automatico. Adatte a pezzi funzionali, serie brevi e prototipi rapidi.</p>
-          <dl class="specifiche">
-            <div class="specifica">
-              <dt data-i18n="tecnologie.stampa.voce1">Volume di stampa</dt>
-              <dd data-i18n="tecnologie.stampa.valore1">[da confermare] mm</dd>
-            </div>
-            <div class="specifica">
-              <dt data-i18n="tecnologie.stampa.voce2">Altezza strato</dt>
-              <dd data-i18n="tecnologie.stampa.valore2">0,08 – 0,28 mm</dd>
-            </div>
-            <div class="specifica">
-              <dt data-i18n="tecnologie.stampa.voce3">Tolleranza dimensionale</dt>
-              <dd data-i18n="tecnologie.stampa.valore3">[da confermare]</dd>
-            </div>
-          </dl>
-        </article>
-
-        <article class="macchina" data-rivela="0.1">
-          <h3 data-i18n="tecnologie.laser.titolo">Incisione e taglio laser</h3>
-          <p data-i18n="tecnologie.laser.testo">Sorgente laser a controllo numerico per incisione raster e taglio vettoriale, con potenza e avanzamento regolati su ogni materiale.</p>
-          <dl class="specifiche">
-            <div class="specifica">
-              <dt data-i18n="tecnologie.laser.voce1">Area di lavoro</dt>
-              <dd data-i18n="tecnologie.laser.valore1">[da confermare] mm</dd>
-            </div>
-            <div class="specifica">
-              <dt data-i18n="tecnologie.laser.voce2">Spessore massimo di taglio</dt>
-              <dd data-i18n="tecnologie.laser.valore2">[da confermare] mm</dd>
-            </div>
-            <div class="specifica">
-              <dt data-i18n="tecnologie.laser.voce3">Risoluzione di incisione</dt>
-              <dd data-i18n="tecnologie.laser.valore3">[da confermare] DPI</dd>
-            </div>
-          </dl>
-        </article>
+        <div class="vetrina__comandi" data-rivela="0.1">
+          <button class="vetrina__freccia" type="button" data-vetrina="indietro"
+                  data-i18n-attr="aria-label:lavori.indietro" aria-label="Lavori precedenti">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+                 stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 4l-6 6 6 6"></path>
+            </svg>
+          </button>
+          <button class="vetrina__freccia" type="button" data-vetrina="avanti"
+                  data-i18n-attr="aria-label:lavori.avanti" aria-label="Lavori successivi">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+                 stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M8 4l6 6-6 6"></path>
+            </svg>
+          </button>
+        </div>
       </div>
+    </div>
+
+    <!-- La striscia esce dal contenitore e arriva al bordo dello schermo: si
+         capisce a colpo d'occhio che continua e che si puo' scorrere. -->
+    <ul class="vetrina" id="vetrina" tabindex="0"
+        data-i18n-attr="aria-label:lavori.striscia" aria-label="Selezione di lavori, scorrevole">
+      <li class="vetrina__fine">
+        <a class="vetrina__tutti" href="./lavori.html" data-pagina>
+          <span class="vetrina__tutti-testo" data-i18n="lavori.tutti">Vedi tutti i lavori</span>
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor"
+               stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 14h18M16 7l7 7-7 7"></path>
+          </svg>
+        </a>
+      </li>
+    </ul>
+
+    <div class="contenitore">
+      <a class="vetrina__link" href="./lavori.html" data-pagina data-i18n="lavori.tutti">Vedi tutti i lavori</a>
     </div>
   </section>
 
@@ -616,14 +617,14 @@
           <h2 data-i18n="contatti.titolo">Raccontaci il tuo progetto</h2>
           <p class="testo-guida" data-i18n="contatti.testo">Scrivici con una descrizione, una misura o una foto di riferimento: rispondiamo con una valutazione di fattibilità e un preventivo.</p>
           <!-- Il sito è statico: nessun form con backend, si scrive per email. -->
-          <a class="bottone" href="mailto:radicforma@gmail.com" data-i18n="contatti.cta">Invia una richiesta</a>
+          <a class="bottone" href="mailto:info@radicforma.com" data-i18n="contatti.cta">Invia una richiesta</a>
           <p class="dato-tecnico contatti__nota" data-i18n="contatti.nota">Rispondiamo entro [da confermare] giorni lavorativi.</p>
         </div>
 
         <dl class="recapiti" data-rivela="0.1">
           <div class="recapito">
             <dt data-i18n="contatti.email">Scrivici una mail</dt>
-            <dd><a href="mailto:radicforma@gmail.com">radicforma@gmail.com</a></dd>
+            <dd><a href="mailto:info@radicforma.com">info@radicforma.com</a></dd>
           </div>
         </dl>
       </div>
@@ -649,13 +650,13 @@
       <div>
         <p class="footer__titolo" data-i18n="footer.naviga">Naviga</p>
         <a class="footer__link" href="#servizi"    data-i18n="nav.servizi">Servizi</a>
-        <a class="footer__link" href="#tecnologie" data-i18n="nav.tecnologie">Tecnologie</a>
+        <a class="footer__link" href="#lavori"     data-i18n="nav.lavori">Lavori</a>
         <a class="footer__link" href="#materiali"  data-i18n="nav.materiali">Materiali</a>
         <a class="footer__link" href="#processo"   data-i18n="nav.processo">Processo</a>
       </div>
       <div>
         <p class="footer__titolo" data-i18n="footer.contatti">Contatti</p>
-        <a class="footer__link" href="mailto:radicforma@gmail.com">radicforma@gmail.com</a>
+        <a class="footer__link" href="mailto:info@radicforma.com">info@radicforma.com</a>
       </div>
     </div>
   </div>
@@ -669,10 +670,11 @@
   </div>
 </footer>
 
-<script src="./assets/vendor/gsap.min.js?v=3544e706" defer></script>
-<script src="./assets/vendor/ScrollTrigger.min.js?v=3544e706" defer></script>
-<script src="./assets/js/i18n.js?v=3544e706" defer></script>
-<script src="./assets/js/main.js?v=3544e706" defer></script>
-<script src="./assets/js/scene.js?v=3544e706" defer></script>
+<script src="./assets/vendor/gsap.min.js?v=cf8f0633" defer></script>
+<script src="./assets/vendor/ScrollTrigger.min.js?v=cf8f0633" defer></script>
+<script src="./assets/js/i18n.js?v=cf8f0633" defer></script>
+<script src="./assets/js/main.js?v=cf8f0633" defer></script>
+<script src="./assets/js/lavori.js?v=cf8f0633" defer></script>
+<script src="./assets/js/scene.js?v=cf8f0633" defer></script>
 </body>
 </html>
